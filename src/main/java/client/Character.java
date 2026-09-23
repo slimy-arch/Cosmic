@@ -6269,14 +6269,142 @@ public class Character extends AbstractCharacterObject {
         }
     }
 
-    public synchronized void levelUp(boolean takeexp) {
+    private static boolean isAutoAssignedStarterLevel(Job job, int level) {
+        return YamlConfig.config.server.USE_AUTOASSIGN_STARTERS_AP && job.getId() % 1000 == 0 && level < 11;
+    }
+
+    // AP granted when levelling up from 'level' while holding 'job'
+    private static int getLevelUpAp(Job job, int level) {
+        int ap = 5;
+
+        if (job.getId() / 1000 == 1) {  // Cygnus
+            if (level > 10) {
+                if (level <= 17) {
+                    ap += 2;
+                } else if (level < 77) {
+                    ap++;
+                }
+            }
+        }
+
+        return ap;
+    }
+
+    // The job held at 'level' on the path to 'job', e.g. a Hero was a Beginner below 10 and a
+    // Fighter below 70. Used to replay level-up gains for levels skipped over by a GM command.
+    private static Job getJobAtLevel(Job job, int level) {
+        int jobId = job.getId();
+        int jobBranch = GameConstants.getJobBranch(job);
+        if (jobBranch == 0 || job.getJobNiche() >= 8) {    // beginners, GM / SuperGM
+            return job;
+        }
+
+        int tier;
+        if (level >= 120) {
+            tier = 4;
+        } else if (level >= 70) {
+            tier = 3;
+        } else if (level >= 30) {
+            tier = 2;
+        } else if (level >= (jobId / 100 == Job.MAGICIAN.getId() / 100 ? 8 : 10)) {
+            tier = 1;
+        } else {
+            tier = 0;
+        }
+        tier = Math.min(tier, jobBranch);
+
+        int tierJobId;
+        if (tier == 0) {
+            tierJobId = jobId / 1000 * 1000;
+        } else if (tier == 1) {
+            tierJobId = jobId / 100 * 100;
+        } else {
+            tierJobId = jobId / 10 * 10 + (tier - 2);
+        }
+
+        Job tierJob = Job.getById(tierJobId);
+        return tierJob != null ? tierJob : job;
+    }
+
+    // {maxHP, maxMP} granted by one level-up while holding 'job'
+    private int[] getLevelUpHpMpGain(Job job) {
         Skill improvingMaxHP = null;
         Skill improvingMaxMP = null;
         int improvingMaxHPLevel = 0;
         int improvingMaxMPLevel = 0;
+        boolean isCygnus = job.getId() / 1000 == 1;
 
-        boolean isBeginner = isBeginnerJob();
-        if (YamlConfig.config.server.USE_AUTOASSIGN_STARTERS_AP && isBeginner && level < 11) {
+        int addhp = 0, addmp = 0;
+        if (job.getId() % 1000 == 0) {
+            addhp += Randomizer.rand(12, 16);
+            addmp += Randomizer.rand(10, 12);
+        } else if (job.isA(Job.WARRIOR) || job.isA(Job.DAWNWARRIOR1)) {
+            improvingMaxHP = isCygnus ? SkillFactory.getSkill(DawnWarrior.MAX_HP_INCREASE) : SkillFactory.getSkill(Warrior.IMPROVED_MAXHP);
+            if (job.isA(Job.CRUSADER)) {
+                improvingMaxMP = SkillFactory.getSkill(1210000);
+            } else if (job.isA(Job.DAWNWARRIOR2)) {
+                improvingMaxMP = SkillFactory.getSkill(11110000);
+            }
+            improvingMaxHPLevel = getSkillLevel(improvingMaxHP);
+            addhp += Randomizer.rand(24, 28);
+            addmp += Randomizer.rand(4, 6);
+        } else if (job.isA(Job.MAGICIAN) || job.isA(Job.BLAZEWIZARD1)) {
+            improvingMaxMP = isCygnus ? SkillFactory.getSkill(BlazeWizard.INCREASING_MAX_MP) : SkillFactory.getSkill(Magician.IMPROVED_MAX_MP_INCREASE);
+            improvingMaxMPLevel = getSkillLevel(improvingMaxMP);
+            addhp += Randomizer.rand(10, 14);
+            addmp += Randomizer.rand(22, 24);
+        } else if (job.isA(Job.BOWMAN) || job.isA(Job.THIEF) || (job.getId() > 1299 && job.getId() < 1500)) {
+            addhp += Randomizer.rand(20, 24);
+            addmp += Randomizer.rand(14, 16);
+        } else if (job.isA(Job.GM)) {
+            addhp += 30000;
+            addmp += 30000;
+        } else if (job.isA(Job.PIRATE) || job.isA(Job.THUNDERBREAKER1)) {
+            improvingMaxHP = isCygnus ? SkillFactory.getSkill(ThunderBreaker.IMPROVE_MAX_HP) : SkillFactory.getSkill(Brawler.IMPROVE_MAX_HP);
+            improvingMaxHPLevel = getSkillLevel(improvingMaxHP);
+            addhp += Randomizer.rand(22, 28);
+            addmp += Randomizer.rand(18, 23);
+        } else if (job.isA(Job.ARAN1)) {
+            addhp += Randomizer.rand(44, 48);
+            int aids = Randomizer.rand(4, 8);
+            addmp += aids + Math.floor(aids * 0.1);
+        }
+        if (improvingMaxHPLevel > 0 && (job.isA(Job.WARRIOR) || job.isA(Job.PIRATE) || job.isA(Job.DAWNWARRIOR1) || job.isA(Job.THUNDERBREAKER1))) {
+            addhp += improvingMaxHP.getEffect(improvingMaxHPLevel).getX();
+        }
+        if (improvingMaxMPLevel > 0 && (job.isA(Job.MAGICIAN) || job.isA(Job.CRUSADER) || job.isA(Job.BLAZEWIZARD1))) {
+            addmp += improvingMaxMP.getEffect(improvingMaxMPLevel).getX();
+        }
+
+        if (YamlConfig.config.server.USE_RANDOMIZE_HPMP_GAIN) {
+            if (getJobStyleInternal(job.getId(), (byte) ((this.getStr() > this.getDex()) ? 0x80 : 0x40)) == Job.MAGICIAN) {
+                addmp += localint_ / 20;
+            } else {
+                addmp += localint_ / 10;
+            }
+        }
+
+        return new int[]{addhp, addmp};
+    }
+
+    private void announceMaxClassLevel(int maxClassLevel) {
+        if (!this.isGM()) {
+            if (YamlConfig.config.server.PLAYERNPC_AUTODEPLOY) {
+                ThreadManager.getInstance().newTask(new Runnable() {
+                    @Override
+                    public void run() {
+                        PlayerNPC.spawnPlayerNPC(GameConstants.getHallOfFameMapid(job), Character.this);
+                    }
+                });
+            }
+
+            final String names = (getMedalText() + name);
+            getWorldServer().broadcastPacket(PacketCreator.serverNotice(6, String.format(LEVEL_200, names, maxClassLevel, names)));
+        }
+    }
+
+    public synchronized void levelUp(boolean takeexp) {
+        if (isAutoAssignedStarterLevel(job, level)) {
             effLock.lock();
             statWlock.lock();
             try {
@@ -6296,72 +6424,11 @@ public class Character extends AbstractCharacterObject {
                 effLock.unlock();
             }
         } else {
-            int remainingAp = 5;
-
-            if (isCygnus()) {
-                if (level > 10) {
-                    if (level <= 17) {
-                        remainingAp += 2;
-                    } else if (level < 77) {
-                        remainingAp++;
-                    }
-                }
-            }
-
-            gainAp(remainingAp, true);
+            gainAp(getLevelUpAp(job, level), true);
         }
 
-        int addhp = 0, addmp = 0;
-        if (isBeginner) {
-            addhp += Randomizer.rand(12, 16);
-            addmp += Randomizer.rand(10, 12);
-        } else if (job.isA(Job.WARRIOR) || job.isA(Job.DAWNWARRIOR1)) {
-            improvingMaxHP = isCygnus() ? SkillFactory.getSkill(DawnWarrior.MAX_HP_INCREASE) : SkillFactory.getSkill(Warrior.IMPROVED_MAXHP);
-            if (job.isA(Job.CRUSADER)) {
-                improvingMaxMP = SkillFactory.getSkill(1210000);
-            } else if (job.isA(Job.DAWNWARRIOR2)) {
-                improvingMaxMP = SkillFactory.getSkill(11110000);
-            }
-            improvingMaxHPLevel = getSkillLevel(improvingMaxHP);
-            addhp += Randomizer.rand(24, 28);
-            addmp += Randomizer.rand(4, 6);
-        } else if (job.isA(Job.MAGICIAN) || job.isA(Job.BLAZEWIZARD1)) {
-            improvingMaxMP = isCygnus() ? SkillFactory.getSkill(BlazeWizard.INCREASING_MAX_MP) : SkillFactory.getSkill(Magician.IMPROVED_MAX_MP_INCREASE);
-            improvingMaxMPLevel = getSkillLevel(improvingMaxMP);
-            addhp += Randomizer.rand(10, 14);
-            addmp += Randomizer.rand(22, 24);
-        } else if (job.isA(Job.BOWMAN) || job.isA(Job.THIEF) || (job.getId() > 1299 && job.getId() < 1500)) {
-            addhp += Randomizer.rand(20, 24);
-            addmp += Randomizer.rand(14, 16);
-        } else if (job.isA(Job.GM)) {
-            addhp += 30000;
-            addmp += 30000;
-        } else if (job.isA(Job.PIRATE) || job.isA(Job.THUNDERBREAKER1)) {
-            improvingMaxHP = isCygnus() ? SkillFactory.getSkill(ThunderBreaker.IMPROVE_MAX_HP) : SkillFactory.getSkill(Brawler.IMPROVE_MAX_HP);
-            improvingMaxHPLevel = getSkillLevel(improvingMaxHP);
-            addhp += Randomizer.rand(22, 28);
-            addmp += Randomizer.rand(18, 23);
-        } else if (job.isA(Job.ARAN1)) {
-            addhp += Randomizer.rand(44, 48);
-            int aids = Randomizer.rand(4, 8);
-            addmp += aids + Math.floor(aids * 0.1);
-        }
-        if (improvingMaxHPLevel > 0 && (job.isA(Job.WARRIOR) || job.isA(Job.PIRATE) || job.isA(Job.DAWNWARRIOR1) || job.isA(Job.THUNDERBREAKER1))) {
-            addhp += improvingMaxHP.getEffect(improvingMaxHPLevel).getX();
-        }
-        if (improvingMaxMPLevel > 0 && (job.isA(Job.MAGICIAN) || job.isA(Job.CRUSADER) || job.isA(Job.BLAZEWIZARD1))) {
-            addmp += improvingMaxMP.getEffect(improvingMaxMPLevel).getX();
-        }
-
-        if (YamlConfig.config.server.USE_RANDOMIZE_HPMP_GAIN) {
-            if (getJobStyle() == Job.MAGICIAN) {
-                addmp += localint_ / 20;
-            } else {
-                addmp += localint_ / 10;
-            }
-        }
-
-        addMaxMPMaxHP(addhp, addmp, true);
+        int[] hpMpGain = getLevelUpHpMpGain(job);
+        addMaxMPMaxHP(hpMpGain[0], hpMpGain[1], true);
 
         if (takeexp) {
             exp.addAndGet(-ExpTable.getExpNeededForLevel(level));
@@ -6376,19 +6443,7 @@ public class Character extends AbstractCharacterObject {
 
             int maxClassLevel = getMaxClassLevel();
             if (level == maxClassLevel) {
-                if (!this.isGM()) {
-                    if (YamlConfig.config.server.PLAYERNPC_AUTODEPLOY) {
-                        ThreadManager.getInstance().newTask(new Runnable() {
-                            @Override
-                            public void run() {
-                                PlayerNPC.spawnPlayerNPC(GameConstants.getHallOfFameMapid(job), Character.this);
-                            }
-                        });
-                    }
-
-                    final String names = (getMedalText() + name);
-                    getWorldServer().broadcastPacket(PacketCreator.serverNotice(6, String.format(LEVEL_200, names, maxClassLevel, names)));
-                }
+                announceMaxClassLevel(maxClassLevel);
             }
 
             level = maxClassLevel; //To prevent levels past the maximum
@@ -6476,6 +6531,140 @@ public class Character extends AbstractCharacterObject {
                 }
             }
         }
+    }
+
+    /**
+     * Raises the character to targetLevel in one step, granting the AP, SP and max HP/MP that
+     * levelling up one level at a time would have. Each skipped level is replayed with the job
+     * the character held at that level (see getJobAtLevel), so a GM-made level 1 Hero still gets
+     * Beginner gains for levels 1-9. Per-level rewards (Perfect Pitch, guild notices) are not
+     * repeated. Returns the number of levels gained.
+     */
+    public synchronized int levelUpTo(int targetLevel) {
+        final int startLevel = level;
+        final int maxClassLevel = getMaxClassLevel();
+        targetLevel = Math.min(targetLevel, maxClassLevel);
+        if (targetLevel <= startLevel) {
+            return 0;
+        }
+
+        int apGain = 0, autoStr = 0, autoDex = 0, spGain = 0, addhp = 0, addmp = 0;
+        for (int lv = startLevel; lv < targetLevel; lv++) {
+            Job lvJob = getJobAtLevel(job, lv);
+
+            if (isAutoAssignedStarterLevel(lvJob, lv)) {
+                if (lv < 6) {
+                    autoStr += 5;
+                } else {
+                    autoStr += 4;
+                    autoDex += 1;
+                }
+            } else {
+                apGain += getLevelUpAp(lvJob, lv);
+            }
+
+            if (GameConstants.getJobBranch(lvJob) != 0) {
+                spGain += 3;
+            }
+
+            int[] hpMpGain = getLevelUpHpMpGain(lvJob);
+            addhp += hpMpGain[0];
+            addmp += hpMpGain[1];
+        }
+
+        if (autoStr + autoDex > 0) {
+            gainAp(autoStr + autoDex, true);
+            assignStrDexIntLuk(autoStr, autoDex, 0, 0);
+        }
+        gainAp(apGain, true);
+        addMaxMPMaxHP(addhp, addmp, true);
+
+        exp.set(0);
+        level = targetLevel;
+
+        if (YamlConfig.config.server.USE_ENFORCE_JOB_SP_RANGE && !GameConstants.hasSPTable(job)) {
+            spGain = getSpGain(spGain, job);
+        }
+        if (spGain > 0) {
+            gainSp(spGain, GameConstants.getSkillBook(job.getId()), true);
+        }
+
+        effLock.lock();
+        statWlock.lock();
+        try {
+            recalcLocalStats();
+            changeHpMp(localmaxhp, localmaxmp, true);
+
+            List<Pair<Stat, Integer>> statup = new ArrayList<>(10);
+            statup.add(new Pair<>(Stat.AVAILABLEAP, remainingAp));
+            statup.add(new Pair<>(Stat.AVAILABLESP, remainingSp[GameConstants.getSkillBook(job.getId())]));
+            statup.add(new Pair<>(Stat.HP, hp));
+            statup.add(new Pair<>(Stat.MP, mp));
+            statup.add(new Pair<>(Stat.EXP, 0)); // value unused, updatePlayerStats writes getExp()
+            statup.add(new Pair<>(Stat.LEVEL, level));
+            statup.add(new Pair<>(Stat.MAXHP, clientmaxhp));
+            statup.add(new Pair<>(Stat.MAXMP, clientmaxmp));
+            statup.add(new Pair<>(Stat.STR, str));
+            statup.add(new Pair<>(Stat.DEX, dex));
+
+            sendPacket(PacketCreator.updatePlayerStats(statup, true, this));
+        } finally {
+            statWlock.unlock();
+            effLock.unlock();
+        }
+
+        if (level == maxClassLevel) {
+            announceMaxClassLevel(maxClassLevel);
+        }
+
+        getMap().broadcastMessage(this, PacketCreator.showForeignEffect(getId(), 0), false);
+        setMPC(new PartyCharacter(this));
+        silentPartyUpdate();
+
+        if (this.guildid > 0) {
+            getGuild().broadcast(PacketCreator.levelUpMessage(2, level, name), this.getId());
+        }
+
+        int milestones = level / 20 - startLevel / 20;
+        if (milestones > 0) {
+            if (YamlConfig.config.server.USE_ADD_SLOTS_BY_LEVEL && !isGM()) {
+                for (int m = 0; m < milestones; m++) {
+                    for (byte i = 1; i < 5; i++) {
+                        gainSlots(i, 4, true);
+                    }
+                }
+            }
+            if (YamlConfig.config.server.USE_ADD_RATES_BY_LEVEL) {
+                this.expRate /= GameConstants.getPlayerBonusExpRate(startLevel / 20);
+                this.mesoRate /= GameConstants.getPlayerBonusMesoRate(startLevel / 20);
+                this.dropRate /= GameConstants.getPlayerBonusDropRate(startLevel / 20);
+                setPlayerRates();
+            }
+        }
+
+        if (startLevel < 10 && level >= 10) {
+            ThreadManager.getInstance().newTask(() -> {
+                if (leaveParty()) {
+                    showHint("You have reached #blevel 10#k, therefore you must leave your #rstarter party#k.");
+                }
+            });
+        }
+
+        guildUpdate();
+
+        FamilyEntry familyEntry = getFamilyEntry();
+        if (familyEntry != null) {
+            familyEntry.giveReputationToSenior(YamlConfig.config.server.FAMILY_REP_PER_LEVELUP * (level - startLevel), true);
+            FamilyEntry senior = familyEntry.getSenior();
+            if (senior != null) {
+                Character seniorChr = senior.getChr();
+                if (seniorChr != null) {
+                    seniorChr.sendPacket(PacketCreator.levelUpMessage(1, level, getName()));
+                }
+            }
+        }
+
+        return level - startLevel;
     }
 
     public boolean leaveParty() {
@@ -7656,8 +7845,8 @@ public class Character extends AbstractCharacterObject {
                 localmaxmp += (hbmp.doubleValue() / 100) * localmaxmp;
             }
 
-            localmaxhp = Math.min(30000, localmaxhp);
-            localmaxmp = Math.min(30000, localmaxmp);
+            localmaxhp = Math.min(GameConstants.HP_MP_CAP, localmaxhp);
+            localmaxmp = Math.min(GameConstants.HP_MP_CAP, localmaxmp);
 
             StatEffect combo = getBuffEffect(BuffStat.ARAN_COMBO);
             if (combo != null) {
@@ -8930,9 +9119,9 @@ public class Character extends AbstractCharacterObject {
 
     private int calcHpRatioUpdate(int curpoint, int maxpoint, int diffpoint) {
         int curMax = maxpoint;
-        int nextMax = Math.min(30000, maxpoint + diffpoint);
+        int nextMax = Math.min(GameConstants.HP_MP_CAP, maxpoint + diffpoint);
 
-        float temp = curpoint * nextMax;
+        float temp = (float) curpoint * nextMax; // int product overflows above ~46k * 46k
         int ret = (int) Math.ceil(temp / curMax);
 
         transienthp = (maxpoint > nextMax) ? ((float) curpoint) / maxpoint : ((float) ret) / nextMax;
@@ -8941,9 +9130,9 @@ public class Character extends AbstractCharacterObject {
 
     private int calcMpRatioUpdate(int curpoint, int maxpoint, int diffpoint) {
         int curMax = maxpoint;
-        int nextMax = Math.min(30000, maxpoint + diffpoint);
+        int nextMax = Math.min(GameConstants.HP_MP_CAP, maxpoint + diffpoint);
 
-        float temp = curpoint * nextMax;
+        float temp = (float) curpoint * nextMax; // int product overflows above ~46k * 46k
         int ret = (int) Math.ceil(temp / curMax);
 
         transientmp = (maxpoint > nextMax) ? ((float) curpoint) / maxpoint : ((float) ret) / nextMax;

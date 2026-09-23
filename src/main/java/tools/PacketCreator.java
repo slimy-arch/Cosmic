@@ -204,10 +204,10 @@ public class PacketCreator {
         p.writeShort(chr.getDex()); // dex
         p.writeShort(chr.getInt()); // int
         p.writeShort(chr.getLuk()); // luk
-        p.writeShort(chr.getHp()); // hp (?)
-        p.writeShort(chr.getClientMaxHp()); // maxhp
-        p.writeShort(chr.getMp()); // mp (?)
-        p.writeShort(chr.getClientMaxMp()); // maxmp
+        p.writeInt(chr.getHp()); // hp, Decode4 via the kaentake maxhpmp mod
+        p.writeInt(chr.getClientMaxHp()); // maxhp
+        p.writeInt(chr.getMp()); // mp
+        p.writeInt(chr.getClientMaxMp()); // maxmp
         p.writeShort(chr.getRemainingAp()); // remaining ap
         if (GameConstants.hasSPTable(chr.getJob())) {
             addRemainingSkillInfo(p, chr);
@@ -1024,6 +1024,9 @@ public class PacketCreator {
                     p.writeShort(statupdate.getRight()); // Decode2 via the kaentake maxlevel mod
                 } else if (statupdate.getLeft() == Stat.EXP) {
                     p.writeLong(chr.getExp()); // Decode8 via the kaentake maxlevel mod
+                } else if (statupdate.getLeft() == Stat.HP || statupdate.getLeft() == Stat.MAXHP
+                        || statupdate.getLeft() == Stat.MP || statupdate.getLeft() == Stat.MAXMP) {
+                    p.writeInt(statupdate.getRight()); // Decode4 via the kaentake maxhpmp mod
                 } else if (statupdate.getLeft().getValue() == 0x1) {
                     p.writeByte(statupdate.getRight().byteValue());
                 } else if (statupdate.getLeft().getValue() <= 0x4) {
@@ -1063,7 +1066,7 @@ public class PacketCreator {
         p.writeByte(0);//updated
         p.writeInt(to.getId());
         p.writeByte(spawnPoint);
-        p.writeShort(chr.getHp());
+        p.writeInt(chr.getHp()); // Decode4 via the kaentake maxhpmp mod
         p.writeBool(chr.isChasing());
         if (chr.isChasing()) {
             chr.setChasing(false);
@@ -1081,7 +1084,7 @@ public class PacketCreator {
         p.writeByte(0);//updated
         p.writeInt(to.getId());
         p.writeByte(spawnPoint);
-        p.writeShort(chr.getHp());
+        p.writeInt(chr.getHp()); // Decode4 via the kaentake maxhpmp mod
         p.writeBool(true);
         p.writeInt(spawnPosition.x);    // spawn position placement thanks to Arnah (Vertisy)
         p.writeInt(spawnPosition.y);
