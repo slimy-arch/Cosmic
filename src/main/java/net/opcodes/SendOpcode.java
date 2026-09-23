@@ -353,7 +353,8 @@ public enum SendOpcode {
     MAPLELIFE_RESULT(0x15D),
     MAPLELIFE_ERROR(0x15E),
     VICIOUS_HAMMER(0x162),
-    VEGA_SCROLL(0x166);
+    VEGA_SCROLL(0x166),
+    WORLD_MAP_PLAYERS(0x178); // custom: Kaentake world map tooltip "Players" reply
     private int code = -2;
 
     SendOpcode(int code) {
