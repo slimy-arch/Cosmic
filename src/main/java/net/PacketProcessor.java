@@ -167,6 +167,7 @@ import net.server.channel.handlers.UseWaterOfLifeHandler;
 import net.server.channel.handlers.WeddingHandler;
 import net.server.channel.handlers.WeddingTalkHandler;
 import net.server.channel.handlers.WeddingTalkMoreHandler;
+import net.server.channel.handlers.WorldMapPlayersHandler;
 import net.server.channel.handlers.WhisperHandler;
 import net.server.handlers.CustomPacketHandler;
 import net.server.handlers.KeepAliveHandler;
@@ -232,7 +233,7 @@ public final class PacketProcessor {
     }
 
     public PacketHandler getHandler(short packetId) {
-        if (packetId > handlers.length) {
+        if (packetId < 0 || packetId >= handlers.length) { // custom: upstream used "> length", off by one
             return null;
         }
         PacketHandler handler = handlers[packetId];
@@ -448,5 +449,6 @@ public final class PacketProcessor {
         registerHandler(RecvOpcode.OPEN_ITEMUI, new RaiseUIStateHandler());
         registerHandler(RecvOpcode.USE_ITEMUI, new RaiseIncExpHandler());
         registerHandler(RecvOpcode.CHANGE_QUICKSLOT, new QuickslotKeyMappedModifiedHandler());
+        registerHandler(RecvOpcode.WORLD_MAP_PLAYERS, new WorldMapPlayersHandler()); // custom: Kaentake world map tooltip
     }
 }
