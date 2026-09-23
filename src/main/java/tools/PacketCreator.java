@@ -198,7 +198,7 @@ public class PacketCreator {
             }
         }
 
-        p.writeByte(chr.getLevel()); // level
+        p.writeShort(chr.getLevel()); // level, Decode2 via the kaentake maxlevel mod
         p.writeShort(chr.getJob().getId()); // job
         p.writeShort(chr.getStr()); // str
         p.writeShort(chr.getDex()); // dex
@@ -214,7 +214,7 @@ public class PacketCreator {
         } else {
             p.writeShort(chr.getRemainingSp()); // remaining sp
         }
-        p.writeInt(chr.getExp()); // current exp
+        p.writeLong(chr.getExp()); // current exp, Decode8 via the kaentake maxlevel mod
         p.writeShort(chr.getFame()); // fame
         p.writeInt(chr.getGachaExp()); //Gacha Exp
         p.writeInt(chr.getMapId()); // current map id
@@ -1020,7 +1020,11 @@ public class PacketCreator {
         p.writeInt(updateMask);
         for (Pair<Stat, Integer> statupdate : mystats) {
             if (statupdate.getLeft().getValue() >= 1) {
-                if (statupdate.getLeft().getValue() == 0x1) {
+                if (statupdate.getLeft() == Stat.LEVEL) {
+                    p.writeShort(statupdate.getRight()); // Decode2 via the kaentake maxlevel mod
+                } else if (statupdate.getLeft() == Stat.EXP) {
+                    p.writeLong(chr.getExp()); // Decode8 via the kaentake maxlevel mod
+                } else if (statupdate.getLeft().getValue() == 0x1) {
                     p.writeByte(statupdate.getRight().byteValue());
                 } else if (statupdate.getLeft().getValue() <= 0x4) {
                     p.writeInt(statupdate.getRight());
@@ -1942,7 +1946,7 @@ public class PacketCreator {
     public static Packet spawnPlayerMapObject(Client target, Character chr, boolean enteringField) {
         OutPacket p = OutPacket.create(SendOpcode.SPAWN_PLAYER);
         p.writeInt(chr.getId());
-        p.writeByte(chr.getLevel()); //v83
+        p.writeByte(Math.min(chr.getLevel(), 255)); //v83
         p.writeString(chr.getName());
         if (chr.getGuildId() < 1) {
             p.writeString("");
@@ -2745,7 +2749,7 @@ public class PacketCreator {
         //3D 00 0A 43 01 00 02 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
         final OutPacket p = OutPacket.create(SendOpcode.CHAR_INFO);
         p.writeInt(chr.getId());
-        p.writeByte(chr.getLevel());
+        p.writeShort(chr.getLevel()); // Decode2 via the kaentake maxlevel mod
         p.writeShort(chr.getJob().getId());
         p.writeShort(chr.getFame());
         p.writeByte(chr.getMarriageRing() != null ? 1 : 0);
@@ -6000,7 +6004,7 @@ public class PacketCreator {
         p.writeInt(entry.getChrId()); //ID
         p.writeInt(entry.getSenior() != null ? entry.getSenior().getChrId() : 0); //parent ID
         p.writeShort(entry.getJob().getId()); //job id
-        p.writeByte(entry.getLevel()); //level
+        p.writeByte(Math.min(entry.getLevel(), 255)); //level
         p.writeBool(isOnline); //isOnline
         p.writeInt(entry.getReputation()); //current rep
         p.writeInt(entry.getTotalReputation()); //total rep

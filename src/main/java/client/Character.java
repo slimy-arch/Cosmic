@@ -184,6 +184,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Pattern;
@@ -244,7 +245,7 @@ public class Character extends AbstractCharacterObject {
     private String search = null;
     private final AtomicBoolean mapTransitioning = new AtomicBoolean(true);  // player client is currently trying to change maps or log in the game map
     private final AtomicBoolean awayFromWorld = new AtomicBoolean(true);  // player is online, but on cash shop or mts
-    private final AtomicInteger exp = new AtomicInteger();
+    private final AtomicLong exp = new AtomicLong();
     private final AtomicInteger gachaexp = new AtomicInteger();
     private final AtomicInteger meso = new AtomicInteger();
     private final AtomicInteger chair = new AtomicInteger(-1);
@@ -3065,12 +3066,12 @@ public class Character extends AbstractCharacterObject {
     }
 
     public void gainGachaExp() {
-        int expgain = 0;
+        long expgain = 0;
         long currentgexp = gachaexp.get();
         if ((currentgexp + exp.get()) >= ExpTable.getExpNeededForLevel(level)) {
             expgain += ExpTable.getExpNeededForLevel(level) - exp.get();
 
-            int nextneed = ExpTable.getExpNeededForLevel(level + 1);
+            long nextneed = ExpTable.getExpNeededForLevel(level + 1);
             if (currentgexp - expgain >= nextneed) {
                 expgain += nextneed;
             }
@@ -3079,7 +3080,7 @@ public class Character extends AbstractCharacterObject {
         } else {
             expgain = this.gachaexp.getAndSet(0);
         }
-        gainExp(expgain, false, true);
+        gainExp((int) expgain, false, true);
         updateSingleStat(Stat.GACHAEXP, this.gachaexp.get());
     }
 
@@ -3118,11 +3119,11 @@ public class Character extends AbstractCharacterObject {
         gainExpInternal(gain, equip, party, show, inChat, white);
     }
 
-    public void loseExp(int loss, boolean show, boolean inChat) {
+    public void loseExp(long loss, boolean show, boolean inChat) {
         loseExp(loss, show, inChat, true);
     }
 
-    public void loseExp(int loss, boolean show, boolean inChat, boolean white) {
+    public void loseExp(long loss, boolean show, boolean inChat, boolean white) {
         gainExpInternal(-loss, 0, 0, show, inChat, white);
     }
 
@@ -3145,14 +3146,8 @@ public class Character extends AbstractCharacterObject {
         long total = Math.max(gain + equip + party, -exp.get());
 
         if (level < getMaxLevel() && (allowExpGain || this.getEventInstance() != null)) {
-            long leftover = 0;
-            long nextExp = exp.get() + total;
-
-            if (nextExp > (long) Integer.MAX_VALUE) {
-                total = Integer.MAX_VALUE - exp.get();
-                leftover = nextExp - Integer.MAX_VALUE;
-            }
-            updateSingleStat(Stat.EXP, exp.addAndGet((int) total));
+            exp.addAndGet(total);
+            updateExpStat();
             totalExpGained += total;
             if (show) {
                 announceExpGain(gain, equip, party, inChat, white);
@@ -3161,30 +3156,26 @@ public class Character extends AbstractCharacterObject {
                 levelUp(true);
                 if (level == getMaxLevel()) {
                     setExp(0);
-                    updateSingleStat(Stat.EXP, 0);
+                    updateExpStat();
                     break;
                 }
             }
 
-            if (leftover > 0) {
-                gainExpInternal(leftover, equip, party, false, inChat, white);
-            } else {
-                lastExpGainTime = System.currentTimeMillis();
+            lastExpGainTime = System.currentTimeMillis();
 
-                if (YamlConfig.config.server.USE_EXP_GAIN_LOG) {
-                    ExpLogRecord expLogRecord = new ExpLogger.ExpLogRecord(
-                        getWorldServer().getExpRate(),
-                        expCoupon,
-                        totalExpGained,
-                        exp.get(),
-                        new Timestamp(lastExpGainTime),
-                        id
-                    );
-                    ExpLogger.putExpLogRecord(expLogRecord);
-                }
-
-                totalExpGained = 0;
+            if (YamlConfig.config.server.USE_EXP_GAIN_LOG) {
+                ExpLogRecord expLogRecord = new ExpLogger.ExpLogRecord(
+                    getWorldServer().getExpRate(),
+                    expCoupon,
+                    totalExpGained,
+                    exp.get(),
+                    new Timestamp(lastExpGainTime),
+                    id
+                );
+                ExpLogger.putExpLogRecord(expLogRecord);
             }
+
+            totalExpGained = 0;
         }
     }
 
@@ -4922,7 +4913,7 @@ public class Character extends AbstractCharacterObject {
         }
     }
 
-    public int getExp() {
+    public long getExp() {
         return exp.get();
     }
 
@@ -5301,7 +5292,7 @@ public class Character extends AbstractCharacterObject {
     }
 
     public int getMaxClassLevel() {
-        return isCygnus() ? 120 : 200;
+        return isCygnus() ? 120 : ExpTable.MAX_LEVEL;
     }
 
     public int getMaxLevel() {
@@ -6416,7 +6407,7 @@ public class Character extends AbstractCharacterObject {
             statup.add(new Pair<>(Stat.AVAILABLESP, remainingSp[GameConstants.getSkillBook(job.getId())]));
             statup.add(new Pair<>(Stat.HP, hp));
             statup.add(new Pair<>(Stat.MP, mp));
-            statup.add(new Pair<>(Stat.EXP, exp.get()));
+            statup.add(new Pair<>(Stat.EXP, 0)); // value unused, updatePlayerStats writes getExp()
             statup.add(new Pair<>(Stat.LEVEL, level));
             statup.add(new Pair<>(Stat.MAXHP, clientmaxhp));
             statup.add(new Pair<>(Stat.MAXMP, clientmaxmp));
@@ -6758,7 +6749,7 @@ public class Character extends AbstractCharacterObject {
             ret.setMaxMp(rs.getInt("maxmp"));
             ret.remainingAp = rs.getInt("ap");
             ret.loadCharSkillPoints(rs.getString("sp").split(","));
-            ret.exp.set(rs.getInt("exp"));
+            ret.exp.set(rs.getLong("exp"));
             ret.fame = rs.getInt("fame");
             ret.gachaexp.set(rs.getInt("gachaexp"));
             ret.mapid = rs.getInt("map");
@@ -6871,7 +6862,7 @@ public class Character extends AbstractCharacterObject {
                     ret.dex = rs.getInt("dex");
                     ret.int_ = rs.getInt("int");
                     ret.luk = rs.getInt("luk");
-                    ret.exp.set(rs.getInt("exp"));
+                    ret.exp.set(rs.getLong("exp"));
                     ret.gachaexp.set(rs.getInt("gachaexp"));
                     ret.hp = rs.getInt("hp");
                     ret.setMaxHp(rs.getInt("maxhp"));
@@ -7481,7 +7472,7 @@ public class Character extends AbstractCharacterObject {
             usedSafetyCharm = true;
         } else if (getJob() != Job.BEGINNER) { //Hmm...
             if (!FieldLimit.NO_EXP_DECREASE.check(getMap().getFieldLimit())) {  // thanks Conrad for noticing missing FieldLimit check
-                int XPdummy = ExpTable.getExpNeededForLevel(getLevel());
+                long XPdummy = ExpTable.getExpNeededForLevel(getLevel());
 
                 if (getMap().isTown()) {    // thanks MindLove, SIayerMonkey, HaItsNotOver for noting players only lose 1% on town maps
                     XPdummy /= 100;
@@ -7493,7 +7484,7 @@ public class Character extends AbstractCharacterObject {
                     }
                 }
 
-                int curExp = getExp();
+                long curExp = getExp();
                 if (curExp > XPdummy) {
                     loseExp(XPdummy, false, false);
                 } else {
@@ -8267,7 +8258,7 @@ public class Character extends AbstractCharacterObject {
                         ps.setInt(4, dex);
                         ps.setInt(5, luk);
                         ps.setInt(6, int_);
-                        ps.setInt(7, Math.abs(exp.get()));
+                        ps.setLong(7, Math.abs(exp.get()));
                         ps.setInt(8, Math.abs(gachaexp.get()));
                         ps.setInt(9, hp);
                         ps.setInt(10, mp);
@@ -8759,7 +8750,7 @@ public class Character extends AbstractCharacterObject {
         }
     }
 
-    public void setExp(int amount) {
+    public void setExp(long amount) {
         this.exp.set(amount);
     }
 
@@ -9659,6 +9650,11 @@ public class Character extends AbstractCharacterObject {
 
     public void updateSingleStat(Stat stat, int newval) {
         updateSingleStat(stat, newval, false);
+    }
+
+    // EXP is a long; updatePlayerStats writes getExp() for it, so the Integer slot is unused
+    private void updateExpStat() {
+        updateSingleStat(Stat.EXP, 0);
     }
 
     private void updateSingleStat(Stat stat, int newval, boolean itemReaction) {
