@@ -214,6 +214,7 @@ public abstract class AbstractDealDamageHandler extends AbstractPacketHandler {
             }
 
             int totDamage = 0;
+            long dptAttackDamage = 0L; // DamageRank: damage actually applied by this one skill use
 
             if (attack.skill == ChiefBandit.MESO_EXPLOSION) {
                 removeExplodedMesos(map, attack);
@@ -500,24 +501,31 @@ public abstract class AbstractDealDamageHandler extends AbstractPacketHandler {
                         }
                     }
                     if (attack.skill == Paladin.HEAVENS_HAMMER) {
+                        final int hhDamage;
                         if (!monster.isBoss()) {
-                            damageMonsterWithSkill(player, map, monster, monster.getHp() - 1, attack.skill, 1777);
+                            hhDamage = monster.getHp() - 1;
                         } else {
                             int HHDmg = (player.calculateMaxBaseDamage(player.getTotalWatk()) * (SkillFactory.getSkill(Paladin.HEAVENS_HAMMER).getEffect(player.getSkillLevel(SkillFactory.getSkill(Paladin.HEAVENS_HAMMER))).getDamage() / 100));
-                            damageMonsterWithSkill(player, map, monster, (int) (Math.floor(Math.random() * (HHDmg / 5) + HHDmg * .8)), attack.skill, 1777);
+                            hhDamage = (int) (Math.floor(Math.random() * (HHDmg / 5) + HHDmg * .8));
                         }
+                        dptAttackDamage += Math.max(0, hhDamage);
+                        damageMonsterWithSkill(player, map, monster, hhDamage, attack.skill, 1777);
                     } else if (attack.skill == Aran.COMBO_TEMPEST) {
+                        final int tempestDamage;
                         if (!monster.isBoss()) {
-                            damageMonsterWithSkill(player, map, monster, monster.getHp(), attack.skill, 0);
+                            tempestDamage = monster.getHp();
                         } else {
                             int TmpDmg = (player.calculateMaxBaseDamage(player.getTotalWatk()) * (SkillFactory.getSkill(Aran.COMBO_TEMPEST).getEffect(player.getSkillLevel(SkillFactory.getSkill(Aran.COMBO_TEMPEST))).getDamage() / 100));
-                            damageMonsterWithSkill(player, map, monster, (int) (Math.floor(Math.random() * (TmpDmg / 5) + TmpDmg * .8)), attack.skill, 0);
+                            tempestDamage = (int) (Math.floor(Math.random() * (TmpDmg / 5) + TmpDmg * .8));
                         }
+                        dptAttackDamage += Math.max(0, tempestDamage);
+                        damageMonsterWithSkill(player, map, monster, tempestDamage, attack.skill, 0);
                     } else {
                         if (attack.skill == Aran.BODY_PRESSURE) {
                             map.broadcastMessage(PacketCreator.damageMonster(monster.getObjectId(), totDamageToOneMonster));
                         }
 
+                        dptAttackDamage += Math.max(0, totDamageToOneMonster);
                         map.damageMonster(player, monster, totDamageToOneMonster, target.getValue().delay());
                     }
                     if (monster.isBuffed(MonsterStatus.WEAPON_REFLECT) && !attack.magic) {
@@ -540,6 +548,7 @@ public abstract class AbstractDealDamageHandler extends AbstractPacketHandler {
                     }
                 }
             }
+            player.dptOnDamage(attack.skill, dptAttackDamage); // once per use, after every target
         } catch (Exception e) {
             e.printStackTrace();
         }

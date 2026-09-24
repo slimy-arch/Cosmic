@@ -21,14 +21,31 @@
 */
 package net.server.handlers;
 
+import client.Character;
 import client.Client;
 import net.PacketHandler;
 import net.packet.InPacket;
 import tools.PacketCreator;
 
 public class CustomPacketHandler implements PacketHandler {
+    // Kaentake DamageRank control subtypes (client uiDamageRank.cpp)
+    private static final byte DAMAGE_RANK_OPEN = 1;
+    private static final byte DAMAGE_RANK_RESET = 2;
+    private static final byte DAMAGE_RANK_CLOSE = 3;
+
     @Override
     public void handlePacket(InPacket p, Client c) {
+        final Character chr = c.getPlayer();
+        if (chr != null && p.available() == 1) {
+            switch (p.readByte()) {
+                case DAMAGE_RANK_OPEN -> chr.damageRankOpen();
+                case DAMAGE_RANK_RESET -> chr.damageRankReset();
+                case DAMAGE_RANK_CLOSE -> chr.damageRankClose();
+                default -> { }
+            }
+            return;
+        }
+
         if (p.available() > 0 && c.getGMLevel() == 4) {//w/e
             c.sendPacket(PacketCreator.customPacket(p.readBytes(p.available())));
         }

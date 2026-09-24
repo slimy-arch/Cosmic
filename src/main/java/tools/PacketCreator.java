@@ -343,6 +343,36 @@ public class PacketCreator {
         return p;
     }
 
+    // Kaentake DamageRank. Layouts must match CUIDamageRank::HandleTrackerPacket.
+    public static Packet dptReset() {
+        final OutPacket p = OutPacket.create(SendOpcode.DPT_TRACKER);
+        p.writeByte(0);
+        return p;
+    }
+
+    public static Packet dptPlayerUpdate(int charId, String name, int jobId, long totalDamage) {
+        final OutPacket p = OutPacket.create(SendOpcode.DPT_TRACKER);
+        p.writeByte(1);
+        p.writeInt(charId);
+        p.writeInt(jobId);
+        p.writeString(name != null ? name : "");
+        p.writeLong(totalDamage);
+        return p;
+    }
+
+    public static Packet dptSkillUpdate(int skillId, String skillName, long deltaDamage, long totalDamage, long maxDamage, long minDamage, int count) {
+        final OutPacket p = OutPacket.create(SendOpcode.DPT_TRACKER);
+        p.writeByte(2);
+        p.writeInt(skillId);
+        p.writeString(skillName != null ? skillName : "");
+        p.writeLong(deltaDamage);
+        p.writeLong(totalDamage);
+        p.writeLong(maxDamage);
+        p.writeLong(minDamage);
+        p.writeInt(count);
+        return p;
+    }
+
     private static void addCharEntry(OutPacket p, Character chr, boolean viewall) {
         addCharStats(p, chr);
         addCharLook(p, chr, false);
