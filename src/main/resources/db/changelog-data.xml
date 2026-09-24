@@ -51,4 +51,8 @@
         <sqlFile path="db/data/161-admin-data.sql"/>
     </changeSet>
 
+    <changeSet id="171" author="kaentake-damagerank">
+        <sqlFile path="db/data/171-damagerank-keymap.sql"/>
+    </changeSet>
+
 </databaseChangeLog>
