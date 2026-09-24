@@ -23,6 +23,7 @@ package net.server;
 
 import client.Character;
 import client.Client;
+import client.DamageSkinCatalog;
 import client.Family;
 import client.SkillFactory;
 import client.command.CommandsExecutor;
@@ -881,6 +882,7 @@ public class Server {
         futures.add(initExecutor.submit(CashItemFactory::loadAllCashItems));
         futures.add(initExecutor.submit(Quest::loadAllQuests));
         futures.add(initExecutor.submit(SkillbookInformationProvider::loadAllSkillbookInformation));
+        futures.add(initExecutor.submit(DamageSkinCatalog::load)); // custom: Kaentake damage skin
         initExecutor.shutdown();
 
         TimeZone.setDefault(TimeZone.getTimeZone(YamlConfig.config.server.TIMEZONE));

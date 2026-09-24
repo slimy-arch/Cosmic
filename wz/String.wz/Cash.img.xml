@@ -1990,4 +1990,12 @@
     <string name="name" value="MISSING NAME"/>
     <string name="desc" value="MISSING INFO"/>
   </imgdir>
+  <imgdir name="5910000">
+    <string name="name" value="Skin Damage"/>
+    <string name="desc" value="It damages the skin"/>
+  </imgdir>
+  <imgdir name="5900000">
+    <string name="name" value="Fusion Anvil"/>
+    <string name="desc" value="It fusions the anvil."/>
+  </imgdir>
 </imgdir>

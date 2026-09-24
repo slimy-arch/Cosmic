@@ -2525,6 +2525,16 @@ public class MapleMap {
 
         chr.receivePartyMemberHP();
         announcePlayerDiseases(chr.getClient());
+
+        // custom: Kaentake damage skins — tell the newcomer every resident's skin and everyone else theirs.
+        for (Character other : getAllPlayers()) {
+            if (other != chr && other.getActiveDamageSkin() != 0) {
+                chr.sendPacket(PacketCreator.damageSkinBroadcast(other.getId(), other.getActiveDamageSkin()));
+            }
+        }
+        if (chr.getActiveDamageSkin() != 0) {
+            broadcastMessage(chr, PacketCreator.damageSkinBroadcast(chr.getId(), chr.getActiveDamageSkin()), false);
+        }
     }
 
     private static void announcePlayerDiseases(final Client c) {

@@ -109,4 +109,12 @@
         <sqlFile path="db/tables/026-meso-bigint.sql"/>
     </changeSet>
 
+    <changeSet id="27" author="kaentake-damageskin">
+        <sqlFile path="db/tables/027-damage-skin.sql"/>
+    </changeSet>
+
+    <changeSet id="28" author="kaentake-damageskin">
+        <sqlFile path="db/tables/028-damage-skin-catalog.sql"/>
+    </changeSet>
+
 </databaseChangeLog>

@@ -203,6 +203,8 @@ public enum RecvOpcode {
     MTS_OPERATION(0xFD),
     USE_MAPLELIFE(0x100),
     USE_HAMMER(0x104),
+    DAMAGE_SKIN_APPLY(0x110), // custom: Kaentake damage skin picker "Apply"
+    DAMAGE_SKIN_PURCHASE(0x111), // custom: Kaentake damage skin picker "Purchase"
     WORLD_MAP_PLAYERS(0x115); // custom: Kaentake world map tooltip "Players" request
 
     private int code = -2;
