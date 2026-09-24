@@ -36,6 +36,7 @@ import client.inventory.Inventory;
 import client.inventory.InventoryType;
 import client.inventory.Item;
 import client.inventory.Pet;
+import client.inventory.manipulator.InventoryManipulator;
 import client.keybind.KeyBinding;
 import config.YamlConfig;
 import constants.game.GameConstants;
@@ -79,6 +80,7 @@ import java.util.stream.Collectors;
 
 public final class PlayerLoggedinHandler extends AbstractPacketHandler {
     private static final Logger log = LoggerFactory.getLogger(PlayerLoggedinHandler.class);
+    private static final int DAMAGE_SKIN_PICKER = 5910000; // custom: reusable Kaentake damage skin picker (never consumed)
     private static final Set<Integer> attemptingLoginAccounts = new HashSet<>();
 
     private final NoteService noteService;
@@ -361,6 +363,15 @@ public final class PlayerLoggedinHandler extends AbstractPacketHandler {
             c.sendPacket(PacketCreator.updateGender(player));
             player.checkMessenger();
             c.sendPacket(PacketCreator.enableReport());
+
+            // custom: Kaentake damage skins — shop list, owned skins, and the reusable picker item.
+            c.sendPacket(PacketCreator.damageSkinCatalog());
+            c.sendPacket(PacketCreator.damageSkinInventory(player));
+            if (!player.haveItemWithId(DAMAGE_SKIN_PICKER, false)) {
+                if (!InventoryManipulator.addById(c, DAMAGE_SKIN_PICKER, (short) 1)) {
+                    player.dropMessage(5, "Make room in your Cash inventory to receive the Damage Skin item.");
+                }
+            }
             player.changeSkillLevel(SkillFactory.getSkill(10000000 * player.getJobType() + 12), (byte) (player.getLinkedLevel() / 10), 20, -1);
             player.checkBerserk(player.isHidden());
 

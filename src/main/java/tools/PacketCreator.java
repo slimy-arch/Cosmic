@@ -25,6 +25,7 @@ import client.BuffStat;
 import client.Character;
 import client.Character.SkillEntry;
 import client.Client;
+import client.DamageSkinCatalog;
 import client.Disease;
 import client.FamilyEntitlement;
 import client.FamilyEntry;
@@ -7498,4 +7499,49 @@ public class PacketCreator {
         return p;
     }
 
+    // ------------------------------------------------------------------
+    // Kaentake damage skins (damageskin.cpp decodes these positionally)
+    // ------------------------------------------------------------------
+
+    /** [short n] { [int skinId] [long price] } x n */
+    public static Packet damageSkinCatalog() {
+        OutPacket p = OutPacket.create(SendOpcode.DAMAGE_SKIN_CATALOG);
+        Map<Integer, Long> all = DamageSkinCatalog.getAll();
+        p.writeShort(all.size());
+        for (Map.Entry<Integer, Long> e : all.entrySet()) {
+            p.writeInt(e.getKey());
+            p.writeLong(e.getValue());
+        }
+        return p;
+    }
+
+    /** [int activeSkinId] [short n] { [int skinId] } x n */
+    public static Packet damageSkinInventory(Character chr) {
+        OutPacket p = OutPacket.create(SendOpcode.DAMAGE_SKIN_INVENTORY);
+        Set<Integer> owned = chr.getDamageSkinInventory().getOwnedIds();
+        p.writeInt(chr.getActiveDamageSkin());
+        p.writeShort(owned.size());
+        for (int skinId : owned) {
+            p.writeInt(skinId);
+        }
+        return p;
+    }
+
+    /** [byte op: 1 apply, 2 purchase] [byte ok] [int skinId] [long meso] */
+    public static Packet damageSkinResult(int op, boolean ok, int skinId, long meso) {
+        OutPacket p = OutPacket.create(SendOpcode.DAMAGE_SKIN_RESULT);
+        p.writeByte(op);
+        p.writeBool(ok);
+        p.writeInt(skinId);
+        p.writeLong(meso);
+        return p;
+    }
+
+    /** [int charId] [int skinId] */
+    public static Packet damageSkinBroadcast(int charId, int skinId) {
+        OutPacket p = OutPacket.create(SendOpcode.DAMAGE_SKIN_BROADCAST);
+        p.writeInt(charId);
+        p.writeInt(skinId);
+        return p;
+    }
 }

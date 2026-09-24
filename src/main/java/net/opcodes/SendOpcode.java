@@ -354,6 +354,10 @@ public enum SendOpcode {
     MAPLELIFE_ERROR(0x15E),
     VICIOUS_HAMMER(0x162),
     VEGA_SCROLL(0x166),
+    DAMAGE_SKIN_CATALOG(0x170), // custom: Kaentake damage skin shop list
+    DAMAGE_SKIN_INVENTORY(0x171), // custom: Kaentake damage skin owned list + applied skin
+    DAMAGE_SKIN_RESULT(0x172), // custom: Kaentake damage skin apply/purchase result
+    DAMAGE_SKIN_BROADCAST(0x173), // custom: Kaentake damage skin of a character on the map
     WORLD_MAP_PLAYERS(0x178), // custom: Kaentake world map tooltip "Players" reply
     DPT_TRACKER(0x3714); // custom: Kaentake DamageRank window updates
     private int code = -2;
