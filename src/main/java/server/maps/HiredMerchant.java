@@ -31,6 +31,7 @@ import client.inventory.manipulator.InventoryManipulator;
 import client.inventory.manipulator.KarmaManipulator;
 import client.processor.npc.FredrickProcessor;
 import config.YamlConfig;
+import constants.game.GameConstants;
 import net.packet.Packet;
 import net.server.Server;
 import server.ItemInformationProvider;
@@ -327,14 +328,14 @@ public class HiredMerchant extends AbstractMapObject {
                                 ps.setInt(1, ownerId);
                                 try (ResultSet rs = ps.executeQuery()) {
                                     if (rs.next()) {
-                                        merchantMesos = rs.getInt(1);
+                                        merchantMesos = rs.getLong(1);
                                     }
                                 }
                             }
                             merchantMesos += price;
 
                             try (PreparedStatement ps = con.prepareStatement("UPDATE characters SET MerchantMesos = ? WHERE id = ?", PreparedStatement.RETURN_GENERATED_KEYS)) {
-                                ps.setInt(1, (int) Math.min(merchantMesos, Integer.MAX_VALUE));
+                                ps.setLong(1, Math.min(merchantMesos, GameConstants.MAX_MESO));
                                 ps.setInt(2, ownerId);
                                 ps.executeUpdate();
                             }

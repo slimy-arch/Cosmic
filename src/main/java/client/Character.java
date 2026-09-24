@@ -247,10 +247,10 @@ public class Character extends AbstractCharacterObject {
     private final AtomicBoolean awayFromWorld = new AtomicBoolean(true);  // player is online, but on cash shop or mts
     private final AtomicLong exp = new AtomicLong();
     private final AtomicInteger gachaexp = new AtomicInteger();
-    private final AtomicInteger meso = new AtomicInteger();
+    private final AtomicLong meso = new AtomicLong();
     private final AtomicInteger chair = new AtomicInteger(-1);
     private long totalExpGained = 0;
-    private int merchantmeso;
+    private long merchantmeso;
     private BuddyList buddylist;
     private EventInstanceManager eventInstance = null;
     private HiredMerchant hiredMerchant = null;
@@ -3220,26 +3220,26 @@ public class Character extends AbstractCharacterObject {
         }
     }
 
-    public boolean canHoldMeso(int gain) {  // thanks lucasziron for pointing out a need to check space availability for mesos on player transactions
-        long nextMeso = (long) meso.get() + gain;
-        return nextMeso <= Integer.MAX_VALUE;
+    public boolean canHoldMeso(long gain) {  // thanks lucasziron for pointing out a need to check space availability for mesos on player transactions
+        long nextMeso = meso.get() + gain;
+        return nextMeso <= GameConstants.MAX_MESO;
     }
 
-    public void gainMeso(int gain) {
+    public void gainMeso(long gain) {
         gainMeso(gain, true, false, true);
     }
 
-    public void gainMeso(int gain, boolean show) {
+    public void gainMeso(long gain, boolean show) {
         gainMeso(gain, show, false, false);
     }
 
-    public void gainMeso(int gain, boolean show, boolean enableActions, boolean inChat) {
+    public void gainMeso(long gain, boolean show, boolean enableActions, boolean inChat) {
         long nextMeso;
         petLock.lock();
         try {
-            nextMeso = (long) meso.get() + gain;  // thanks Thora for pointing integer overflow here
-            if (nextMeso > Integer.MAX_VALUE) {
-                gain -= (nextMeso - Integer.MAX_VALUE);
+            nextMeso = meso.get() + gain;  // thanks Thora for pointing integer overflow here
+            if (nextMeso > GameConstants.MAX_MESO) {
+                gain -= (nextMeso - GameConstants.MAX_MESO);
             } else if (nextMeso < 0) {
                 gain = -meso.get();
             }
@@ -3249,9 +3249,11 @@ public class Character extends AbstractCharacterObject {
         }
 
         if (gain != 0) {
-            updateSingleStat(Stat.MESO, (int) nextMeso, enableActions);
+            // the packet writes getMeso() as a long (PacketCreator.updatePlayerStats); the int here is unused
+            updateSingleStat(Stat.MESO, (int) Math.min(nextMeso, Integer.MAX_VALUE), enableActions);
             if (show) {
-                sendPacket(PacketCreator.getShowMesoGain(gain, inChat));
+                int shownGain = (int) Math.max(Math.min(gain, Integer.MAX_VALUE), Integer.MIN_VALUE);
+                sendPacket(PacketCreator.getShowMesoGain(shownGain, inChat));
             }
         } else {
             sendPacket(PacketCreator.enableActions());
@@ -5303,15 +5305,15 @@ public class Character extends AbstractCharacterObject {
         return GameConstants.getJobMaxLevel(job);
     }
 
-    public int getMeso() {
+    public long getMeso() {
         return meso.get();
     }
 
-    public int getMerchantMeso() {
+    public long getMerchantMeso() {
         return merchantmeso;
     }
 
-    public int getMerchantNetMeso() {
+    public long getMerchantNetMeso() {
         int elapsedDays = 0;
 
         try (Connection con = DatabaseConnection.getConnection();
@@ -5333,7 +5335,7 @@ public class Character extends AbstractCharacterObject {
 
         long netMeso = merchantmeso; // negative mesos issues found thanks to Flash, Vcoc
         netMeso = (netMeso * (100 - elapsedDays)) / 100;
-        return (int) netMeso;
+        return netMeso;
     }
 
     public int getMesosTraded() {
@@ -7061,8 +7063,8 @@ public class Character extends AbstractCharacterObject {
                     ret.hasMerchant = rs.getInt("HasMerchant") == 1;
                     ret.remainingAp = rs.getInt("ap");
                     ret.loadCharSkillPoints(rs.getString("sp").split(","));
-                    ret.meso.set(rs.getInt("meso"));
-                    ret.merchantmeso = rs.getInt("MerchantMesos");
+                    ret.meso.set(rs.getLong("meso"));
+                    ret.merchantmeso = rs.getLong("MerchantMesos");
                     ret.setGMLevel(rs.getInt("gm"));
                     ret.skinColor = SkinColor.getById(rs.getInt("skincolor"));
                     ret.gender = rs.getInt("gender");
@@ -8288,7 +8290,7 @@ public class Character extends AbstractCharacterObject {
                     ps.setInt(9, hair);
                     ps.setInt(10, face);
                     ps.setInt(11, mapid);
-                    ps.setInt(12, Math.abs(meso.get()));
+                    ps.setLong(12, Math.abs(meso.get()));
                     ps.setInt(13, 0);
                     ps.setInt(14, accountid);
                     ps.setString(15, name);
@@ -8483,7 +8485,7 @@ public class Character extends AbstractCharacterObject {
                             ps.setInt(21, getHp() < 1 ? map.getReturnMapId() : map.getId());
                         }
                     }
-                    ps.setInt(22, meso.get());
+                    ps.setLong(22, meso.get());
                     ps.setInt(23, hpMpApUsed);
                     if (map == null || map.getId() == MapId.CRIMSONWOOD_VALLEY_1 || map.getId() == MapId.CRIMSONWOOD_VALLEY_2) {  // reset to first spawnpoint on those maps
                         ps.setInt(24, 0);
@@ -9000,11 +9002,11 @@ public class Character extends AbstractCharacterObject {
     }
 
     public void addMerchantMesos(int add) {
-        final int newAmount = (int) Math.min((long) merchantmeso + add, Integer.MAX_VALUE);
+        final long newAmount = Math.min(merchantmeso + add, GameConstants.MAX_MESO);
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con.prepareStatement("UPDATE characters SET MerchantMesos = ? WHERE id = ?", Statement.RETURN_GENERATED_KEYS)) {
-            ps.setInt(1, newAmount);
+            ps.setLong(1, newAmount);
             ps.setInt(2, id);
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -9014,10 +9016,10 @@ public class Character extends AbstractCharacterObject {
         merchantmeso = newAmount;
     }
 
-    public void setMerchantMeso(int set) {
+    public void setMerchantMeso(long set) {
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con.prepareStatement("UPDATE characters SET MerchantMesos = ? WHERE id = ?", Statement.RETURN_GENERATED_KEYS)) {
-            ps.setInt(1, set);
+            ps.setLong(1, set);
             ps.setInt(2, id);
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -9028,11 +9030,11 @@ public class Character extends AbstractCharacterObject {
     }
 
     public synchronized void withdrawMerchantMesos() {
-        int merchantMeso = this.getMerchantNetMeso();
-        int playerMeso = this.getMeso();
+        long merchantMeso = this.getMerchantNetMeso();
+        long playerMeso = this.getMeso();
 
         if (merchantMeso > 0) {
-            int possible = Integer.MAX_VALUE - playerMeso;
+            long possible = GameConstants.MAX_MESO - playerMeso;
 
             if (possible > 0) {
                 if (possible < merchantMeso) {
@@ -9044,7 +9046,7 @@ public class Character extends AbstractCharacterObject {
                 }
             }
         } else {
-            int nextMeso = playerMeso + merchantMeso;
+            long nextMeso = playerMeso + merchantMeso;
 
             if (nextMeso < 0) {
                 this.gainMeso(-playerMeso, false);
@@ -10826,7 +10828,7 @@ public class Character extends AbstractCharacterObject {
     }
 
     public static boolean doWorldTransfer(Connection con, int characterId, int oldWorld, int newWorld, int worldTransferId) {
-        int mesos = 0;
+        long mesos = 0;
         try (PreparedStatement ps = con.prepareStatement("SELECT meso FROM characters WHERE id = ?")) {
             ps.setInt(1, characterId);
             ResultSet rs = ps.executeQuery();
@@ -10834,14 +10836,14 @@ public class Character extends AbstractCharacterObject {
                 log.warn("Character data invalid for world transfer? chrId {}", characterId);
                 return false;
             }
-            mesos = rs.getInt("meso");
+            mesos = rs.getLong("meso");
         } catch (SQLException e) {
             log.error("Failed to do world transfer for chrId {}", characterId, e);
             return false;
         }
         try (PreparedStatement ps = con.prepareStatement("UPDATE characters SET world = ?, meso = ?, guildid = ?, guildrank = ? WHERE id = ?")) {
             ps.setInt(1, newWorld);
-            ps.setInt(2, Math.min(mesos, 1000000)); // might want a limit in "YamlConfig.config.server" for this
+            ps.setLong(2, Math.min(mesos, 1000000)); // might want a limit in "YamlConfig.config.server" for this
             ps.setInt(3, 0);
             ps.setInt(4, 5);
             ps.setInt(5, characterId);

@@ -105,4 +105,8 @@
         <sqlFile path="db/tables/025-exp-bigint.sql"/>
     </changeSet>
 
+    <changeSet id="26" author="kaentake-maxmeso">
+        <sqlFile path="db/tables/026-meso-bigint.sql"/>
+    </changeSet>
+
 </databaseChangeLog>

@@ -26,6 +26,7 @@ package client.command.commands.gm3;
 import client.Character;
 import client.Client;
 import client.command.Command;
+import constants.game.GameConstants;
 
 public class GiveMesosCommand extends Command {
     {
@@ -53,22 +54,22 @@ public class GiveMesosCommand extends Command {
 
         try {
             mesos_ = Long.parseLong(value_);
-            if (mesos_ > Integer.MAX_VALUE) {
-                mesos_ = Integer.MAX_VALUE;
-            } else if (mesos_ < Integer.MIN_VALUE) {
-                mesos_ = Integer.MIN_VALUE;
+            if (mesos_ > GameConstants.MAX_MESO) {
+                mesos_ = GameConstants.MAX_MESO;
+            } else if (mesos_ < -GameConstants.MAX_MESO) {
+                mesos_ = -GameConstants.MAX_MESO;
             }
         } catch (NumberFormatException nfe) {
             if (value_.contentEquals("max")) {  // "max" descriptor suggestion thanks to Vcoc
-                mesos_ = Integer.MAX_VALUE;
+                mesos_ = GameConstants.MAX_MESO;
             } else if (value_.contentEquals("min")) {
-                mesos_ = Integer.MIN_VALUE;
+                mesos_ = -GameConstants.MAX_MESO;
             }
         }
 
         Character victim = c.getWorldServer().getPlayerStorage().getCharacterByName(recv_);
         if (victim != null) {
-            victim.gainMeso((int) mesos_, true);
+            victim.gainMeso(mesos_, true);
             player.message("MESO given.");
         } else {
             player.message("Player '" + recv_ + "' could not be found.");
