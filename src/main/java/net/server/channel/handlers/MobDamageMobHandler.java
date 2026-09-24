@@ -26,6 +26,7 @@ import client.Client;
 import client.autoban.AutobanFactory;
 import client.status.MonsterStatus;
 import client.status.MonsterStatusEffect;
+import constants.skills.Corsair;
 import net.AbstractPacketHandler;
 import net.packet.InPacket;
 import org.slf4j.Logger;
@@ -72,7 +73,9 @@ public final class MobDamageMobHandler extends AbstractPacketHandler {
             dmg = maxDmg;
         }
 
-        map.damageMonster(chr, damaged, dmg);
+        if (map.damageMonster(chr, damaged, dmg)) {
+            chr.dptOnDamage(Corsair.HYPNOTIZE, dmg); // DamageRank
+        }
         map.broadcastMessage(chr, PacketCreator.damageMonster(to, dmg), false);
 
     }

@@ -196,6 +196,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class Character extends AbstractCharacterObject {
     private static final Logger log = LoggerFactory.getLogger(Character.class);
+    public static final int DAMAGE_RANK_DOT_SKILL_ID = -1; // Kaentake DamageRank: virtual skill for DoT damage
     private static final String LEVEL_200 = "[Congrats] %s has reached Level %d! Congratulate %s on such an amazing achievement!";
     private static final String[] BLOCKED_NAMES = {"admin", "owner", "moderator", "intern", "donor", "administrator", "FREDRICK", "help", "helper", "alert", "notice", "maplestory", "fuck", "wizet", "fucking", "negro", "fuk", "fuc", "penis", "pussy", "asshole", "gay",
             "nigger", "homo", "suck", "cum", "shit", "shitty", "condom", "security", "official", "rape", "nigga", "sex", "tit", "boner", "orgy", "clit", "asshole", "fatass", "bitch", "support", "gamemaster", "cock", "gaay", "gm",
@@ -356,6 +357,39 @@ public class Character extends AbstractCharacterObject {
     private boolean pendingNameChange; //only used to change name on logout, not to be relied upon elsewhere
     private long loginTime;
     private boolean chasing = false;
+
+    // Kaentake DamageRank tracker. Other players' attacks write into this character's player view
+    // from their own threads, so all dpt state is guarded by dptLock.
+    private static final class DptPlayerStat {
+        final int charId;
+        String name;
+        int jobId;
+        long totalDamage = 0L;
+
+        DptPlayerStat(int charId, String name, int jobId) {
+            this.charId = charId;
+            this.name = name;
+            this.jobId = jobId;
+        }
+    }
+
+    private static final class DptSkillStat {
+        final int skillId;
+        long totalDamage = 0L;
+        long maxDamage = 0L;
+        long minDamage = Long.MAX_VALUE;
+        int count = 0;
+
+        DptSkillStat(int skillId) {
+            this.skillId = skillId;
+        }
+    }
+
+    private final Object dptLock = new Object();
+    private boolean dptStarted = false;
+    private boolean dptActive = false;
+    private final Map<Integer, DptPlayerStat> dptPlayerView = new LinkedHashMap<>();
+    private final Map<Integer, DptSkillStat> dptSkillStats = new LinkedHashMap<>();
 
     private Character() {
         super.setListener(new AbstractCharacterListener() {
@@ -5767,6 +5801,121 @@ public class Character extends AbstractCharacterObject {
                 quests.put(quest.getId(), stat);
             }
         }
+    }
+
+    // Kaentake DamageRank (CustomPacketHandler subtypes 1-3). Open starts tracking on first use and
+    // resends the stored snapshot on later opens; close only pauses; reset clears everything.
+    public void damageRankOpen() {
+        final List<Packet> packets = new ArrayList<>();
+        synchronized (dptLock) {
+            dptActive = true;
+            if (!dptStarted) {
+                dptStarted = true;
+                dptPlayerView.clear();
+                dptSkillStats.clear();
+                packets.add(PacketCreator.dptReset());
+            } else {
+                dptSnapshotPackets(packets);
+            }
+        }
+        packets.forEach(this::sendPacket);
+    }
+
+    public void damageRankClose() {
+        synchronized (dptLock) {
+            dptActive = false;
+        }
+    }
+
+    public void damageRankReset() {
+        synchronized (dptLock) {
+            dptActive = false;
+            dptStarted = false;
+            dptPlayerView.clear();
+            dptSkillStats.clear();
+        }
+        sendPacket(PacketCreator.dptReset());
+    }
+
+    private void dptSnapshotPackets(List<Packet> packets) {
+        packets.add(PacketCreator.dptReset());
+        for (DptPlayerStat stat : dptPlayerView.values()) {
+            packets.add(PacketCreator.dptPlayerUpdate(stat.charId, stat.name, stat.jobId, stat.totalDamage));
+        }
+        for (DptSkillStat stat : dptSkillStats.values()) {
+            packets.add(PacketCreator.dptSkillUpdate(stat.skillId, dptResolveSkillName(stat.skillId), 0L,
+                    stat.totalDamage, stat.maxDamage, stat.minDamage == Long.MAX_VALUE ? 0L : stat.minDamage, stat.count));
+        }
+    }
+
+    private void dptRecordObservedPlayerDamage(Character attacker, long dmg) {
+        final Packet packet;
+        synchronized (dptLock) {
+            if (!dptActive) {
+                return;
+            }
+            DptPlayerStat stat = dptPlayerView.computeIfAbsent(attacker.getId(),
+                    id -> new DptPlayerStat(id, attacker.getName(), attacker.getJob().getId()));
+            stat.name = attacker.getName();
+            stat.jobId = attacker.getJob().getId();
+            stat.totalDamage += dmg;
+            packet = PacketCreator.dptPlayerUpdate(stat.charId, stat.name, stat.jobId, stat.totalDamage);
+        }
+        sendPacket(packet);
+    }
+
+    /**
+     * Reports one use of a skill (the summed, server-validated damage of that use). Call once per use,
+     * not per hit, so the skill's count stays a use count. skillId 0 is a basic attack,
+     * DAMAGE_RANK_DOT_SKILL_ID is damage over time.
+     */
+    public void dptOnDamage(int skillId, long dmg) {
+        if (dmg <= 0L) {
+            return;
+        }
+        final MapleMap map = getMap();
+        if (map == null) {
+            return;
+        }
+
+        Packet packet = null;
+        synchronized (dptLock) {
+            if (dptActive) {
+                final int id = skillId < 0 ? skillId : Math.max(0, skillId);
+                DptSkillStat stat = dptSkillStats.computeIfAbsent(id, DptSkillStat::new);
+                stat.totalDamage += dmg;
+                stat.count += 1;
+                stat.maxDamage = Math.max(stat.maxDamage, dmg);
+                stat.minDamage = Math.min(stat.minDamage, dmg);
+                packet = PacketCreator.dptSkillUpdate(id, dptResolveSkillName(id), dmg,
+                        stat.totalDamage, stat.maxDamage, stat.minDamage, stat.count);
+            }
+        }
+        if (packet != null) {
+            sendPacket(packet);
+        }
+
+        for (Character viewer : map.getAllPlayers()) {
+            if (viewer != null) {
+                viewer.dptRecordObservedPlayerDamage(this, dmg);
+            }
+        }
+    }
+
+    // SkillFactory.getSkillName re-parses String/Skill.img on every call; this runs once per attack.
+    private static final Map<Integer, String> DPT_SKILL_NAMES = new ConcurrentHashMap<>();
+
+    private static String dptResolveSkillName(int skillId) {
+        if (skillId == 0) {
+            return "Attack";
+        }
+        if (skillId == DAMAGE_RANK_DOT_SKILL_ID) {
+            return "DoT Damage";
+        }
+        return DPT_SKILL_NAMES.computeIfAbsent(skillId, id -> {
+            final String name = SkillFactory.getSkillName(id);
+            return name != null ? name : "";
+        });
     }
 
     public final QuestStatus getQuestNAdd(final Quest quest) {

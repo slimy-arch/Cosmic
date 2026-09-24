@@ -1648,6 +1648,7 @@ public class Monster extends AbstractLoadedLife {
                 } finally {
                     unlockMonster();
                 }
+                chr.dptOnDamage(Character.DAMAGE_RANK_DOT_SKILL_ID, damage); // DamageRank
 
                 if (type == 1) {
                     map.broadcastMessage(PacketCreator.damageMonster(getObjectId(), damage), getPosition());

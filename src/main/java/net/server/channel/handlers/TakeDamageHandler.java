@@ -214,6 +214,7 @@ public final class TakeDamageHandler extends AbstractPacketHandler {
                         map.damageMonster(chr, attacker, bouncedamage);
                         map.broadcastMessage(chr, PacketCreator.damageMonster(oid, bouncedamage), false, true);
                         attacker.aggroMonsterDamage(chr, bouncedamage);
+                        chr.dptOnDamage(chr.getBuffSource(BuffStat.POWERGUARD), bouncedamage); // DamageRank
                     }
                     StatEffect bPressure = chr.getBuffEffect(BuffStat.BODY_PRESSURE); // thanks Atoot for noticing an issue on Body Pressure neutralise
                     if (bPressure != null) {
