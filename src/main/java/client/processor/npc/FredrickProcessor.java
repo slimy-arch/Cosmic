@@ -78,7 +78,7 @@ public class FredrickProcessor {
             }
         }
 
-        int netMeso = chr.getMerchantNetMeso();
+        long netMeso = chr.getMerchantNetMeso();
         if (netMeso > 0) {
             if (!chr.canHoldMeso(netMeso)) {
                 return 0x1F;

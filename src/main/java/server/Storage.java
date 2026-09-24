@@ -57,13 +57,13 @@ public class Storage {
 
     private final int id;
     private int currentNpcid;
-    private int meso;
+    private long meso;
     private byte slots;
     private final Map<InventoryType, List<Item>> typeItems = new HashMap<>();
     private List<Item> items = new LinkedList<>();
     private final Lock lock = new ReentrantLock(true);
 
-    private Storage(int id, byte slots, int meso) {
+    private Storage(int id, byte slots, long meso) {
         this.id = id;
         this.slots = slots;
         this.meso = meso;
@@ -89,7 +89,7 @@ public class Storage {
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    ret = new Storage(rs.getInt("storageid"), (byte) rs.getInt("slots"), rs.getInt("meso"));
+                    ret = new Storage(rs.getInt("storageid"), (byte) rs.getInt("slots"), rs.getLong("meso"));
                     for (Pair<Item, InventoryType> item : ItemFactory.STORAGE.loadItems(ret.id, false)) {
                         ret.items.add(item.getLeft());
                     }
@@ -133,7 +133,7 @@ public class Storage {
         try {
             try (PreparedStatement ps = con.prepareStatement("UPDATE storages SET slots = ?, meso = ? WHERE storageid = ?")) {
                 ps.setInt(1, slots);
-                ps.setInt(2, meso);
+                ps.setLong(2, meso);
                 ps.setInt(3, id);
                 ps.executeUpdate();
             }
@@ -294,11 +294,11 @@ public class Storage {
         }
     }
 
-    public int getMeso() {
+    public long getMeso() {
         return meso;
     }
 
-    public void setMeso(int meso) {
+    public void setMeso(long meso) {
         if (meso < 0) {
             throw new RuntimeException();
         }

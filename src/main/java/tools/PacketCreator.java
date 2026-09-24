@@ -244,7 +244,7 @@ public class PacketCreator {
             p.writeString(chr.getLinkedName());
         }
 
-        p.writeInt(chr.getMeso());
+        p.writeLong(chr.getMeso()); // Decode8 via the kaentake maxmeso mod (GW_CharacterStat::DecodeMoney)
         addInventoryInfo(p, chr);
         addSkillInfo(p, chr);
         addQuestInfo(p, chr);
@@ -1027,6 +1027,8 @@ public class PacketCreator {
                 } else if (statupdate.getLeft() == Stat.HP || statupdate.getLeft() == Stat.MAXHP
                         || statupdate.getLeft() == Stat.MP || statupdate.getLeft() == Stat.MAXMP) {
                     p.writeInt(statupdate.getRight()); // Decode4 via the kaentake maxhpmp mod
+                } else if (statupdate.getLeft() == Stat.MESO) {
+                    p.writeLong(chr.getMeso()); // Decode8 via the kaentake maxmeso mod
                 } else if (statupdate.getLeft().getValue() == 0x1) {
                     p.writeByte(statupdate.getRight().byteValue());
                 } else if (statupdate.getLeft().getValue() <= 0x4) {
@@ -3586,7 +3588,7 @@ public class PacketCreator {
         return p;
     }
 
-    public static Packet getStorage(int npcId, byte slots, Collection<Item> items, int meso) {
+    public static Packet getStorage(int npcId, byte slots, Collection<Item> items, long meso) {
         final OutPacket p = OutPacket.create(SendOpcode.STORAGE);
         p.writeByte(0x16);
         p.writeInt(npcId);
@@ -3594,7 +3596,7 @@ public class PacketCreator {
         p.writeShort(0x7E);
         p.writeShort(0);
         p.writeInt(0);
-        p.writeInt(meso);
+        p.writeLong(meso); // Decode8 via the kaentake maxmeso mod (CTrunkDlg::SetGetItems)
         p.writeShort(0);
         p.writeByte((byte) items.size());
         for (Item item : items) {
@@ -3616,14 +3618,14 @@ public class PacketCreator {
         return p;
     }
 
-    public static Packet mesoStorage(byte slots, int meso) {
+    public static Packet mesoStorage(byte slots, long meso) {
         final OutPacket p = OutPacket.create(SendOpcode.STORAGE);
         p.writeByte(0x13);
         p.writeByte(slots);
         p.writeShort(2);
         p.writeShort(0);
         p.writeInt(0);
-        p.writeInt(meso);
+        p.writeLong(meso); // Decode8 via the kaentake maxmeso mod (CTrunkDlg::SetGetItems)
         return p;
     }
 
@@ -5004,7 +5006,7 @@ public class PacketCreator {
         p.writeInt(NpcId.FREDRICK);
         p.writeInt(32272); //id
         p.skip(5);
-        p.writeInt(chr.getMerchantNetMeso());
+        p.writeLong(chr.getMerchantNetMeso()); // Decode8 via the kaentake maxmeso mod (CStoreBankDlg)
         p.writeByte(0);
         try {
             List<Pair<Item, InventoryType>> items = ItemFactory.MERCHANT.loadItems(chr.getId(), false);
@@ -5199,11 +5201,11 @@ public class PacketCreator {
                 p.writeInt(s.getMesos());
                 p.writeString(s.getBuyer());
             }
-            p.writeInt(chr.getMerchantMeso());//:D?
+            p.writeLong(chr.getMerchantMeso()); // Decode8 via the kaentake maxmeso mod (sold-item list)
         }
         p.writeString(hm.getDescription());
         p.writeByte(0x10); //TODO SLOTS, which is 16 for most stores...slotMax
-        p.writeInt(hm.isOwner(chr) ? chr.getMerchantMeso() : chr.getMeso());
+        p.writeLong(hm.isOwner(chr) ? chr.getMerchantMeso() : chr.getMeso()); // Decode8 via the kaentake maxmeso mod
         p.writeByte(hm.getItems().size());
         if (hm.getItems().isEmpty()) {
             p.writeByte(0);//Hmm??
@@ -5221,7 +5223,7 @@ public class PacketCreator {
     public static Packet updateHiredMerchant(HiredMerchant hm, Character chr) {
         final OutPacket p = OutPacket.create(SendOpcode.PLAYER_INTERACTION);
         p.writeByte(PlayerInteractionHandler.Action.UPDATE_MERCHANT.getCode());
-        p.writeInt(hm.isOwner(chr) ? chr.getMerchantMeso() : chr.getMeso());
+        p.writeLong(hm.isOwner(chr) ? chr.getMerchantMeso() : chr.getMeso()); // Decode8 via the kaentake maxmeso mod
         p.writeByte(hm.getItems().size());
         for (PlayerShopItem item : hm.getItems()) {
             p.writeShort(item.getBundles());

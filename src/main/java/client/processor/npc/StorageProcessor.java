@@ -30,6 +30,7 @@ import client.inventory.Item;
 import client.inventory.manipulator.InventoryManipulator;
 import client.inventory.manipulator.KarmaManipulator;
 import config.YamlConfig;
+import constants.game.GameConstants;
 import constants.id.ItemId;
 import constants.inventory.ItemConstants;
 import net.packet.InPacket;
@@ -199,9 +200,9 @@ public class StorageProcessor {
                     c.sendPacket(PacketCreator.enableActions());
                     break;
                 case 7: { // Mesos
-                    int meso = p.readInt();
-                    int storageMesos = storage.getMeso();
-                    int playerMesos = chr.getMeso();
+                    long meso = p.readInt(); // > 0 takes out, < 0 stores; a single transfer stays within int
+                    long storageMesos = storage.getMeso();
+                    long playerMesos = chr.getMeso();
 
                     if (hasGMRestrictions(chr)) {
                         chr.dropMessage(1, gmBlockedStorageMessage);
@@ -211,15 +212,15 @@ public class StorageProcessor {
                     }
 
                     if ((meso > 0 && storageMesos >= meso) || (meso < 0 && playerMesos >= -meso)) {
-                        if (meso < 0 && (storageMesos - meso) < 0) {
-                            meso = Integer.MIN_VALUE + storageMesos;
-                            if (meso < playerMesos) {
+                        if (meso < 0 && (storageMesos - meso) > GameConstants.MAX_MESO) {
+                            meso = storageMesos - GameConstants.MAX_MESO;
+                            if (meso >= 0) {
                                 c.sendPacket(PacketCreator.enableActions());
                                 return;
                             }
-                        } else if (meso > 0 && (playerMesos + meso) < 0) {
-                            meso = Integer.MAX_VALUE - playerMesos;
-                            if (meso > storageMesos) {
+                        } else if (meso > 0 && (playerMesos + meso) > GameConstants.MAX_MESO) {
+                            meso = GameConstants.MAX_MESO - playerMesos;
+                            if (meso <= 0) {
                                 c.sendPacket(PacketCreator.enableActions());
                                 return;
                             }

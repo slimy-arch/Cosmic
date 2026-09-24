@@ -22,6 +22,8 @@ import java.util.*;
 public class GameConstants {
     // HP/MaxHP/MP/MaxMP ceiling; the Kaentake maxhpmp mod decodes these as int (kHpMpCap in maxhpmp.cpp)
     public static final int HP_MP_CAP = 999_999;
+    // Meso balance ceiling (wallet, storage, Fredrick); the Kaentake maxmeso mod decodes these balances as long
+    public static final long MAX_MESO = 9_999_999_999_999L;
     public static String[] WORLD_NAMES = {"Scania", "Bera", "Broa", "Windia", "Khaini", "Bellocan", "Mardia", "Kradia", "Yellonde", "Demethos", "Galicia", "El Nido", "Zenith", "Arcenia", "Kastia", "Judis", "Plana", "Kalluna", "Stius", "Croa", "Medere"};
     public static final String[] stats = {"tuc", "reqLevel", "reqJob", "reqSTR", "reqDEX", "reqINT", "reqLUK", "reqPOP", "cash", "cursed", "success", "setItemID", "equipTradeBlock", "durability", "randOption", "randStat", "masterLevel", "reqSkillLevel", "elemDefault", "incRMAS", "incRMAF", "incRMAI", "incRMAL", "canLevel", "skill", "charmEXP"};
     public static final int[] CASH_DATA = new int[]{50200004, 50200069, 50200117, 50100008, 50000047};
