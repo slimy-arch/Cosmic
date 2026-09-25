@@ -206,6 +206,7 @@ public enum RecvOpcode {
     DAMAGE_SKIN_APPLY(0x110), // custom: Kaentake damage skin picker "Apply"
     DAMAGE_SKIN_PURCHASE(0x111), // custom: Kaentake damage skin picker "Purchase"
     WORLD_MAP_PLAYERS(0x115), // custom: Kaentake world map tooltip "Players" request
+    CASHSHOP_WINDOW_ACTION(0x3730), // custom: Kaentake standalone cash shop window [byte action ...]
     HYPER_TELEPORT_ROCK(0x105); // custom: Kaentake world map click-to-teleport [int targetMapId]
 
     private int code = -2;

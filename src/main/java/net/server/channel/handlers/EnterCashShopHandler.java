@@ -23,9 +23,11 @@ package net.server.channel.handlers;
 
 import client.Character;
 import client.Client;
+import config.YamlConfig;
 import net.AbstractPacketHandler;
 import net.packet.InPacket;
 import net.server.Server;
+import server.cashshop.CashShopWindowPackets;
 import server.maps.MiniDungeonInfo;
 import tools.PacketCreator;
 
@@ -56,6 +58,16 @@ public class EnterCashShopHandler extends AbstractPacketHandler {
             }
 
             if (mc.getCashShop().isOpened()) {
+                return;
+            }
+
+            // Custom (Kaentake cash shop window): open the in-field window instead of the stage.
+            // No channel/map detach and no buff teardown. enableActions() is mandatory: the client
+            // input-locks itself on the cash shop request until something releases it.
+            if (YamlConfig.config.server.USE_CASHSHOP_WINDOW) {
+                c.sendPacket(PacketCreator.enableActions());
+                c.sendPacket(CashShopWindowPackets.open(mc));
+                CashShopWindowHandler.sendCatalog(c, mc);
                 return;
             }
 
