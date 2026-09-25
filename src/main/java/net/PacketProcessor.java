@@ -75,6 +75,7 @@ import net.server.channel.handlers.GrenadeEffectHandler;
 import net.server.channel.handlers.GuildOperationHandler;
 import net.server.channel.handlers.HealOvertimeHandler;
 import net.server.channel.handlers.HiredMerchantRequest;
+import net.server.channel.handlers.HyperTeleportRockHandler;
 import net.server.channel.handlers.InnerPortalHandler;
 import net.server.channel.handlers.InventoryMergeHandler;
 import net.server.channel.handlers.InventorySortHandler;
@@ -454,5 +455,6 @@ public final class PacketProcessor {
         registerHandler(RecvOpcode.USE_ITEMUI, new RaiseIncExpHandler());
         registerHandler(RecvOpcode.CHANGE_QUICKSLOT, new QuickslotKeyMappedModifiedHandler());
         registerHandler(RecvOpcode.WORLD_MAP_PLAYERS, new WorldMapPlayersHandler()); // custom: Kaentake world map tooltip
+        registerHandler(RecvOpcode.HYPER_TELEPORT_ROCK, new HyperTeleportRockHandler()); // custom: Kaentake world map teleport
     }
 }
