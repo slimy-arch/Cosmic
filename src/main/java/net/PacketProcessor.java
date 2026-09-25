@@ -50,6 +50,7 @@ import net.server.channel.handlers.CloseRangeDamageHandler;
 import net.server.channel.handlers.CoconutHandler;
 import net.server.channel.handlers.CouponCodeHandler;
 import net.server.channel.handlers.DamageSkinApplyHandler;
+import net.server.channel.handlers.CashShopWindowHandler;
 import net.server.channel.handlers.DamageSkinPurchaseHandler;
 import net.server.channel.handlers.DamageSummonHandler;
 import net.server.channel.handlers.DenyAllianceRequestHandler;
@@ -412,6 +413,7 @@ public final class PacketProcessor {
         registerHandler(RecvOpcode.USE_HAMMER, new UseHammerHandler());
         registerHandler(RecvOpcode.DAMAGE_SKIN_APPLY, new DamageSkinApplyHandler()); // custom: Kaentake damage skin
         registerHandler(RecvOpcode.DAMAGE_SKIN_PURCHASE, new DamageSkinPurchaseHandler()); // custom: Kaentake damage skin
+        registerHandler(RecvOpcode.CASHSHOP_WINDOW_ACTION, new CashShopWindowHandler()); // custom: Kaentake cash shop window
         registerHandler(RecvOpcode.SCRIPTED_ITEM, new ScriptedItemHandler());
         registerHandler(RecvOpcode.TOUCHING_REACTOR, new TouchReactorHandler());
         registerHandler(RecvOpcode.BEHOLDER, new BeholderHandler());

@@ -278,6 +278,7 @@ server:
     USE_CLEAR_OUTDATED_COUPONS: true    #Enables deletion of older code coupon registry from the DB, freeing so-long irrelevant data.
     ALLOW_CASHSHOP_NAME_CHANGE: true    #Allows players to buy name changes in the cash shop.
     ALLOW_CASHSHOP_WORLD_TRANSFER: true  #Allows players to buy world transfers in the cash shop.
+    USE_CASHSHOP_WINDOW: true  #Custom: Cash Shop button opens the Kaentake in-field window (catalog: cashshop/catalog.tsv) instead of the cash shop stage.
 
     #Maker Configuration
     USE_MAKER_PERMISSIVE_ATKUP: false    #Allows players to use attack-based strengthening gems on non-weapon items.

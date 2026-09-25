@@ -359,7 +359,8 @@ public enum SendOpcode {
     DAMAGE_SKIN_RESULT(0x172), // custom: Kaentake damage skin apply/purchase result
     DAMAGE_SKIN_BROADCAST(0x173), // custom: Kaentake damage skin of a character on the map
     WORLD_MAP_PLAYERS(0x178), // custom: Kaentake world map tooltip "Players" reply
-    DPT_TRACKER(0x3714); // custom: Kaentake DamageRank window updates
+    DPT_TRACKER(0x3714), // custom: Kaentake DamageRank window updates
+    CASHSHOP_WINDOW_SYNC(0x3731); // custom: Kaentake standalone cash shop window replies
     private int code = -2;
 
     SendOpcode(int code) {
