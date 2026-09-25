@@ -117,4 +117,8 @@
         <sqlFile path="db/tables/028-damage-skin-catalog.sql"/>
     </changeSet>
 
+    <changeSet id="29" author="kaentake-hyperteleportrock">
+        <sqlFile path="db/tables/029-hyper-teleport-rock-shop.sql"/>
+    </changeSet>
+
 </databaseChangeLog>
