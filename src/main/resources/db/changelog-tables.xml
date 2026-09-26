@@ -121,4 +121,8 @@
         <sqlFile path="db/tables/029-hyper-teleport-rock-shop.sql"/>
     </changeSet>
 
+    <changeSet id="30" author="kaentake-longkeyboard">
+        <sqlFile path="db/tables/030-quickslot-26.sql"/>
+    </changeSet>
+
 </databaseChangeLog>

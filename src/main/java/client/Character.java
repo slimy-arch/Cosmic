@@ -1348,6 +1348,23 @@ public class Character extends AbstractCharacterObject {
         this.m_pQuickslotKeyMapped = new QuickslotBinding(aQuickslotKeyMapped);
     }
 
+    // Quickslot key config, per account. Writes the 26-key map to keys26; the legacy keymap BIGINT is left as is.
+    private void saveQuickslotKeymap(Connection con) throws SQLException {
+        // No quickslots, or no change.
+        boolean bQuickslotEquals = this.m_pQuickslotKeyMapped == null || (this.m_aQuickslotLoaded != null && Arrays.equals(this.m_pQuickslotKeyMapped.GetKeybindings(), this.m_aQuickslotLoaded));
+        if (bQuickslotEquals) {
+            return;
+        }
+
+        byte[] aKeys = this.m_pQuickslotKeyMapped.GetKeybindings();
+        try (PreparedStatement ps = con.prepareStatement("INSERT INTO quickslotkeymapped (accountid, keys26) VALUES (?, ?) ON DUPLICATE KEY UPDATE keys26 = ?;")) {
+            ps.setInt(1, this.getAccountID());
+            ps.setBytes(2, aKeys);
+            ps.setBytes(3, aKeys);
+            ps.executeUpdate();
+        }
+    }
+
     public void broadcastStance(int newStance) {
         setStance(newStance);
         broadcastStance();
@@ -7680,12 +7697,17 @@ public class Character extends AbstractCharacterObject {
             ret.maplemount.setActive(false);
 
             // Quickslot key config
-            try (final PreparedStatement pSelectQuickslotKeyMapped = con.prepareStatement("SELECT keymap FROM quickslotkeymapped WHERE accountid = ?;")) {
+            try (final PreparedStatement pSelectQuickslotKeyMapped = con.prepareStatement("SELECT keymap, keys26 FROM quickslotkeymapped WHERE accountid = ?;")) {
                 pSelectQuickslotKeyMapped.setInt(1, ret.getAccountID());
 
                 try (final ResultSet pResultSet = pSelectQuickslotKeyMapped.executeQuery()) {
                     if (pResultSet.next()) {
-                        ret.m_aQuickslotLoaded = LongTool.LongToBytes(pResultSet.getLong(1));
+                        // keys26: 26-key long keyboard map; keymap: stock 8-key BIGINT, expanded on read
+                        byte[] aKeys = pResultSet.getBytes("keys26");
+                        if (aKeys == null || aKeys.length != QuickslotBinding.QUICKSLOT_SIZE) {
+                            aKeys = QuickslotBinding.fromLegacy(LongTool.LongToBytes(pResultSet.getLong("keymap")));
+                        }
+                        ret.m_aQuickslotLoaded = aKeys;
                         ret.m_pQuickslotKeyMapped = new QuickslotBinding(ret.m_aQuickslotLoaded);
                     }
                 }
@@ -8517,19 +8539,7 @@ public class Character extends AbstractCharacterObject {
                     }
                 }
 
-                // No quickslots, or no change.
-                boolean bQuickslotEquals = this.m_pQuickslotKeyMapped == null || (this.m_aQuickslotLoaded != null && Arrays.equals(this.m_pQuickslotKeyMapped.GetKeybindings(), this.m_aQuickslotLoaded));
-                if (!bQuickslotEquals) {
-                    long nQuickslotKeymapped = LongTool.BytesToLong(this.m_pQuickslotKeyMapped.GetKeybindings());
-
-                    // Quickslot key config
-                    try (PreparedStatement ps = con.prepareStatement("INSERT INTO quickslotkeymapped (accountid, keymap) VALUES (?, ?) ON DUPLICATE KEY UPDATE keymap = ?;")) {
-                        ps.setInt(1, this.getAccountID());
-                        ps.setLong(2, nQuickslotKeymapped);
-                        ps.setLong(3, nQuickslotKeymapped);
-                        ps.executeUpdate();
-                    }
-                }
+                saveQuickslotKeymap(con);
 
                 itemsWithType = new ArrayList<>();
                 for (Inventory iv : inventory) {
@@ -8773,18 +8783,7 @@ public class Character extends AbstractCharacterObject {
                     psKey.executeBatch();
                 }
 
-                // No quickslots, or no change.
-                boolean bQuickslotEquals = this.m_pQuickslotKeyMapped == null || (this.m_aQuickslotLoaded != null && Arrays.equals(this.m_pQuickslotKeyMapped.GetKeybindings(), this.m_aQuickslotLoaded));
-                if (!bQuickslotEquals) {
-                    long nQuickslotKeymapped = LongTool.BytesToLong(this.m_pQuickslotKeyMapped.GetKeybindings());
-
-                    try (final PreparedStatement psQuick = con.prepareStatement("INSERT INTO quickslotkeymapped (accountid, keymap) VALUES (?, ?) ON DUPLICATE KEY UPDATE keymap = ?;")) {
-                        psQuick.setInt(1, this.getAccountID());
-                        psQuick.setLong(2, nQuickslotKeymapped);
-                        psQuick.setLong(3, nQuickslotKeymapped);
-                        psQuick.executeUpdate();
-                    }
-                }
+                saveQuickslotKeymap(con);
 
                 // Skill macros
                 deleteWhereCharacterId(con, "DELETE FROM skillmacros WHERE characterid = ?");
