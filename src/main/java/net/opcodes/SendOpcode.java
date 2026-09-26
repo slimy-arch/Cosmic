@@ -361,6 +361,7 @@ public enum SendOpcode {
     WORLD_MAP_PLAYERS(0x178), // custom: Kaentake world map tooltip "Players" reply
     DPT_TRACKER(0x3714), // custom: Kaentake DamageRank window updates
     STAT_DETAIL_RATES(0x3740), // custom: Kaentake stat detail window drop/meso rate and damage bonus cells
+    INVENTORY_CASH(0x3741), // custom: Kaentake inventory window NX row (NX Credit)
     BAG_WINDOW(0x3725), // custom: Kaentake storage bag window snapshot
     CASHSHOP_WINDOW_SYNC(0x3731); // custom: Kaentake standalone cash shop window replies
     private int code = -2;

@@ -2459,6 +2459,7 @@ public class MapleMap {
 
         sendObjectPlacement(chr.getClient());
         chr.refreshStatDetailRates(true);   // Kaentake stat detail window: login, channel change, map change
+        chr.refreshInventoryCash();         // Kaentake inventory NX row: same triggers
 
         if (isStartingEventMap() && !eventStarted()) {
             chr.getMap().getPortal("join00").setPortalStatus(false);
