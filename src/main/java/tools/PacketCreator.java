@@ -7584,9 +7584,9 @@ public class PacketCreator {
     /**
      * Kaentake inventory window (inventorynx.cpp): the NX row under the meso box.
      */
-    public static Packet inventoryCash(int nxCredit) {
+    public static Packet inventoryCash(long nxCredit) {
         final OutPacket p = OutPacket.create(SendOpcode.INVENTORY_CASH);
-        p.writeInt(nxCredit);
+        p.writeLong(nxCredit);
         return p;
     }
 }

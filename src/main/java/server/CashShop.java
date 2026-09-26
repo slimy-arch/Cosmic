@@ -27,6 +27,7 @@ import client.inventory.Item;
 import client.inventory.ItemFactory;
 import client.inventory.Pet;
 import config.YamlConfig;
+import constants.game.GameConstants;
 import constants.id.ItemId;
 import constants.inventory.ItemConstants;
 import net.jcip.annotations.GuardedBy;
@@ -52,7 +53,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.IntConsumer;
+import java.util.function.LongConsumer;
 
 import static java.util.concurrent.TimeUnit.DAYS;
 import static java.util.concurrent.TimeUnit.HOURS;
@@ -68,7 +69,7 @@ public class CashShop {
 
     private final int accountId;
     private final int characterId;
-    private int nxCredit;
+    private long nxCredit;   // up to GameConstants.MAX_NX_CREDIT; getCash() hands transactions a clamped int
     private int maplePoint;
     private int nxPrepaid;
     private boolean opened;
@@ -76,7 +77,7 @@ public class CashShop {
     private final List<Item> inventory = new ArrayList<>();
     private final List<Integer> wishList = new ArrayList<>();
     private int notes = 0;
-    private volatile IntConsumer nxCreditListener;   // Kaentake inventory NX row; set by the owning Character
+    private volatile LongConsumer nxCreditListener;   // Kaentake inventory NX row; set by the owning Character
     private final Lock lock = new ReentrantLock();
 
     public CashShop(int accountId, int characterId, int jobType) throws SQLException {
@@ -105,7 +106,7 @@ public class CashShop {
 
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
-                        this.nxCredit = rs.getInt("nxCredit");
+                        this.nxCredit = rs.getLong("nxCredit");
                         this.maplePoint = rs.getInt("maplePoint");
                         this.nxPrepaid = rs.getInt("nxPrepaid");
                     }
@@ -319,9 +320,14 @@ public class CashShop {
     public record CashShopSurpriseResult(Item usedCashShopSurprise, Item reward) {
     }
 
+    /**
+     * The balance as an int, for price checks and the stock packets. NX Credit above
+     * Integer.MAX_VALUE reads as Integer.MAX_VALUE: every price is an int, so affordability is
+     * unchanged. Use {@link #getNxCredit()} for the real value.
+     */
     public int getCash(int type) {
         return switch (type) {
-            case NX_CREDIT -> nxCredit;
+            case NX_CREDIT -> (int) Math.min(nxCredit, Integer.MAX_VALUE);
             case MAPLE_POINT -> maplePoint;
             case NX_PREPAID -> nxPrepaid;
             default -> 0;
@@ -329,20 +335,29 @@ public class CashShop {
 
     }
 
+    public long getNxCredit() {
+        return nxCredit;
+    }
+
     public void gainCash(int type, int cash) {
         switch (type) {
-            case NX_CREDIT -> nxCredit += cash;
+            case NX_CREDIT -> gainNxCredit(cash);
             case MAPLE_POINT -> maplePoint += cash;
             case NX_PREPAID -> nxPrepaid += cash;
         }
-        IntConsumer listener = nxCreditListener;
-        if (type == NX_CREDIT && listener != null) {
+    }
+
+    /** NX Credit change of any size; the balance is kept within [0, GameConstants.MAX_NX_CREDIT]. */
+    public void gainNxCredit(long delta) {
+        nxCredit = Math.max(0, Math.min(nxCredit + delta, GameConstants.MAX_NX_CREDIT));
+        LongConsumer listener = nxCreditListener;
+        if (listener != null) {
             listener.accept(nxCredit);
         }
     }
 
     /** Every NX Credit change is reported here, so every gainCash caller refreshes the inventory NX row. */
-    public void setNxCreditListener(IntConsumer listener) {
+    public void setNxCreditListener(LongConsumer listener) {
         this.nxCreditListener = listener;
     }
 
@@ -493,7 +508,7 @@ public class CashShop {
 
     public void save(Connection con) throws SQLException {
         try (PreparedStatement ps = con.prepareStatement("UPDATE `accounts` SET `nxCredit` = ?, `maplePoint` = ?, `nxPrepaid` = ? WHERE `id` = ?")) {
-            ps.setInt(1, nxCredit);
+            ps.setLong(1, nxCredit);
             ps.setInt(2, maplePoint);
             ps.setInt(3, nxPrepaid);
             ps.setInt(4, accountId);
