@@ -52,6 +52,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.IntConsumer;
 
 import static java.util.concurrent.TimeUnit.DAYS;
 import static java.util.concurrent.TimeUnit.HOURS;
@@ -75,6 +76,7 @@ public class CashShop {
     private final List<Item> inventory = new ArrayList<>();
     private final List<Integer> wishList = new ArrayList<>();
     private int notes = 0;
+    private volatile IntConsumer nxCreditListener;   // Kaentake inventory NX row; set by the owning Character
     private final Lock lock = new ReentrantLock();
 
     public CashShop(int accountId, int characterId, int jobType) throws SQLException {
@@ -333,6 +335,15 @@ public class CashShop {
             case MAPLE_POINT -> maplePoint += cash;
             case NX_PREPAID -> nxPrepaid += cash;
         }
+        IntConsumer listener = nxCreditListener;
+        if (type == NX_CREDIT && listener != null) {
+            listener.accept(nxCredit);
+        }
+    }
+
+    /** Every NX Credit change is reported here, so every gainCash caller refreshes the inventory NX row. */
+    public void setNxCreditListener(IntConsumer listener) {
+        this.nxCreditListener = listener;
     }
 
     public void gainCash(int type, CashItem buyItem, int world) {

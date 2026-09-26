@@ -7598,6 +7598,7 @@ public class Character extends AbstractCharacterObject {
             }
 
             ret.cashshop = new CashShop(ret.accountid, ret.id, ret.getJobType());
+            ret.cashshop.setNxCreditListener(nx -> ret.refreshInventoryCash());
             ret.autoban = new AutobanManager(ret);
 
             // Blessing of the Fairy
@@ -8388,6 +8389,15 @@ public class Character extends AbstractCharacterObject {
         }
         lastStatDetailRates = rates;
         sendPacket(PacketCreator.statDetailRates(rates[0], rates[1], rates[2], rates[3]));
+    }
+
+    // Kaentake inventory window NX row: SendOpcode.INVENTORY_CASH on every map entry and after every
+    // NX Credit change (CashShop.gainCash reports through its listener).
+    public void refreshInventoryCash() {
+        if (client == null || !isLoggedin() || cashshop == null) {
+            return;
+        }
+        sendPacket(PacketCreator.inventoryCash(cashshop.getCash(CashShop.NX_CREDIT)));
     }
 
     public void receivePartyMemberHP() {
