@@ -363,6 +363,7 @@ public final class PlayerLoggedinHandler extends AbstractPacketHandler {
             c.sendPacket(PacketCreator.updateGender(player));
             player.checkMessenger();
             c.sendPacket(PacketCreator.enableReport());
+            player.syncWeaponTint(); // custom: Kaentake Coloring Prism, before this a dyed item renders vanilla
 
             // custom: Kaentake damage skins — shop list, owned skins, and the reusable picker item.
             c.sendPacket(PacketCreator.damageSkinCatalog());

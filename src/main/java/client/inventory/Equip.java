@@ -28,6 +28,7 @@ import constants.inventory.ItemConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import server.ItemInformationProvider;
+import server.colorprism.TintValues;
 import tools.PacketCreator;
 import tools.Pair;
 import tools.Randomizer;
@@ -73,6 +74,8 @@ public class Equip extends Item {
     private short str, dex, _int, luk, hp, mp, watk, matk, wdef, mdef, acc, avoid, hands, speed, jump, vicious;
     private float itemExp;
     private int ringid = -1;
+    private short tintHue, tintFxHue;               // Coloring Prism, see server.colorprism.TintValues
+    private byte tintChroma, tintBright, tintFxChroma, tintFxBright;
     private boolean wear = false;
     private boolean isUpgradeable, isElemental = false;    // timeless or reverse, or any equip that could levelup on GMS for all effects
 
@@ -113,6 +116,12 @@ public class Equip extends Item {
         ret.itemLevel = itemLevel;
         ret.itemExp = itemExp;
         ret.level = level;
+        ret.tintHue = tintHue;
+        ret.tintChroma = tintChroma;
+        ret.tintBright = tintBright;
+        ret.tintFxHue = tintFxHue;
+        ret.tintFxChroma = tintFxChroma;
+        ret.tintFxBright = tintFxBright;
         ret.itemLog = new LinkedList<>(itemLog);
         ret.setOwner(getOwner());
         ret.setQuantity(getQuantity());
@@ -728,6 +737,63 @@ public class Equip extends Item {
 
     public void setRingId(int id) {
         this.ringid = id;
+    }
+
+    // Coloring Prism: the body tint is keyed on the item id, the effect-art tint on id + 10000000.
+    public short getTintHue() {
+        return tintHue;
+    }
+
+    public byte getTintChroma() {
+        return tintChroma;
+    }
+
+    public byte getTintBright() {
+        return tintBright;
+    }
+
+    public boolean isTinted() {
+        return !TintValues.isIdentity(tintHue, tintChroma, tintBright);
+    }
+
+    public void setTint(int hue, int chroma, int bright) {
+        this.tintHue = TintValues.normalizeHue(hue);
+        this.tintChroma = TintValues.clamp(chroma);
+        this.tintBright = TintValues.clamp(bright);
+    }
+
+    public void clearTint() {
+        tintHue = 0;
+        tintChroma = 0;
+        tintBright = 0;
+    }
+
+    public short getTintFxHue() {
+        return tintFxHue;
+    }
+
+    public byte getTintFxChroma() {
+        return tintFxChroma;
+    }
+
+    public byte getTintFxBright() {
+        return tintFxBright;
+    }
+
+    public boolean isFxTinted() {
+        return !TintValues.isIdentity(tintFxHue, tintFxChroma, tintFxBright);
+    }
+
+    public void setFxTint(int hue, int chroma, int bright) {
+        this.tintFxHue = TintValues.normalizeHue(hue);
+        this.tintFxChroma = TintValues.clamp(chroma);
+        this.tintFxBright = TintValues.clamp(bright);
+    }
+
+    public void clearFxTint() {
+        tintFxHue = 0;
+        tintFxChroma = 0;
+        tintFxBright = 0;
     }
 
     public boolean isWearing() {

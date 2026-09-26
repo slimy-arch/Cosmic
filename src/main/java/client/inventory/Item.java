@@ -24,6 +24,7 @@ package client.inventory;
 import client.inventory.manipulator.KarmaManipulator;
 import constants.inventory.ItemConstants;
 import server.ItemInformationProvider;
+import server.colorprism.TintValues;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -46,6 +47,11 @@ public class Item implements Comparable<Item> {
     private short flag;
     private long expiration = -1;
     private String giftFrom = "";
+    // Coloring Prism tint for cash EFFECT items (5010000..5019999). One colour, not two: a cash
+    // effect IS the effect art, so there is no body half. Equips use Equip's tint/tintFx instead.
+    private short effTintHue = 0;
+    private byte effTintChroma = 0;
+    private byte effTintBright = 0;
 
     public Item(int id, short position, short quantity) {
         this.id = id;
@@ -76,7 +82,38 @@ public class Item implements Comparable<Item> {
         ret.owner = owner;
         ret.expiration = expiration;
         ret.itemLog = new LinkedList<>(itemLog);
+        ret.effTintHue = effTintHue;
+        ret.effTintChroma = effTintChroma;
+        ret.effTintBright = effTintBright;
         return ret;
+    }
+
+    public short getEffTintHue() {
+        return effTintHue;
+    }
+
+    public byte getEffTintChroma() {
+        return effTintChroma;
+    }
+
+    public byte getEffTintBright() {
+        return effTintBright;
+    }
+
+    public boolean isEffTinted() {
+        return !TintValues.isIdentity(effTintHue, effTintChroma, effTintBright);
+    }
+
+    public void setEffTint(int hue, int chroma, int bright) {
+        this.effTintHue = TintValues.normalizeHue(hue);
+        this.effTintChroma = TintValues.clamp(chroma);
+        this.effTintBright = TintValues.clamp(bright);
+    }
+
+    public void clearEffTint() {
+        effTintHue = 0;
+        effTintChroma = 0;
+        effTintBright = 0;
     }
 
     public void setPosition(short position) {

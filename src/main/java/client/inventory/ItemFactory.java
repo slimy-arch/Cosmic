@@ -55,6 +55,19 @@ public enum ItemFactory {
     private final int value;
     private final boolean account;
 
+    // Named column lists: a positional VALUES breaks every inventory save the moment a column is
+    // appended. Each statement is prepared in saveItemsCommon AND saveItemsMerchant; bind both.
+    // The last three / six columns are the Coloring Prism tints (db/extensions/*-coloring-prism.xml).
+    private static final String INSERT_ITEM_SQL = "INSERT INTO `inventoryitems` (`type`, `characterid`, `accountid`, "
+            + "`itemid`, `inventorytype`, `position`, `quantity`, `owner`, `petid`, `flag`, `expiration`, `giftFrom`, "
+            + "`efftinthue`, `efftintchroma`, `efftintbright`) "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String INSERT_EQUIPMENT_SQL = "INSERT INTO `inventoryequipment` (`inventoryitemid`, "
+            + "`upgradeslots`, `level`, `str`, `dex`, `int`, `luk`, `hp`, `mp`, `watk`, `matk`, `wdef`, `mdef`, `acc`, "
+            + "`avoid`, `hands`, `speed`, `jump`, `locked`, `vicious`, `itemlevel`, `itemexp`, `ringid`, "
+            + "`tinthue`, `tintchroma`, `tintbright`, `tintfxhue`, `tintfxchroma`, `tintfxbright`) "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
     private static final int lockCount = 400;
     private static final Lock[] locks = new Lock[lockCount];  // thanks Masterrulax for pointing out a bottleneck issue here
 
@@ -123,6 +136,8 @@ public enum ItemFactory {
         equip.setExpiration(rs.getLong("expiration"));
         equip.setGiftFrom(rs.getString("giftFrom"));
         equip.setRingId(rs.getInt("ringid"));
+        equip.setTint(rs.getInt("tinthue"), rs.getInt("tintchroma"), rs.getInt("tintbright"));
+        equip.setFxTint(rs.getInt("tintfxhue"), rs.getInt("tintfxchroma"), rs.getInt("tintfxbright"));
 
         return equip;
     }
@@ -190,6 +205,7 @@ public enum ItemFactory {
                             item.setExpiration(rs.getLong("expiration"));
                             item.setGiftFrom(rs.getString("giftFrom"));
                             item.setFlag((short) rs.getInt("flag"));
+                            item.setEffTint(rs.getInt("efftinthue"), rs.getInt("efftintchroma"), rs.getInt("efftintbright"));
                             items.add(new Pair<>(item, mit));
                         }
                     }
@@ -213,7 +229,7 @@ public enum ItemFactory {
                 ps.executeUpdate();
             }
 
-            try (PreparedStatement psItem = con.prepareStatement("INSERT INTO `inventoryitems` VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+            try (PreparedStatement psItem = con.prepareStatement(INSERT_ITEM_SQL, Statement.RETURN_GENERATED_KEYS)) {
                 if (!items.isEmpty()) {
                     for (Pair<Item, InventoryType> pair : items) {
                         Item item = pair.getLeft();
@@ -230,10 +246,13 @@ public enum ItemFactory {
                         psItem.setInt(10, item.getFlag());
                         psItem.setLong(11, item.getExpiration());
                         psItem.setString(12, item.getGiftFrom());
+                        psItem.setInt(13, item.getEffTintHue());
+                        psItem.setInt(14, item.getEffTintChroma());
+                        psItem.setInt(15, item.getEffTintBright());
                         psItem.executeUpdate();
 
                         if (mit.equals(InventoryType.EQUIP) || mit.equals(InventoryType.EQUIPPED)) {
-                            try (PreparedStatement psEquip = con.prepareStatement("INSERT INTO `inventoryequipment` VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                            try (PreparedStatement psEquip = con.prepareStatement(INSERT_EQUIPMENT_SQL)) {
                                 try (ResultSet rs = psItem.getGeneratedKeys()) {
                                     if (!rs.next()) {
                                         throw new RuntimeException("Inserting item failed.");
@@ -265,6 +284,12 @@ public enum ItemFactory {
                                 psEquip.setInt(21, equip.getItemLevel());
                                 psEquip.setInt(22, equip.getItemExp());
                                 psEquip.setInt(23, equip.getRingId());
+                                psEquip.setInt(24, equip.getTintHue());
+                                psEquip.setInt(25, equip.getTintChroma());
+                                psEquip.setInt(26, equip.getTintBright());
+                                psEquip.setInt(27, equip.getTintFxHue());
+                                psEquip.setInt(28, equip.getTintFxChroma());
+                                psEquip.setInt(29, equip.getTintFxBright());
                                 psEquip.executeUpdate();
                             }
                         }
@@ -321,6 +346,7 @@ public enum ItemFactory {
                                 item.setExpiration(rs.getLong("expiration"));
                                 item.setGiftFrom(rs.getString("giftFrom"));
                                 item.setFlag((short) rs.getInt("flag"));
+                                item.setEffTint(rs.getInt("efftinthue"), rs.getInt("efftintchroma"), rs.getInt("efftintbright"));
                                 items.add(new Pair<>(item, mit));
                             }
                         }
@@ -359,7 +385,7 @@ public enum ItemFactory {
 
                 final int genKey;
                 // Item
-                try (PreparedStatement ps = con.prepareStatement("INSERT INTO `inventoryitems` VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+                try (PreparedStatement ps = con.prepareStatement(INSERT_ITEM_SQL, Statement.RETURN_GENERATED_KEYS)) {
                     ps.setInt(1, value);
                     ps.setString(2, account ? null : String.valueOf(id));
                     ps.setString(3, account ? String.valueOf(id) : null);
@@ -372,6 +398,9 @@ public enum ItemFactory {
                     ps.setInt(10, item.getFlag());
                     ps.setLong(11, item.getExpiration());
                     ps.setString(12, item.getGiftFrom());
+                    ps.setInt(13, item.getEffTintHue());
+                    ps.setInt(14, item.getEffTintChroma());
+                    ps.setInt(15, item.getEffTintBright());
                     ps.executeUpdate();
 
                     try (ResultSet rs = ps.getGeneratedKeys()) {
@@ -393,7 +422,7 @@ public enum ItemFactory {
 
                 // Equipment
                 if (mit.equals(InventoryType.EQUIP) || mit.equals(InventoryType.EQUIPPED)) {
-                    try (PreparedStatement ps = con.prepareStatement("INSERT INTO `inventoryequipment` VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                    try (PreparedStatement ps = con.prepareStatement(INSERT_EQUIPMENT_SQL)) {
                         ps.setInt(1, genKey);
 
                         Equip equip = (Equip) item;
@@ -419,6 +448,12 @@ public enum ItemFactory {
                         ps.setInt(21, equip.getItemLevel());
                         ps.setInt(22, equip.getItemExp());
                         ps.setInt(23, equip.getRingId());
+                        ps.setInt(24, equip.getTintHue());
+                        ps.setInt(25, equip.getTintChroma());
+                        ps.setInt(26, equip.getTintBright());
+                        ps.setInt(27, equip.getTintFxHue());
+                        ps.setInt(28, equip.getTintFxChroma());
+                        ps.setInt(29, equip.getTintFxBright());
                         ps.executeUpdate();
                     }
                 }

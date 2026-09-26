@@ -8,6 +8,7 @@ public class ItemId {
     public static final int HEART_SHAPED_CHOCOLATE = 5110000;
     public static final int HAPPY_BIRTHDAY = 2022153;
     public static final int HYPER_TELEPORT_ROCK = 5590001; // custom: Kaentake world map teleport
+    public static final int COLORING_PRISM = 5782000; // custom: Kaentake Coloring Prism dye window
     public static final int FISHING_CHAIR = 3011000;
     public static final int MINI_GAME_BASE = 4080000;
     public static final int MATCH_CARDS = 4080100;

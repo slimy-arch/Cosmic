@@ -364,6 +364,7 @@ public enum SendOpcode {
     INVENTORY_CASH(0x3741), // custom: Kaentake inventory window NX row (NX Credit)
     BAG_WINDOW(0x3725), // custom: Kaentake storage bag window snapshot
     CASHSHOP_WINDOW_SYNC(0x3731), // custom: Kaentake standalone cash shop window replies
+    WEAPON_TINT_SYNC(0x372F), // custom: Kaentake Coloring Prism tint snapshot / result / map table
     MONSTER_BOOK_RESULT(0x3733); // custom: Kaentake Monster Book replies (drop %, item hits, droppers)
     private int code = -2;
 

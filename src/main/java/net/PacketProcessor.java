@@ -170,6 +170,7 @@ import net.server.channel.handlers.UseOwlOfMinervaHandler;
 import net.server.channel.handlers.UseSolomonHandler;
 import net.server.channel.handlers.UseSummonBagHandler;
 import net.server.channel.handlers.UseWaterOfLifeHandler;
+import net.server.channel.handlers.WeaponTintHandler;
 import net.server.channel.handlers.WeddingHandler;
 import net.server.channel.handlers.WeddingTalkHandler;
 import net.server.channel.handlers.WeddingTalkMoreHandler;
@@ -418,6 +419,7 @@ public final class PacketProcessor {
         registerHandler(RecvOpcode.CASHSHOP_WINDOW_ACTION, new CashShopWindowHandler()); // custom: Kaentake cash shop window
         registerHandler(RecvOpcode.BAG_WINDOW, new BagWindowHandler()); // custom: Kaentake storage bag window
         registerHandler(RecvOpcode.MONSTER_BOOK_QUERY, new MonsterBookQueryHandler()); // custom: Kaentake Monster Book
+        registerHandler(RecvOpcode.WEAPON_TINT_ACTION, new WeaponTintHandler()); // custom: Kaentake Coloring Prism
         registerHandler(RecvOpcode.SCRIPTED_ITEM, new ScriptedItemHandler());
         registerHandler(RecvOpcode.TOUCHING_REACTOR, new TouchReactorHandler());
         registerHandler(RecvOpcode.BEHOLDER, new BeholderHandler());
