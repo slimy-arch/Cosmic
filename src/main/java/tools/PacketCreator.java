@@ -3642,6 +3642,55 @@ public class PacketCreator {
         return p;
     }
 
+    /**
+     * Kaentake Monster Book, S2C MONSTER_BOOK_RESULT type 0: the Dropping tab's chances for one mob.
+     * Wire: {@code byte 0, int mobId, short n, n x {int itemId, int ppm}}. The ppm already includes the
+     * asking player's live rates (DropSearchService#mobDropChances); the client prints ppm / 10000.0.
+     */
+    public static Packet monsterBookDropTable(int mobId, Map<Integer, Integer> chancesPpm) {
+        OutPacket p = OutPacket.create(SendOpcode.MONSTER_BOOK_RESULT);
+        p.writeByte(0);
+        p.writeInt(mobId);
+        p.writeShort(chancesPpm.size());
+        for (Entry<Integer, Integer> drop : chancesPpm.entrySet()) {
+            p.writeInt(drop.getKey());
+            p.writeInt(drop.getValue());
+        }
+        return p;
+    }
+
+    /**
+     * Kaentake Monster Book, S2C MONSTER_BOOK_RESULT type 1: item ids matching an item-name search.
+     * Wire: {@code byte 1, string query, short n, n x int itemId}.
+     */
+    public static Packet monsterBookItemHits(String query, int[] itemIds) {
+        OutPacket p = OutPacket.create(SendOpcode.MONSTER_BOOK_RESULT);
+        p.writeByte(1);
+        p.writeString(query);
+        p.writeShort(itemIds.length);
+        for (int itemId : itemIds) {
+            p.writeInt(itemId);
+        }
+        return p;
+    }
+
+    /**
+     * Kaentake Monster Book, S2C MONSTER_BOOK_RESULT type 2: the mobs that drop one item, best first.
+     * Wire: {@code byte 2, int itemId, short n, n x {int mobId, int ppm}}. Each mob carries its own
+     * chance, because the boss drop rate makes it a property of the (mob, item) pair.
+     */
+    public static Packet monsterBookItemDroppers(int itemId, Map<Integer, Integer> droppersPpm) {
+        OutPacket p = OutPacket.create(SendOpcode.MONSTER_BOOK_RESULT);
+        p.writeByte(2);
+        p.writeInt(itemId);
+        p.writeShort(droppersPpm.size());
+        for (Entry<Integer, Integer> dropper : droppersPpm.entrySet()) {
+            p.writeInt(dropper.getKey());
+            p.writeInt(dropper.getValue());
+        }
+        return p;
+    }
+
     public static Packet getStorage(int npcId, byte slots, Collection<Item> items, long meso) {
         final OutPacket p = OutPacket.create(SendOpcode.STORAGE);
         p.writeByte(0x16);

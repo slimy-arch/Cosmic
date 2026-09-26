@@ -9167,4 +9167,1616 @@
     <string name="name" value="MISSING NAME"/>
     <string name="desc" value="MISSING INFO"/>
   </imgdir>
+  <imgdir name="2380020">
+    <string name="name" value="Tino Card"/>
+    <string name="desc" value="A card featuring Tino."/>
+  </imgdir>
+  <imgdir name="2380021">
+    <string name="name" value="Golden Pig Card"/>
+    <string name="desc" value="A card featuring Golden Pig."/>
+  </imgdir>
+  <imgdir name="2380022">
+    <string name="name" value="Tiv Card"/>
+    <string name="desc" value="A card featuring Tiv."/>
+  </imgdir>
+  <imgdir name="2380023">
+    <string name="name" value="Timu Card"/>
+    <string name="desc" value="A card featuring Timu."/>
+  </imgdir>
+  <imgdir name="2380024">
+    <string name="name" value="Tiru Card"/>
+    <string name="desc" value="A card featuring Tiru."/>
+  </imgdir>
+  <imgdir name="2380025">
+    <string name="name" value="Frog Card"/>
+    <string name="desc" value="A card featuring Frog."/>
+  </imgdir>
+  <imgdir name="2380026">
+    <string name="name" value="Tiguru Card"/>
+    <string name="desc" value="A card featuring Tiguru."/>
+  </imgdir>
+  <imgdir name="2380027">
+    <string name="name" value="Candle Monster Card"/>
+    <string name="desc" value="A card featuring Candle Monster."/>
+  </imgdir>
+  <imgdir name="2380028">
+    <string name="name" value="Coke Snail Card"/>
+    <string name="desc" value="A card featuring Coke Snail."/>
+  </imgdir>
+  <imgdir name="2380029">
+    <string name="name" value="Goblin Fire Card"/>
+    <string name="desc" value="A card featuring Goblin Fire."/>
+  </imgdir>
+  <imgdir name="2380030">
+    <string name="name" value="Anniversary Cake Card"/>
+    <string name="desc" value="A card featuring Anniversary Cake."/>
+  </imgdir>
+  <imgdir name="2380031">
+    <string name="name" value="White Rooster Card"/>
+    <string name="desc" value="A card featuring White Rooster."/>
+  </imgdir>
+  <imgdir name="2380032">
+    <string name="name" value="Coke Slime Card"/>
+    <string name="desc" value="A card featuring Coke Slime."/>
+  </imgdir>
+  <imgdir name="2381039">
+    <string name="name" value="Biner Card"/>
+    <string name="desc" value="A card featuring Biner."/>
+  </imgdir>
+  <imgdir name="2381040">
+    <string name="name" value="Street Slime Card"/>
+    <string name="desc" value="A card featuring Street Slime."/>
+  </imgdir>
+  <imgdir name="2381041">
+    <string name="name" value="Blood Stirge Card"/>
+    <string name="desc" value="A card featuring Blood Stirge."/>
+  </imgdir>
+  <imgdir name="2381042">
+    <string name="name" value="Birthday Candle Card"/>
+    <string name="desc" value="A card featuring Birthday Candle."/>
+  </imgdir>
+  <imgdir name="2381043">
+    <string name="name" value="Rotting Skeleton Card"/>
+    <string name="desc" value="A card featuring Rotting Skeleton."/>
+  </imgdir>
+  <imgdir name="2381044">
+    <string name="name" value="Coke Mushroom Card"/>
+    <string name="desc" value="A card featuring Coke Mushroom."/>
+  </imgdir>
+  <imgdir name="2381045">
+    <string name="name" value="Rooster Card"/>
+    <string name="desc" value="A card featuring Rooster."/>
+  </imgdir>
+  <imgdir name="2381046">
+    <string name="name" value="Urban Fungus Card"/>
+    <string name="desc" value="A card featuring Urban Fungus."/>
+  </imgdir>
+  <imgdir name="2381047">
+    <string name="name" value="Duck Card"/>
+    <string name="desc" value="A card featuring Duck."/>
+  </imgdir>
+  <imgdir name="2381048">
+    <string name="name" value="Devil Slime Card"/>
+    <string name="desc" value="A card featuring Devil Slime."/>
+  </imgdir>
+  <imgdir name="2381049">
+    <string name="name" value="Batoo Card"/>
+    <string name="desc" value="A card featuring Batoo."/>
+  </imgdir>
+  <imgdir name="2381050">
+    <string name="name" value="Crow Card"/>
+    <string name="desc" value="A card featuring Crow."/>
+  </imgdir>
+  <imgdir name="2381051">
+    <string name="name" value="Killa Bee Card"/>
+    <string name="desc" value="A card featuring Killa Bee."/>
+  </imgdir>
+  <imgdir name="2381052">
+    <string name="name" value="Strawberry Cake Card"/>
+    <string name="desc" value="A card featuring Strawberry Cake."/>
+  </imgdir>
+  <imgdir name="2381053">
+    <string name="name" value="Coketump Card"/>
+    <string name="desc" value="A card featuring Coketump."/>
+  </imgdir>
+  <imgdir name="2381054">
+    <string name="name" value="Sheep Card"/>
+    <string name="desc" value="A card featuring Sheep."/>
+  </imgdir>
+  <imgdir name="2381055">
+    <string name="name" value="Boomer Card"/>
+    <string name="desc" value="A card featuring Boomer."/>
+  </imgdir>
+  <imgdir name="2381056">
+    <string name="name" value="Stopnow Card"/>
+    <string name="desc" value="A card featuring Stopnow."/>
+  </imgdir>
+  <imgdir name="2381057">
+    <string name="name" value="Adin Card"/>
+    <string name="desc" value="A card featuring Adin."/>
+  </imgdir>
+  <imgdir name="2381058">
+    <string name="name" value="Tylus Card"/>
+    <string name="desc" value="A card featuring Tylus."/>
+  </imgdir>
+  <imgdir name="2381059">
+    <string name="name" value="Fire Raccoon Card"/>
+    <string name="desc" value="A card featuring Fire Raccoon."/>
+  </imgdir>
+  <imgdir name="2381060">
+    <string name="name" value="Cloud Fox Card"/>
+    <string name="desc" value="A card featuring Cloud Fox."/>
+  </imgdir>
+  <imgdir name="2381061">
+    <string name="name" value="Cake Monster Card"/>
+    <string name="desc" value="A card featuring Cake Monster."/>
+  </imgdir>
+  <imgdir name="2381062">
+    <string name="name" value="Magik Fierry B Card"/>
+    <string name="desc" value="A card featuring Magik Fierry B."/>
+  </imgdir>
+  <imgdir name="2381063">
+    <string name="name" value="Mighty Maple Eater Card"/>
+    <string name="desc" value="A card featuring Mighty Maple Eater."/>
+  </imgdir>
+  <imgdir name="2381064">
+    <string name="name" value="Psycho Jack Card"/>
+    <string name="desc" value="A card featuring Psycho Jack."/>
+  </imgdir>
+  <imgdir name="2381065">
+    <string name="name" value="Coketump Lite Card"/>
+    <string name="desc" value="A card featuring Coketump Lite."/>
+  </imgdir>
+  <imgdir name="2381066">
+    <string name="name" value="Goat Card"/>
+    <string name="desc" value="A card featuring Goat."/>
+  </imgdir>
+  <imgdir name="2382073">
+    <string name="name" value="Sakura Cellion Card"/>
+    <string name="desc" value="A card featuring Sakura Cellion."/>
+  </imgdir>
+  <imgdir name="2382074">
+    <string name="name" value="Nospeed Card"/>
+    <string name="desc" value="A card featuring Nospeed."/>
+  </imgdir>
+  <imgdir name="2382075">
+    <string name="name" value="Cow Card"/>
+    <string name="desc" value="A card featuring Cow."/>
+  </imgdir>
+  <imgdir name="2382077">
+    <string name="name" value="Cherry Bubble Tea Card"/>
+    <string name="desc" value="A card featuring Cherry Bubble Tea."/>
+  </imgdir>
+  <imgdir name="2382078">
+    <string name="name" value="Yeti Doll Card"/>
+    <string name="desc" value="A card featuring Yeti Doll."/>
+  </imgdir>
+  <imgdir name="2382079">
+    <string name="name" value="Jr. Pepe Doll Card"/>
+    <string name="desc" value="A card featuring Jr. Pepe Doll."/>
+  </imgdir>
+  <imgdir name="2382080">
+    <string name="name" value="Boogie Card"/>
+    <string name="desc" value="A card featuring Boogie."/>
+  </imgdir>
+  <imgdir name="2382081">
+    <string name="name" value="OctoPirate Card"/>
+    <string name="desc" value="A card featuring OctoPirate."/>
+  </imgdir>
+  <imgdir name="2382082">
+    <string name="name" value="Tiguru of Exam Card"/>
+    <string name="desc" value="A card featuring Tiguru of Exam."/>
+  </imgdir>
+  <imgdir name="2382083">
+    <string name="name" value="Scarred Bear Card"/>
+    <string name="desc" value="A card featuring Scarred Bear."/>
+  </imgdir>
+  <imgdir name="2382084">
+    <string name="name" value="Coke Pig Card"/>
+    <string name="desc" value="A card featuring Coke Pig."/>
+  </imgdir>
+  <imgdir name="2382085">
+    <string name="name" value="Black Goat Card"/>
+    <string name="desc" value="A card featuring Black Goat."/>
+  </imgdir>
+  <imgdir name="2382086">
+    <string name="name" value="Mango Bubble Tea Card"/>
+    <string name="desc" value="A card featuring Mango Bubble Tea."/>
+  </imgdir>
+  <imgdir name="2382087">
+    <string name="name" value="Fire Tusk Card"/>
+    <string name="desc" value="A card featuring Fire Tusk."/>
+  </imgdir>
+  <imgdir name="2382088">
+    <string name="name" value="Melon Bubble Tea Card"/>
+    <string name="desc" value="A card featuring Melon Bubble Tea."/>
+  </imgdir>
+  <imgdir name="2382089">
+    <string name="name" value="Black Sheep Card"/>
+    <string name="desc" value="A card featuring Black Sheep."/>
+  </imgdir>
+  <imgdir name="2382090">
+    <string name="name" value="Indigo Eye Card"/>
+    <string name="desc" value="A card featuring Indigo Eye."/>
+  </imgdir>
+  <imgdir name="2382091">
+    <string name="name" value="Coke Seal Card"/>
+    <string name="desc" value="A card featuring Coke Seal."/>
+  </imgdir>
+  <imgdir name="2382097">
+    <string name="name" value="Plow Ox Card"/>
+    <string name="desc" value="A card featuring Plow Ox."/>
+  </imgdir>
+  <imgdir name="2382098">
+    <string name="name" value="Pyramid Skeleton Card"/>
+    <string name="desc" value="A card featuring Pyramid Skeleton."/>
+  </imgdir>
+  <imgdir name="2382099">
+    <string name="name" value="Mummy Card"/>
+    <string name="desc" value="A card featuring Mummy."/>
+  </imgdir>
+  <imgdir name="2382100">
+    <string name="name" value="Pharaoh Snake Card"/>
+    <string name="desc" value="A card featuring Pharaoh Snake."/>
+  </imgdir>
+  <imgdir name="2382101">
+    <string name="name" value="Anubis Card"/>
+    <string name="desc" value="A card featuring Anubis."/>
+  </imgdir>
+  <imgdir name="2382102">
+    <string name="name" value="Blue Perfume Card"/>
+    <string name="desc" value="A card featuring Blue Perfume."/>
+  </imgdir>
+  <imgdir name="2382103">
+    <string name="name" value="Paper Lantern Ghost Card"/>
+    <string name="desc" value="A card featuring Paper Lantern Ghost."/>
+  </imgdir>
+  <imgdir name="2382104">
+    <string name="name" value="Crystal Boar Card"/>
+    <string name="desc" value="A card featuring Crystal Boar."/>
+  </imgdir>
+  <imgdir name="2382105">
+    <string name="name" value="Nightmare Card"/>
+    <string name="desc" value="A card featuring Nightmare."/>
+  </imgdir>
+  <imgdir name="2382106">
+    <string name="name" value="Baby typhon Card"/>
+    <string name="desc" value="A card featuring Baby typhon."/>
+  </imgdir>
+  <imgdir name="2382107">
+    <string name="name" value="Angry Strawberry Cake Card"/>
+    <string name="desc" value="A card featuring Angry Strawberry Cake."/>
+  </imgdir>
+  <imgdir name="2382108">
+    <string name="name" value="Red Lizard Card"/>
+    <string name="desc" value="A card featuring Red Lizard."/>
+  </imgdir>
+  <imgdir name="2382109">
+    <string name="name" value="Yellow Perfume Card"/>
+    <string name="desc" value="A card featuring Yellow Perfume."/>
+  </imgdir>
+  <imgdir name="2382110">
+    <string name="name" value="Electrophant Card"/>
+    <string name="desc" value="A card featuring Electrophant."/>
+  </imgdir>
+  <imgdir name="2382111">
+    <string name="name" value="Iron Hook Card"/>
+    <string name="desc" value="A card featuring Iron Hook."/>
+  </imgdir>
+  <imgdir name="2382112">
+    <string name="name" value="Pink Perfume Card"/>
+    <string name="desc" value="A card featuring Pink Perfume."/>
+  </imgdir>
+  <imgdir name="2382113">
+    <string name="name" value="Zeta Card"/>
+    <string name="desc" value="A card featuring Zeta."/>
+  </imgdir>
+  <imgdir name="2382114">
+    <string name="name" value="Play Seal Card"/>
+    <string name="desc" value="A card featuring Play Seal."/>
+  </imgdir>
+  <imgdir name="2382115">
+    <string name="name" value="Kid Mannequin Card"/>
+    <string name="desc" value="A card featuring Kid Mannequin."/>
+  </imgdir>
+  <imgdir name="2382116">
+    <string name="name" value="Deathly Fear Card"/>
+    <string name="desc" value="A card featuring Deathly Fear."/>
+  </imgdir>
+  <imgdir name="2382117">
+    <string name="name" value="Octobunny Card"/>
+    <string name="desc" value="A card featuring Octobunny."/>
+  </imgdir>
+  <imgdir name="2382118">
+    <string name="name" value="Female Mannequin Card"/>
+    <string name="desc" value="A card featuring Female Mannequin."/>
+  </imgdir>
+  <imgdir name="2382119">
+    <string name="name" value="I.AM.ROBOT Card"/>
+    <string name="desc" value="A card featuring I.AM.ROBOT."/>
+  </imgdir>
+  <imgdir name="2382120">
+    <string name="name" value="Male Mannequin Card"/>
+    <string name="desc" value="A card featuring Male Mannequin."/>
+  </imgdir>
+  <imgdir name="2382121">
+    <string name="name" value="Giant Nependeath Card"/>
+    <string name="desc" value="A card featuring Giant Nependeath."/>
+  </imgdir>
+  <imgdir name="2382122">
+    <string name="name" value="Big Cloud Fox Card"/>
+    <string name="desc" value="A card featuring Big Cloud Fox."/>
+  </imgdir>
+  <imgdir name="2382123">
+    <string name="name" value="Extra A Card"/>
+    <string name="desc" value="A card featuring Extra A."/>
+  </imgdir>
+  <imgdir name="2382124">
+    <string name="name" value="Leprechaun Card"/>
+    <string name="desc" value="A card featuring Leprechaun."/>
+  </imgdir>
+  <imgdir name="2382125">
+    <string name="name" value="Deluxe Candle Card"/>
+    <string name="desc" value="A card featuring Deluxe Candle."/>
+  </imgdir>
+  <imgdir name="2382126">
+    <string name="name" value="Chlorotrap Card"/>
+    <string name="desc" value="A card featuring Chlorotrap."/>
+  </imgdir>
+  <imgdir name="2382127">
+    <string name="name" value="Igloo Turtle Card"/>
+    <string name="desc" value="A card featuring Igloo Turtle."/>
+  </imgdir>
+  <imgdir name="2383050">
+    <string name="name" value="Latest Hits Compilation Card"/>
+    <string name="desc" value="A card featuring Latest Hits Compilation."/>
+  </imgdir>
+  <imgdir name="2383051">
+    <string name="name" value="Greatest Oldies Card"/>
+    <string name="desc" value="A card featuring Greatest Oldies."/>
+  </imgdir>
+  <imgdir name="2383052">
+    <string name="name" value="Extra B Card"/>
+    <string name="desc" value="A card featuring Extra B."/>
+  </imgdir>
+  <imgdir name="2383053">
+    <string name="name" value="Emo Slime Card"/>
+    <string name="desc" value="A card featuring Emo Slime."/>
+  </imgdir>
+  <imgdir name="2383054">
+    <string name="name" value="Cheap Amplifier Card"/>
+    <string name="desc" value="A card featuring Cheap Amplifier."/>
+  </imgdir>
+  <imgdir name="2383055">
+    <string name="name" value="Trucker Card"/>
+    <string name="desc" value="A card featuring Trucker."/>
+  </imgdir>
+  <imgdir name="2383060">
+    <string name="name" value="Fancy Amplifier Card"/>
+    <string name="desc" value="A card featuring Fancy Amplifier."/>
+  </imgdir>
+  <imgdir name="2383061">
+    <string name="name" value="Extra C Card"/>
+    <string name="desc" value="A card featuring Extra C."/>
+  </imgdir>
+  <imgdir name="2383062">
+    <string name="name" value="Gryphon Card"/>
+    <string name="desc" value="A card featuring Gryphon."/>
+  </imgdir>
+  <imgdir name="2383063">
+    <string name="name" value="Sophilia Doll Ground Card"/>
+    <string name="desc" value="A card featuring Sophilia Doll Ground."/>
+  </imgdir>
+  <imgdir name="2383064">
+    <string name="name" value="Sophilia Doll Card"/>
+    <string name="desc" value="A card featuring Sophilia Doll."/>
+  </imgdir>
+  <imgdir name="2383065">
+    <string name="name" value="Phantom Tree Card"/>
+    <string name="desc" value="A card featuring Phantom Tree."/>
+  </imgdir>
+  <imgdir name="2383066">
+    <string name="name" value="Dead Scarecrow Card"/>
+    <string name="desc" value="A card featuring Dead Scarecrow."/>
+  </imgdir>
+  <imgdir name="2383067">
+    <string name="name" value="Tippo Red Card"/>
+    <string name="desc" value="A card featuring Tippo Red."/>
+  </imgdir>
+  <imgdir name="2383068">
+    <string name="name" value="Coke Golem Card"/>
+    <string name="desc" value="A card featuring Coke Golem."/>
+  </imgdir>
+  <imgdir name="2383069">
+    <string name="name" value="Croko Card"/>
+    <string name="desc" value="A card featuring Croko."/>
+  </imgdir>
+  <imgdir name="2383070">
+    <string name="name" value="Dark Fission Card"/>
+    <string name="desc" value="A card featuring Dark Fission."/>
+  </imgdir>
+  <imgdir name="2383071">
+    <string name="name" value="Tippo Blue Card"/>
+    <string name="desc" value="A card featuring Tippo Blue."/>
+  </imgdir>
+  <imgdir name="2383072">
+    <string name="name" value="Willi Card"/>
+    <string name="desc" value="A card featuring Willi."/>
+  </imgdir>
+  <imgdir name="2383073">
+    <string name="name" value="Oly Oly Card"/>
+    <string name="desc" value="A card featuring Oly Oly."/>
+  </imgdir>
+  <imgdir name="2383074">
+    <string name="name" value="Pac Pinky Card"/>
+    <string name="desc" value="A card featuring Pac Pinky."/>
+  </imgdir>
+  <imgdir name="2383075">
+    <string name="name" value="Ghost Pixie Card"/>
+    <string name="desc" value="A card featuring Ghost Pixie."/>
+  </imgdir>
+  <imgdir name="2383076">
+    <string name="name" value="Scaredy Scarlion Card"/>
+    <string name="desc" value="A card featuring Scaredy Scarlion."/>
+  </imgdir>
+  <imgdir name="2383077">
+    <string name="name" value="Ratatula Card"/>
+    <string name="desc" value="A card featuring Ratatula."/>
+  </imgdir>
+  <imgdir name="2383078">
+    <string name="name" value="Blin Card"/>
+    <string name="desc" value="A card featuring Blin."/>
+  </imgdir>
+  <imgdir name="2383079">
+    <string name="name" value="Flying Boogie Card"/>
+    <string name="desc" value="A card featuring Flying Boogie."/>
+  </imgdir>
+  <imgdir name="2383080">
+    <string name="name" value="Nightghost Card"/>
+    <string name="desc" value="A card featuring Nightghost."/>
+  </imgdir>
+  <imgdir name="2383081">
+    <string name="name" value="Water Goblin Card"/>
+    <string name="desc" value="A card featuring Water Goblin."/>
+  </imgdir>
+  <imgdir name="2383082">
+    <string name="name" value="Voodoo Card"/>
+    <string name="desc" value="A card featuring Voodoo."/>
+  </imgdir>
+  <imgdir name="2383083">
+    <string name="name" value="Hoodoo Card"/>
+    <string name="desc" value="A card featuring Hoodoo."/>
+  </imgdir>
+  <imgdir name="2383084">
+    <string name="name" value="Chocolate Cake Card"/>
+    <string name="desc" value="A card featuring Chocolate Cake."/>
+  </imgdir>
+  <imgdir name="2383085">
+    <string name="name" value="Python Card"/>
+    <string name="desc" value="A card featuring Python."/>
+  </imgdir>
+  <imgdir name="2383086">
+    <string name="name" value="Selkie Jr. Card"/>
+    <string name="desc" value="A card featuring Selkie Jr.."/>
+  </imgdir>
+  <imgdir name="2383087">
+    <string name="name" value="Ice Golem Card"/>
+    <string name="desc" value="A card featuring Ice Golem."/>
+  </imgdir>
+  <imgdir name="2384041">
+    <string name="name" value="Rodeo Card"/>
+    <string name="desc" value="A card featuring Rodeo."/>
+  </imgdir>
+  <imgdir name="2384042">
+    <string name="name" value="Jr. Gargoyle Card"/>
+    <string name="desc" value="A card featuring Jr. Gargoyle."/>
+  </imgdir>
+  <imgdir name="2384043">
+    <string name="name" value="Poisoned Lord Tree Card"/>
+    <string name="desc" value="A card featuring Poisoned Lord Tree."/>
+  </imgdir>
+  <imgdir name="2384044">
+    <string name="name" value="Tree Road Card"/>
+    <string name="desc" value="A card featuring Tree Road."/>
+  </imgdir>
+  <imgdir name="2384045">
+    <string name="name" value="Leader A Card"/>
+    <string name="desc" value="A card featuring Leader A."/>
+  </imgdir>
+  <imgdir name="2384046">
+    <string name="name" value="Muscle Stone Card"/>
+    <string name="desc" value="A card featuring Muscle Stone."/>
+  </imgdir>
+  <imgdir name="2384047">
+    <string name="name" value="Slimy Card"/>
+    <string name="desc" value="A card featuring Slimy."/>
+  </imgdir>
+  <imgdir name="2384048">
+    <string name="name" value="Leader B Card"/>
+    <string name="desc" value="A card featuring Leader B."/>
+  </imgdir>
+  <imgdir name="2384049">
+    <string name="name" value="Master Muscle Stone Card"/>
+    <string name="desc" value="A card featuring Master Muscle Stone."/>
+  </imgdir>
+  <imgdir name="2384050">
+    <string name="name" value="Poisoned Stone Bug Card"/>
+    <string name="desc" value="A card featuring Poisoned Stone Bug."/>
+  </imgdir>
+  <imgdir name="2384051">
+    <string name="name" value="Poison Flower Card"/>
+    <string name="desc" value="A card featuring Poison Flower."/>
+  </imgdir>
+  <imgdir name="2384052">
+    <string name="name" value="Charmer Card"/>
+    <string name="desc" value="A card featuring Charmer."/>
+  </imgdir>
+  <imgdir name="2384053">
+    <string name="name" value="Black Knight Card"/>
+    <string name="desc" value="A card featuring Black Knight."/>
+  </imgdir>
+  <imgdir name="2384054">
+    <string name="name" value="Myst Knight Card"/>
+    <string name="desc" value="A card featuring Myst Knight."/>
+  </imgdir>
+  <imgdir name="2384055">
+    <string name="name" value="Puppet Golem Card"/>
+    <string name="desc" value="A card featuring Puppet Golem."/>
+  </imgdir>
+  <imgdir name="2384056">
+    <string name="name" value="Gargoyle Card"/>
+    <string name="desc" value="A card featuring Gargoyle."/>
+  </imgdir>
+  <imgdir name="2384057">
+    <string name="name" value="Mr. Anchor Card"/>
+    <string name="desc" value="A card featuring Mr. Anchor."/>
+  </imgdir>
+  <imgdir name="2384058">
+    <string name="name" value="Jester Scarlion Card"/>
+    <string name="desc" value="A card featuring Jester Scarlion."/>
+  </imgdir>
+  <imgdir name="2384059">
+    <string name="name" value="Red Slime Card"/>
+    <string name="desc" value="A card featuring Red Slime."/>
+  </imgdir>
+  <imgdir name="2384060">
+    <string name="name" value="Tamable Hog Card"/>
+    <string name="desc" value="A card featuring Tamable Hog."/>
+  </imgdir>
+  <imgdir name="2384061">
+    <string name="name" value="Watchhog Card"/>
+    <string name="desc" value="A card featuring Watchhog."/>
+  </imgdir>
+  <imgdir name="2384062">
+    <string name="name" value="Juliet Card"/>
+    <string name="desc" value="A card featuring Juliet."/>
+  </imgdir>
+  <imgdir name="2384063">
+    <string name="name" value="Romeo Card"/>
+    <string name="desc" value="A card featuring Romeo."/>
+  </imgdir>
+  <imgdir name="2384064">
+    <string name="name" value="Windraider Card"/>
+    <string name="desc" value="A card featuring Windraider."/>
+  </imgdir>
+  <imgdir name="2384065">
+    <string name="name" value="Twisted Jester Card"/>
+    <string name="desc" value="A card featuring Twisted Jester."/>
+  </imgdir>
+  <imgdir name="2384066">
+    <string name="name" value="Yeti and Coketump Card"/>
+    <string name="desc" value="A card featuring Yeti and Coketump."/>
+  </imgdir>
+  <imgdir name="2384067">
+    <string name="name" value="Silver Slime Card"/>
+    <string name="desc" value="A card featuring Silver Slime."/>
+  </imgdir>
+  <imgdir name="2384068">
+    <string name="name" value="Gold Slime Card"/>
+    <string name="desc" value="A card featuring Gold Slime."/>
+  </imgdir>
+  <imgdir name="2384069">
+    <string name="name" value="Extra D Card"/>
+    <string name="desc" value="A card featuring Extra D."/>
+  </imgdir>
+  <imgdir name="2384070">
+    <string name="name" value="Froscola Card"/>
+    <string name="desc" value="A card featuring Froscola."/>
+  </imgdir>
+  <imgdir name="2384071">
+    <string name="name" value="Overlord A Card"/>
+    <string name="desc" value="A card featuring Overlord A."/>
+  </imgdir>
+  <imgdir name="2384072">
+    <string name="name" value="Overlord B Card"/>
+    <string name="desc" value="A card featuring Overlord B."/>
+  </imgdir>
+  <imgdir name="2384073">
+    <string name="name" value="Crimson Tree Card"/>
+    <string name="desc" value="A card featuring Crimson Tree."/>
+  </imgdir>
+  <imgdir name="2384074">
+    <string name="name" value="Yabber Doo Card"/>
+    <string name="desc" value="A card featuring Yabber Doo."/>
+  </imgdir>
+  <imgdir name="2384075">
+    <string name="name" value="Cyti Card"/>
+    <string name="desc" value="A card featuring Cyti."/>
+  </imgdir>
+  <imgdir name="2384076">
+    <string name="name" value="Robby Card"/>
+    <string name="desc" value="A card featuring Robby."/>
+  </imgdir>
+  <imgdir name="2384077">
+    <string name="name" value="Iruvata Card"/>
+    <string name="desc" value="A card featuring Iruvata."/>
+  </imgdir>
+  <imgdir name="2385024">
+    <string name="name" value="Mingu Card"/>
+    <string name="desc" value="A card featuring Mingu."/>
+  </imgdir>
+  <imgdir name="2385026">
+    <string name="name" value="Genin Card"/>
+    <string name="desc" value="A card featuring Genin."/>
+  </imgdir>
+  <imgdir name="2385027">
+    <string name="name" value="Wolf Spider Card"/>
+    <string name="desc" value="A card featuring Wolf Spider."/>
+  </imgdir>
+  <imgdir name="2385028">
+    <string name="name" value="Stormbreaker Card"/>
+    <string name="desc" value="A card featuring Stormbreaker."/>
+  </imgdir>
+  <imgdir name="2385029">
+    <string name="name" value="Afterlord Card"/>
+    <string name="desc" value="A card featuring Afterlord."/>
+  </imgdir>
+  <imgdir name="2385030">
+    <string name="name" value="Booper Scarlion Card"/>
+    <string name="desc" value="A card featuring Booper Scarlion."/>
+  </imgdir>
+  <imgdir name="2385031">
+    <string name="name" value="Prototype Lord Card"/>
+    <string name="desc" value="A card featuring Prototype Lord."/>
+  </imgdir>
+  <imgdir name="2385032">
+    <string name="name" value="Berserkie Card"/>
+    <string name="desc" value="A card featuring Berserkie."/>
+  </imgdir>
+  <imgdir name="2385033">
+    <string name="name" value="Maverick Type A Card"/>
+    <string name="desc" value="A card featuring Maverick Type A."/>
+  </imgdir>
+  <imgdir name="2385034">
+    <string name="name" value="Vikerola Card"/>
+    <string name="desc" value="A card featuring Vikerola."/>
+  </imgdir>
+  <imgdir name="2385035">
+    <string name="name" value="Maverick Type S Card"/>
+    <string name="desc" value="A card featuring Maverick Type S."/>
+  </imgdir>
+  <imgdir name="2385036">
+    <string name="name" value="Maverick Type D Card"/>
+    <string name="desc" value="A card featuring Maverick Type D."/>
+  </imgdir>
+  <imgdir name="2385037">
+    <string name="name" value="Firebrand Card"/>
+    <string name="desc" value="A card featuring Firebrand."/>
+  </imgdir>
+  <imgdir name="2385038">
+    <string name="name" value="Veetron Card"/>
+    <string name="desc" value="A card featuring Veetron."/>
+  </imgdir>
+  <imgdir name="2385039">
+    <string name="name" value="Imperial Guard Card"/>
+    <string name="desc" value="A card featuring Imperial Guard."/>
+  </imgdir>
+  <imgdir name="2385040">
+    <string name="name" value="Royal Guard Card"/>
+    <string name="desc" value="A card featuring Royal Guard."/>
+  </imgdir>
+  <imgdir name="2385041">
+    <string name="name" value="Gallopera Card"/>
+    <string name="desc" value="A card featuring Gallopera."/>
+  </imgdir>
+  <imgdir name="2385042">
+    <string name="name" value="Elderwraith Card"/>
+    <string name="desc" value="A card featuring Elderwraith."/>
+  </imgdir>
+  <imgdir name="2385043">
+    <string name="name" value="Slygie Card"/>
+    <string name="desc" value="A card featuring Slygie."/>
+  </imgdir>
+  <imgdir name="2386018">
+    <string name="name" value="Dreamy Ghost Card"/>
+    <string name="desc" value="A card featuring Dreamy Ghost."/>
+  </imgdir>
+  <imgdir name="2386019">
+    <string name="name" value="Ashigaru Card"/>
+    <string name="desc" value="A card featuring Ashigaru."/>
+  </imgdir>
+  <imgdir name="2386020">
+    <string name="name" value="Typhon Card"/>
+    <string name="desc" value="A card featuring Typhon."/>
+  </imgdir>
+  <imgdir name="2386025">
+    <string name="name" value="Nightshadow Card"/>
+    <string name="desc" value="A card featuring Nightshadow."/>
+  </imgdir>
+  <imgdir name="2386026">
+    <string name="name" value="Montrecer Card"/>
+    <string name="desc" value="A card featuring Montrecer."/>
+  </imgdir>
+  <imgdir name="2386027">
+    <string name="name" value="Petrifighter Card"/>
+    <string name="desc" value="A card featuring Petrifighter."/>
+  </imgdir>
+  <imgdir name="2386028">
+    <string name="name" value="Duku Card"/>
+    <string name="desc" value="A card featuring Duku."/>
+  </imgdir>
+  <imgdir name="2386029">
+    <string name="name" value="Crocky the Gatekeeper Card"/>
+    <string name="desc" value="A card featuring Crocky the Gatekeeper."/>
+  </imgdir>
+  <imgdir name="2386030">
+    <string name="name" value="Prison Guard Boar Card"/>
+    <string name="desc" value="A card featuring Prison Guard Boar."/>
+  </imgdir>
+  <imgdir name="2386031">
+    <string name="name" value="Prison Guard Rhino Card"/>
+    <string name="desc" value="A card featuring Prison Guard Rhino."/>
+  </imgdir>
+  <imgdir name="2386032">
+    <string name="name" value="Blood Reindeer Card"/>
+    <string name="desc" value="A card featuring Blood Reindeer."/>
+  </imgdir>
+  <imgdir name="2386033">
+    <string name="name" value="Chunin Card"/>
+    <string name="desc" value="A card featuring Chunin."/>
+  </imgdir>
+  <imgdir name="2386034">
+    <string name="name" value="Crimson Guardian Card"/>
+    <string name="desc" value="A card featuring Crimson Guardian."/>
+  </imgdir>
+  <imgdir name="2386035">
+    <string name="name" value="Bearwolf Card"/>
+    <string name="desc" value="A card featuring Bearwolf."/>
+  </imgdir>
+  <imgdir name="2386036">
+    <string name="name" value="Corrupted Wyvern Card"/>
+    <string name="desc" value="A card featuring Corrupted Wyvern."/>
+  </imgdir>
+  <imgdir name="2386037">
+    <string name="name" value="Corrupted Cornian Card"/>
+    <string name="desc" value="A card featuring Corrupted Cornian."/>
+  </imgdir>
+  <imgdir name="2386038">
+    <string name="name" value="Corrupted Skelegon Card"/>
+    <string name="desc" value="A card featuring Corrupted Skelegon."/>
+  </imgdir>
+  <imgdir name="2386039">
+    <string name="name" value="Corrupted Kentaurus Card"/>
+    <string name="desc" value="A card featuring Corrupted Kentaurus."/>
+  </imgdir>
+  <imgdir name="2387005">
+    <string name="name" value="Grey Vulture Card"/>
+    <string name="desc" value="A card featuring Grey Vulture."/>
+  </imgdir>
+  <imgdir name="2387014">
+    <string name="name" value="Castle Golem Card"/>
+    <string name="desc" value="A card featuring Castle Golem."/>
+  </imgdir>
+  <imgdir name="2387015">
+    <string name="name" value="Kunoichi Card"/>
+    <string name="desc" value="A card featuring Kunoichi."/>
+  </imgdir>
+  <imgdir name="2387016">
+    <string name="name" value="Angry Guard Dog Card"/>
+    <string name="desc" value="A card featuring Angry Guard Dog."/>
+  </imgdir>
+  <imgdir name="2387017">
+    <string name="name" value="Jonin Card"/>
+    <string name="desc" value="A card featuring Jonin."/>
+  </imgdir>
+  <imgdir name="2387018">
+    <string name="name" value="Wolf Underling Card"/>
+    <string name="desc" value="A card featuring Wolf Underling."/>
+  </imgdir>
+  <imgdir name="2387019">
+    <string name="name" value="Ninto Card"/>
+    <string name="desc" value="A card featuring Ninto."/>
+  </imgdir>
+  <imgdir name="2387020">
+    <string name="name" value="Mutant Snail Card"/>
+    <string name="desc" value="A card featuring Mutant Snail."/>
+  </imgdir>
+  <imgdir name="2387021">
+    <string name="name" value="Mutant Tino Card"/>
+    <string name="desc" value="A card featuring Mutant Tino."/>
+  </imgdir>
+  <imgdir name="2387022">
+    <string name="name" value="Corrupted Chief Memory Guardian Card"/>
+    <string name="desc" value="A card featuring Corrupted Chief Memory Guardian."/>
+  </imgdir>
+  <imgdir name="2387023">
+    <string name="name" value="Mutant Orange Mushroom Card"/>
+    <string name="desc" value="A card featuring Mutant Orange Mushroom."/>
+  </imgdir>
+  <imgdir name="2387024">
+    <string name="name" value="Mutant Tiru Card"/>
+    <string name="desc" value="A card featuring Mutant Tiru."/>
+  </imgdir>
+  <imgdir name="2387025">
+    <string name="name" value="Corrupted Time Monk Trainee Card"/>
+    <string name="desc" value="A card featuring Corrupted Time Monk Trainee."/>
+  </imgdir>
+  <imgdir name="2387026">
+    <string name="name" value="Mutant Slime Card"/>
+    <string name="desc" value="A card featuring Mutant Slime."/>
+  </imgdir>
+  <imgdir name="2387027">
+    <string name="name" value="Mutant Tiguru Card"/>
+    <string name="desc" value="A card featuring Mutant Tiguru."/>
+  </imgdir>
+  <imgdir name="2387028">
+    <string name="name" value="Mutant Ribbon Pig Card"/>
+    <string name="desc" value="A card featuring Mutant Ribbon Pig."/>
+  </imgdir>
+  <imgdir name="2387029">
+    <string name="name" value="Official Knight A Card"/>
+    <string name="desc" value="A card featuring Official Knight A."/>
+  </imgdir>
+  <imgdir name="2387030">
+    <string name="name" value="Dawn Card"/>
+    <string name="desc" value="A card featuring Dawn."/>
+  </imgdir>
+  <imgdir name="2387031">
+    <string name="name" value="Official Knight B Card"/>
+    <string name="desc" value="A card featuring Official Knight B."/>
+  </imgdir>
+  <imgdir name="2387032">
+    <string name="name" value="Blaze Card"/>
+    <string name="desc" value="A card featuring Blaze."/>
+  </imgdir>
+  <imgdir name="2387033">
+    <string name="name" value="Official Knight C Card"/>
+    <string name="desc" value="A card featuring Official Knight C."/>
+  </imgdir>
+  <imgdir name="2387034">
+    <string name="name" value="Wind Card"/>
+    <string name="desc" value="A card featuring Wind."/>
+  </imgdir>
+  <imgdir name="2387035">
+    <string name="name" value="Official Knight D Card"/>
+    <string name="desc" value="A card featuring Official Knight D."/>
+  </imgdir>
+  <imgdir name="2387036">
+    <string name="name" value="Night Card"/>
+    <string name="desc" value="A card featuring Night."/>
+  </imgdir>
+  <imgdir name="2387037">
+    <string name="name" value="Official Knight E Card"/>
+    <string name="desc" value="A card featuring Official Knight E."/>
+  </imgdir>
+  <imgdir name="2387038">
+    <string name="name" value="Thunder Card"/>
+    <string name="desc" value="A card featuring Thunder."/>
+  </imgdir>
+  <imgdir name="2387039">
+    <string name="name" value="Advanced Knight A Card"/>
+    <string name="desc" value="A card featuring Advanced Knight A."/>
+  </imgdir>
+  <imgdir name="2387040">
+    <string name="name" value="Advanced Knight B Card"/>
+    <string name="desc" value="A card featuring Advanced Knight B."/>
+  </imgdir>
+  <imgdir name="2387041">
+    <string name="name" value="Advanced Knight C Card"/>
+    <string name="desc" value="A card featuring Advanced Knight C."/>
+  </imgdir>
+  <imgdir name="2387042">
+    <string name="name" value="Advanced Knight D Card"/>
+    <string name="desc" value="A card featuring Advanced Knight D."/>
+  </imgdir>
+  <imgdir name="2387043">
+    <string name="name" value="Advanced Knight E Card"/>
+    <string name="desc" value="A card featuring Advanced Knight E."/>
+  </imgdir>
+  <imgdir name="2387044">
+    <string name="name" value="Swollen Stump Card"/>
+    <string name="desc" value="A card featuring Swollen Stump."/>
+  </imgdir>
+  <imgdir name="2387045">
+    <string name="name" value="Swollen Dark Stump Card"/>
+    <string name="desc" value="A card featuring Swollen Dark Stump."/>
+  </imgdir>
+  <imgdir name="2387046">
+    <string name="name" value="Swollen Axe Stump Card"/>
+    <string name="desc" value="A card featuring Swollen Axe Stump."/>
+  </imgdir>
+  <imgdir name="2387047">
+    <string name="name" value="Pillaging Wild Boar Card"/>
+    <string name="desc" value="A card featuring Pillaging Wild Boar."/>
+  </imgdir>
+  <imgdir name="2387048">
+    <string name="name" value="Pillaging Iron Boar Card"/>
+    <string name="desc" value="A card featuring Pillaging Iron Boar."/>
+  </imgdir>
+  <imgdir name="2387049">
+    <string name="name" value="Pillaging Fire Boars Card"/>
+    <string name="desc" value="A card featuring Pillaging Fire Boars."/>
+  </imgdir>
+  <imgdir name="2387050">
+    <string name="name" value="Sinister Wooden Mask Card"/>
+    <string name="desc" value="A card featuring Sinister Wooden Mask."/>
+  </imgdir>
+  <imgdir name="2387051">
+    <string name="name" value="Sinister Rocky Mask Card"/>
+    <string name="desc" value="A card featuring Sinister Rocky Mask."/>
+  </imgdir>
+  <imgdir name="2387052">
+    <string name="name" value="Sinister Steel Mask Card"/>
+    <string name="desc" value="A card featuring Sinister Steel Mask."/>
+  </imgdir>
+  <imgdir name="2387053">
+    <string name="name" value="Ancient Golem Card"/>
+    <string name="desc" value="A card featuring Ancient Golem."/>
+  </imgdir>
+  <imgdir name="2387054">
+    <string name="name" value="Ancient Dark Golem Card"/>
+    <string name="desc" value="A card featuring Ancient Dark Golem."/>
+  </imgdir>
+  <imgdir name="2387055">
+    <string name="name" value="Ancient Mixed Golem Card"/>
+    <string name="desc" value="A card featuring Ancient Mixed Golem."/>
+  </imgdir>
+  <imgdir name="2387056">
+    <string name="name" value="Happy Erda Card"/>
+    <string name="desc" value="A card featuring Happy Erda."/>
+  </imgdir>
+  <imgdir name="2387057">
+    <string name="name" value="Dark Muscle Stone Card"/>
+    <string name="desc" value="A card featuring Dark Muscle Stone."/>
+  </imgdir>
+  <imgdir name="2387058">
+    <string name="name" value="Buff Rocky in the Dark Card"/>
+    <string name="desc" value="A card featuring Buff Rocky in the Dark."/>
+  </imgdir>
+  <imgdir name="2387059">
+    <string name="name" value="Flaming Raccoon Card"/>
+    <string name="desc" value="A card featuring Flaming Raccoon."/>
+  </imgdir>
+  <imgdir name="2387060">
+    <string name="name" value="Beef Eater Card"/>
+    <string name="desc" value="A card featuring Beef Eater."/>
+  </imgdir>
+  <imgdir name="2387061">
+    <string name="name" value="Raging Erda Card"/>
+    <string name="desc" value="A card featuring Raging Erda."/>
+  </imgdir>
+  <imgdir name="2387062">
+    <string name="name" value="Sad Erda Card"/>
+    <string name="desc" value="A card featuring Sad Erda."/>
+  </imgdir>
+  <imgdir name="2387063">
+    <string name="name" value="Joyful Erda Card"/>
+    <string name="desc" value="A card featuring Joyful Erda."/>
+  </imgdir>
+  <imgdir name="2387064">
+    <string name="name" value="Stone Erda Card"/>
+    <string name="desc" value="A card featuring Stone Erda."/>
+  </imgdir>
+  <imgdir name="2387065">
+    <string name="name" value="Blazing Erda Card"/>
+    <string name="desc" value="A card featuring Blazing Erda."/>
+  </imgdir>
+  <imgdir name="2387066">
+    <string name="name" value="Soulful Erda Card"/>
+    <string name="desc" value="A card featuring Soulful Erda."/>
+  </imgdir>
+  <imgdir name="2387067">
+    <string name="name" value="Tranquil Erda Card"/>
+    <string name="desc" value="A card featuring Tranquil Erda."/>
+  </imgdir>
+  <imgdir name="2387068">
+    <string name="name" value="Arma&apos;s Follower Card"/>
+    <string name="desc" value="A card featuring Arma&apos;s Follower."/>
+  </imgdir>
+  <imgdir name="2387069">
+    <string name="name" value="Pinedeer Card"/>
+    <string name="desc" value="A card featuring Pinedeer."/>
+  </imgdir>
+  <imgdir name="2387070">
+    <string name="name" value="Ewenana Card"/>
+    <string name="desc" value="A card featuring Ewenana."/>
+  </imgdir>
+  <imgdir name="2387071">
+    <string name="name" value="Bighorn Pinedeer Card"/>
+    <string name="desc" value="A card featuring Bighorn Pinedeer."/>
+  </imgdir>
+  <imgdir name="2387072">
+    <string name="name" value="Ramanana Card"/>
+    <string name="desc" value="A card featuring Ramanana."/>
+  </imgdir>
+  <imgdir name="2387073">
+    <string name="name" value="Flyon Card"/>
+    <string name="desc" value="A card featuring Flyon."/>
+  </imgdir>
+  <imgdir name="2387074">
+    <string name="name" value="Unripe Wolfruit Card"/>
+    <string name="desc" value="A card featuring Unripe Wolfruit."/>
+  </imgdir>
+  <imgdir name="2387075">
+    <string name="name" value="Angry Flyon Card"/>
+    <string name="desc" value="A card featuring Angry Flyon."/>
+  </imgdir>
+  <imgdir name="2387076">
+    <string name="name" value="Ripe Wolfruit Card"/>
+    <string name="desc" value="A card featuring Ripe Wolfruit."/>
+  </imgdir>
+  <imgdir name="2387077">
+    <string name="name" value="Green Catfish Card"/>
+    <string name="desc" value="A card featuring Green Catfish."/>
+  </imgdir>
+  <imgdir name="2387078">
+    <string name="name" value="Rhyturtle Card"/>
+    <string name="desc" value="A card featuring Rhyturtle."/>
+  </imgdir>
+  <imgdir name="2387079">
+    <string name="name" value="Blue Catfish Card"/>
+    <string name="desc" value="A card featuring Blue Catfish."/>
+  </imgdir>
+  <imgdir name="2387080">
+    <string name="name" value="Boss Rhyturtle Card"/>
+    <string name="desc" value="A card featuring Boss Rhyturtle."/>
+  </imgdir>
+  <imgdir name="2387081">
+    <string name="name" value="Crilia Card"/>
+    <string name="desc" value="A card featuring Crilia."/>
+  </imgdir>
+  <imgdir name="2387082">
+    <string name="name" value="Birdshark Card"/>
+    <string name="desc" value="A card featuring Birdshark."/>
+  </imgdir>
+  <imgdir name="2387083">
+    <string name="name" value="Patriarch Crilia Card"/>
+    <string name="desc" value="A card featuring Patriarch Crilia."/>
+  </imgdir>
+  <imgdir name="2387084">
+    <string name="name" value="Patriarch Birdshark Card"/>
+    <string name="desc" value="A card featuring Patriarch Birdshark."/>
+  </imgdir>
+  <imgdir name="2387085">
+    <string name="name" value="Paper Bag Alley Citizen Card"/>
+    <string name="desc" value="A card featuring Paper Bag Alley Citizen."/>
+  </imgdir>
+  <imgdir name="2387086">
+    <string name="name" value="Wood Board Alley Citizen Card"/>
+    <string name="desc" value="A card featuring Wood Board Alley Citizen."/>
+  </imgdir>
+  <imgdir name="2387087">
+    <string name="name" value="Gallina Card"/>
+    <string name="desc" value="A card featuring Gallina."/>
+  </imgdir>
+  <imgdir name="2387088">
+    <string name="name" value="Gallus Card"/>
+    <string name="desc" value="A card featuring Gallus."/>
+  </imgdir>
+  <imgdir name="2387089">
+    <string name="name" value="Angry Victory Plate Card"/>
+    <string name="desc" value="A card featuring Angry Victory Plate."/>
+  </imgdir>
+  <imgdir name="2387090">
+    <string name="name" value="Crooked Victory Plate Card"/>
+    <string name="desc" value="A card featuring Crooked Victory Plate."/>
+  </imgdir>
+  <imgdir name="2387091">
+    <string name="name" value="Angry Masquerade Citizen Card"/>
+    <string name="desc" value="A card featuring Angry Masquerade Citizen."/>
+  </imgdir>
+  <imgdir name="2387092">
+    <string name="name" value="Insane Masquerade Citizen Card"/>
+    <string name="desc" value="A card featuring Insane Masquerade Citizen."/>
+  </imgdir>
+  <imgdir name="2387093">
+    <string name="name" value="Weakened Dreamkeeper Card"/>
+    <string name="desc" value="A card featuring Weakened Dreamkeeper."/>
+  </imgdir>
+  <imgdir name="2387094">
+    <string name="name" value="Red Dancing Shoes Card"/>
+    <string name="desc" value="A card featuring Red Dancing Shoes."/>
+  </imgdir>
+  <imgdir name="2387095">
+    <string name="name" value="Dreamkeeper Card"/>
+    <string name="desc" value="A card featuring Dreamkeeper."/>
+  </imgdir>
+  <imgdir name="2387096">
+    <string name="name" value="Blue-eyed Gargoyle Card"/>
+    <string name="desc" value="A card featuring Blue-eyed Gargoyle."/>
+  </imgdir>
+  <imgdir name="2387097">
+    <string name="name" value="Red-eyed Gargoyle Card"/>
+    <string name="desc" value="A card featuring Red-eyed Gargoyle."/>
+  </imgdir>
+  <imgdir name="2387098">
+    <string name="name" value="Water Spirit Card"/>
+    <string name="desc" value="A card featuring Water Spirit."/>
+  </imgdir>
+  <imgdir name="2387099">
+    <string name="name" value="Sun Spirit Card"/>
+    <string name="desc" value="A card featuring Sun Spirit."/>
+  </imgdir>
+  <imgdir name="2387100">
+    <string name="name" value="Earth Spirit Card"/>
+    <string name="desc" value="A card featuring Earth Spirit."/>
+  </imgdir>
+  <imgdir name="2387101">
+    <string name="name" value="Snow Cloud Spirit Card"/>
+    <string name="desc" value="A card featuring Snow Cloud Spirit."/>
+  </imgdir>
+  <imgdir name="2387102">
+    <string name="name" value="Thunder Cloud Spirit Card"/>
+    <string name="desc" value="A card featuring Thunder Cloud Spirit."/>
+  </imgdir>
+  <imgdir name="2387103">
+    <string name="name" value="Toxic Spirit Card"/>
+    <string name="desc" value="A card featuring Toxic Spirit."/>
+  </imgdir>
+  <imgdir name="2387104">
+    <string name="name" value="Volatile Spirit Card"/>
+    <string name="desc" value="A card featuring Volatile Spirit."/>
+  </imgdir>
+  <imgdir name="2387105">
+    <string name="name" value="Xenoroid Echo Type A Card"/>
+    <string name="desc" value="A card featuring Xenoroid Echo Type A."/>
+  </imgdir>
+  <imgdir name="2387106">
+    <string name="name" value="Xenoroid Echo Type B Card"/>
+    <string name="desc" value="A card featuring Xenoroid Echo Type B."/>
+  </imgdir>
+  <imgdir name="2387107">
+    <string name="name" value="Befuddled Spirit Card"/>
+    <string name="desc" value="A card featuring Befuddled Spirit."/>
+  </imgdir>
+  <imgdir name="2387108">
+    <string name="name" value="Nameless Cat Card"/>
+    <string name="desc" value="A card featuring Nameless Cat."/>
+  </imgdir>
+  <imgdir name="2387109">
+    <string name="name" value="Anguished Spirit Card"/>
+    <string name="desc" value="A card featuring Anguished Spirit."/>
+  </imgdir>
+  <imgdir name="2387110">
+    <string name="name" value="Powerful Gangster Card"/>
+    <string name="desc" value="A card featuring Powerful Gangster."/>
+  </imgdir>
+  <imgdir name="2387111">
+    <string name="name" value="Strong Gangster Card"/>
+    <string name="desc" value="A card featuring Strong Gangster."/>
+  </imgdir>
+  <imgdir name="2387112">
+    <string name="name" value="Mournful Spirit Card"/>
+    <string name="desc" value="A card featuring Mournful Spirit."/>
+  </imgdir>
+  <imgdir name="2387113">
+    <string name="name" value="Blue Shadow Card"/>
+    <string name="desc" value="A card featuring Blue Shadow."/>
+  </imgdir>
+  <imgdir name="2387114">
+    <string name="name" value="Discordant Spirit Card"/>
+    <string name="desc" value="A card featuring Discordant Spirit."/>
+  </imgdir>
+  <imgdir name="2387115">
+    <string name="name" value="Red Shadow Card"/>
+    <string name="desc" value="A card featuring Red Shadow."/>
+  </imgdir>
+  <imgdir name="2387116">
+    <string name="name" value="Ahtuin Card"/>
+    <string name="desc" value="A card featuring Ahtuin."/>
+  </imgdir>
+  <imgdir name="2387117">
+    <string name="name" value="Experiment Gone Wrong Card"/>
+    <string name="desc" value="A card featuring Experiment Gone Wrong."/>
+  </imgdir>
+  <imgdir name="2387118">
+    <string name="name" value="Big Experiment Gone Wrong Card"/>
+    <string name="desc" value="A card featuring Big Experiment Gone Wrong."/>
+  </imgdir>
+  <imgdir name="2387119">
+    <string name="name" value="Atus Card"/>
+    <string name="desc" value="A card featuring Atus."/>
+  </imgdir>
+  <imgdir name="2387120">
+    <string name="name" value="Thralled Guard Card"/>
+    <string name="desc" value="A card featuring Thralled Guard."/>
+  </imgdir>
+  <imgdir name="2387121">
+    <string name="name" value="Bellalion Card"/>
+    <string name="desc" value="A card featuring Bellalion."/>
+  </imgdir>
+  <imgdir name="2387122">
+    <string name="name" value="Thralled Warhammer Knight Card"/>
+    <string name="desc" value="A card featuring Thralled Warhammer Knight."/>
+  </imgdir>
+  <imgdir name="2387123">
+    <string name="name" value="Bellalis Card"/>
+    <string name="desc" value="A card featuring Bellalis."/>
+  </imgdir>
+  <imgdir name="2387124">
+    <string name="name" value="Thralled Wizard Card"/>
+    <string name="desc" value="A card featuring Thralled Wizard."/>
+  </imgdir>
+  <imgdir name="2387125">
+    <string name="name" value="Aranya Card"/>
+    <string name="desc" value="A card featuring Aranya."/>
+  </imgdir>
+  <imgdir name="2387126">
+    <string name="name" value="Thralled Archer Card"/>
+    <string name="desc" value="A card featuring Thralled Archer."/>
+  </imgdir>
+  <imgdir name="2387127">
+    <string name="name" value="Aranea Card"/>
+    <string name="desc" value="A card featuring Aranea."/>
+  </imgdir>
+  <imgdir name="2387128">
+    <string name="name" value="Keeper of Light Card"/>
+    <string name="desc" value="A card featuring Keeper of Light."/>
+  </imgdir>
+  <imgdir name="2387129">
+    <string name="name" value="Keeper of Darkness Card"/>
+    <string name="desc" value="A card featuring Keeper of Darkness."/>
+  </imgdir>
+  <imgdir name="2387130">
+    <string name="name" value="Light Executor Card"/>
+    <string name="desc" value="A card featuring Light Executor."/>
+  </imgdir>
+  <imgdir name="2387131">
+    <string name="name" value="Dark Executor Card"/>
+    <string name="desc" value="A card featuring Dark Executor."/>
+  </imgdir>
+  <imgdir name="2387132">
+    <string name="name" value="Soot Beast Card"/>
+    <string name="desc" value="A card featuring Soot Beast."/>
+  </imgdir>
+  <imgdir name="2387133">
+    <string name="name" value="Soot Talon Card"/>
+    <string name="desc" value="A card featuring Soot Talon."/>
+  </imgdir>
+  <imgdir name="2387134">
+    <string name="name" value="Soot Slug Card"/>
+    <string name="desc" value="A card featuring Soot Slug."/>
+  </imgdir>
+  <imgdir name="2387135">
+    <string name="name" value="Soot Core Card"/>
+    <string name="desc" value="A card featuring Soot Core."/>
+  </imgdir>
+  <imgdir name="2387136">
+    <string name="name" value="Crushing Glare Card"/>
+    <string name="desc" value="A card featuring Crushing Glare."/>
+  </imgdir>
+  <imgdir name="2387137">
+    <string name="name" value="Burst Glare Card"/>
+    <string name="desc" value="A card featuring Burst Glare."/>
+  </imgdir>
+  <imgdir name="2387138">
+    <string name="name" value="Entangled Fragment Card"/>
+    <string name="desc" value="A card featuring Entangled Fragment."/>
+  </imgdir>
+  <imgdir name="2387139">
+    <string name="name" value="Faith Fragment Card"/>
+    <string name="desc" value="A card featuring Faith Fragment."/>
+  </imgdir>
+  <imgdir name="2387140">
+    <string name="name" value="Dark Miscreation Card"/>
+    <string name="desc" value="A card featuring Dark Miscreation."/>
+  </imgdir>
+  <imgdir name="2387141">
+    <string name="name" value="Dark Construct Card"/>
+    <string name="desc" value="A card featuring Dark Construct."/>
+  </imgdir>
+  <imgdir name="2387142">
+    <string name="name" value="Despairing Wing Card"/>
+    <string name="desc" value="A card featuring Despairing Wing."/>
+  </imgdir>
+  <imgdir name="2387143">
+    <string name="name" value="Despairing Blade Card"/>
+    <string name="desc" value="A card featuring Despairing Blade."/>
+  </imgdir>
+  <imgdir name="2387144">
+    <string name="name" value="Silent Knight Card"/>
+    <string name="desc" value="A card featuring Silent Knight."/>
+  </imgdir>
+  <imgdir name="2387145">
+    <string name="name" value="Silent Scout Card"/>
+    <string name="desc" value="A card featuring Silent Scout."/>
+  </imgdir>
+  <imgdir name="2387146">
+    <string name="name" value="Silent Rogue Card"/>
+    <string name="desc" value="A card featuring Silent Rogue."/>
+  </imgdir>
+  <imgdir name="2387147">
+    <string name="name" value="Silent Watchman Card"/>
+    <string name="desc" value="A card featuring Silent Watchman."/>
+  </imgdir>
+  <imgdir name="2387148">
+    <string name="name" value="Silent Assassin Card"/>
+    <string name="desc" value="A card featuring Silent Assassin."/>
+  </imgdir>
+  <imgdir name="2387149">
+    <string name="name" value="Despairing Soul Card"/>
+    <string name="desc" value="A card featuring Despairing Soul."/>
+  </imgdir>
+  <imgdir name="2387150">
+    <string name="name" value="Despairing Prisoner Card"/>
+    <string name="desc" value="A card featuring Despairing Prisoner."/>
+  </imgdir>
+  <imgdir name="2387151">
+    <string name="name" value="Ancestion Card"/>
+    <string name="desc" value="A card featuring Ancestion."/>
+  </imgdir>
+  <imgdir name="2387152">
+    <string name="name" value="Transcendion Card"/>
+    <string name="desc" value="A card featuring Transcendion."/>
+  </imgdir>
+  <imgdir name="2387153">
+    <string name="name" value="Ascendion Card"/>
+    <string name="desc" value="A card featuring Ascendion."/>
+  </imgdir>
+  <imgdir name="2387154">
+    <string name="name" value="Foreberion Card"/>
+    <string name="desc" value="A card featuring Foreberion."/>
+  </imgdir>
+  <imgdir name="2387155">
+    <string name="name" value="Embrion Card"/>
+    <string name="desc" value="A card featuring Embrion."/>
+  </imgdir>
+  <imgdir name="2388034">
+    <string name="name" value="Pigmy that lays Golden Eggs Card"/>
+    <string name="desc" value="A card featuring Pigmy that lays Golden Eggs."/>
+  </imgdir>
+  <imgdir name="2388035">
+    <string name="name" value="Witch Bear Card"/>
+    <string name="desc" value="A card featuring Witch Bear."/>
+  </imgdir>
+  <imgdir name="2388036">
+    <string name="name" value="NooNoo Card"/>
+    <string name="desc" value="A card featuring NooNoo."/>
+  </imgdir>
+  <imgdir name="2388037">
+    <string name="name" value="So Gong Card"/>
+    <string name="desc" value="A card featuring So Gong."/>
+  </imgdir>
+  <imgdir name="2388038">
+    <string name="name" value="Andras Card"/>
+    <string name="desc" value="A card featuring Andras."/>
+  </imgdir>
+  <imgdir name="2388044">
+    <string name="name" value="Amdusias Card"/>
+    <string name="desc" value="A card featuring Amdusias."/>
+  </imgdir>
+  <imgdir name="2388045">
+    <string name="name" value="Crocell Card"/>
+    <string name="desc" value="A card featuring Crocell."/>
+  </imgdir>
+  <imgdir name="2388047">
+    <string name="name" value="Marbas Card"/>
+    <string name="desc" value="A card featuring Marbas."/>
+  </imgdir>
+  <imgdir name="2388048">
+    <string name="name" value="Valefor Card"/>
+    <string name="desc" value="A card featuring Valefor."/>
+  </imgdir>
+  <imgdir name="2388049">
+    <string name="name" value="Puppeteer Card"/>
+    <string name="desc" value="A card featuring Puppeteer."/>
+  </imgdir>
+  <imgdir name="2388050">
+    <string name="name" value="Astaroth Card"/>
+    <string name="desc" value="A card featuring Astaroth."/>
+  </imgdir>
+  <imgdir name="2388051">
+    <string name="name" value="Watermelon Guard Hogol Card"/>
+    <string name="desc" value="A card featuring Watermelon Guard Hogol."/>
+  </imgdir>
+  <imgdir name="2388056">
+    <string name="name" value="Angry Snowman Card"/>
+    <string name="desc" value="A card featuring Angry Snowman."/>
+  </imgdir>
+  <imgdir name="2388057">
+    <string name="name" value="Spirit of Rock Card"/>
+    <string name="desc" value="A card featuring Spirit of Rock."/>
+  </imgdir>
+  <imgdir name="2388058">
+    <string name="name" value="Mu Gong&apos;s Shadow Card"/>
+    <string name="desc" value="A card featuring Mu Gong&apos;s Shadow."/>
+  </imgdir>
+  <imgdir name="2388059">
+    <string name="name" value="Big Puff Daddy Card"/>
+    <string name="desc" value="A card featuring Big Puff Daddy."/>
+  </imgdir>
+  <imgdir name="2388060">
+    <string name="name" value="Bamboo Warrior Card"/>
+    <string name="desc" value="A card featuring Bamboo Warrior."/>
+  </imgdir>
+  <imgdir name="2388061">
+    <string name="name" value="Viking Card"/>
+    <string name="desc" value="A card featuring Viking."/>
+  </imgdir>
+  <imgdir name="2388062">
+    <string name="name" value="Gatekeeper Nex Card"/>
+    <string name="desc" value="A card featuring Gatekeeper Nex."/>
+  </imgdir>
+  <imgdir name="2388063">
+    <string name="name" value="Giant Cake Card"/>
+    <string name="desc" value="A card featuring Giant Cake."/>
+  </imgdir>
+  <imgdir name="2388064">
+    <string name="name" value="Giant Snowman Card"/>
+    <string name="desc" value="A card featuring Giant Snowman."/>
+  </imgdir>
+  <imgdir name="2388065">
+    <string name="name" value="Kitty from Cheese Storage Card"/>
+    <string name="desc" value="A card featuring Kitty from Cheese Storage."/>
+  </imgdir>
+  <imgdir name="2388066">
+    <string name="name" value="P Junior Card"/>
+    <string name="desc" value="A card featuring P Junior."/>
+  </imgdir>
+  <imgdir name="2388071">
+    <string name="name" value="High Darkstar Card"/>
+    <string name="desc" value="A card featuring High Darkstar."/>
+  </imgdir>
+  <imgdir name="2388072">
+    <string name="name" value="Bergamot Card"/>
+    <string name="desc" value="A card featuring Bergamot."/>
+  </imgdir>
+  <imgdir name="2388073">
+    <string name="name" value="Shadow Kyrin Card"/>
+    <string name="desc" value="A card featuring Shadow Kyrin."/>
+  </imgdir>
+  <imgdir name="2388074">
+    <string name="name" value="Master of Disguise Card"/>
+    <string name="desc" value="A card featuring Master of Disguise."/>
+  </imgdir>
+  <imgdir name="2388075">
+    <string name="name" value="Thief Crow Card"/>
+    <string name="desc" value="A card featuring Thief Crow."/>
+  </imgdir>
+  <imgdir name="2388076">
+    <string name="name" value="Dark Lord&apos;s Disciple Card"/>
+    <string name="desc" value="A card featuring Dark Lord&apos;s Disciple."/>
+  </imgdir>
+  <imgdir name="2388077">
+    <string name="name" value="Low Darkstar Card"/>
+    <string name="desc" value="A card featuring Low Darkstar."/>
+  </imgdir>
+  <imgdir name="2388078">
+    <string name="name" value="Dunas Card"/>
+    <string name="desc" value="A card featuring Dunas."/>
+  </imgdir>
+  <imgdir name="2388079">
+    <string name="name" value="Aufheben Card"/>
+    <string name="desc" value="A card featuring Aufheben."/>
+  </imgdir>
+  <imgdir name="2388080">
+    <string name="name" value="Oberon Card"/>
+    <string name="desc" value="A card featuring Oberon."/>
+  </imgdir>
+  <imgdir name="2388081">
+    <string name="name" value="Nibelung Card"/>
+    <string name="desc" value="A card featuring Nibelung."/>
+  </imgdir>
+  <imgdir name="2388082">
+    <string name="name" value="Male Boss Card"/>
+    <string name="desc" value="A card featuring Male Boss."/>
+  </imgdir>
+  <imgdir name="2388083">
+    <string name="name" value="Master Guardian Card"/>
+    <string name="desc" value="A card featuring Master Guardian."/>
+  </imgdir>
+  <imgdir name="2388084">
+    <string name="name" value="Capt. Latanica Card"/>
+    <string name="desc" value="A card featuring Capt. Latanica."/>
+  </imgdir>
+  <imgdir name="2388085">
+    <string name="name" value="Headless Horseman Card"/>
+    <string name="desc" value="A card featuring Headless Horseman."/>
+  </imgdir>
+  <imgdir name="2388086">
+    <string name="name" value="Bigfoot Card"/>
+    <string name="desc" value="A card featuring Bigfoot."/>
+  </imgdir>
+  <imgdir name="2388087">
+    <string name="name" value="Black Crow Card"/>
+    <string name="desc" value="A card featuring Black Crow."/>
+  </imgdir>
+  <imgdir name="2388088">
+    <string name="name" value="Kyrin Card"/>
+    <string name="desc" value="A card featuring Kyrin."/>
+  </imgdir>
+  <imgdir name="2388089">
+    <string name="name" value="Inferno Kyrin Card"/>
+    <string name="desc" value="A card featuring Inferno Kyrin."/>
+  </imgdir>
+  <imgdir name="2388090">
+    <string name="name" value="Female Boss Card"/>
+    <string name="desc" value="A card featuring Female Boss."/>
+  </imgdir>
+  <imgdir name="2388091">
+    <string name="name" value="Margana Card"/>
+    <string name="desc" value="A card featuring Margana."/>
+  </imgdir>
+  <imgdir name="2388092">
+    <string name="name" value="Red Nirg Card"/>
+    <string name="desc" value="A card featuring Red Nirg."/>
+  </imgdir>
+  <imgdir name="2388093">
+    <string name="name" value="Rellik Card"/>
+    <string name="desc" value="A card featuring Rellik."/>
+  </imgdir>
+  <imgdir name="2388094">
+    <string name="name" value="Hsalf Card"/>
+    <string name="desc" value="A card featuring Hsalf."/>
+  </imgdir>
+  <imgdir name="2388095">
+    <string name="name" value="Uncontrollable Maha Card"/>
+    <string name="desc" value="A card featuring Uncontrollable Maha."/>
+  </imgdir>
+  <imgdir name="2388096">
+    <string name="name" value="Furious Targa Card"/>
+    <string name="desc" value="A card featuring Furious Targa."/>
+  </imgdir>
+  <imgdir name="2388097">
+    <string name="name" value="Furious Scarlion Boss Card"/>
+    <string name="desc" value="A card featuring Furious Scarlion Boss."/>
+  </imgdir>
+  <imgdir name="2388098">
+    <string name="name" value="Prison Guard Ani Card"/>
+    <string name="desc" value="A card featuring Prison Guard Ani."/>
+  </imgdir>
+  <imgdir name="2388099">
+    <string name="name" value="Bodyguard A Card"/>
+    <string name="desc" value="A card featuring Bodyguard A."/>
+  </imgdir>
+  <imgdir name="2388100">
+    <string name="name" value="Bodyguard B Card"/>
+    <string name="desc" value="A card featuring Bodyguard B."/>
+  </imgdir>
+  <imgdir name="2388101">
+    <string name="name" value="Kacchuu Musha Card"/>
+    <string name="desc" value="A card featuring Kacchuu Musha."/>
+  </imgdir>
+  <imgdir name="2388102">
+    <string name="name" value="The Boss Card"/>
+    <string name="desc" value="A card featuring The Boss."/>
+  </imgdir>
+  <imgdir name="2388103">
+    <string name="name" value="MV Card"/>
+    <string name="desc" value="A card featuring MV."/>
+  </imgdir>
+  <imgdir name="2388104">
+    <string name="name" value="Cygnus Soldier Card"/>
+    <string name="desc" value="A card featuring Cygnus Soldier."/>
+  </imgdir>
+  <imgdir name="2388105">
+    <string name="name" value="Resistance Soldier Card"/>
+    <string name="desc" value="A card featuring Resistance Soldier."/>
+  </imgdir>
+  <imgdir name="2388106">
+    <string name="name" value="Belle Card"/>
+    <string name="desc" value="A card featuring Belle."/>
+  </imgdir>
+  <imgdir name="2388107">
+    <string name="name" value="Brighton Card"/>
+    <string name="desc" value="A card featuring Brighton."/>
+  </imgdir>
+  <imgdir name="2388108">
+    <string name="name" value="Bam Bam Cat Card"/>
+    <string name="desc" value="A card featuring Bam Bam Cat."/>
+  </imgdir>
+  <imgdir name="2388109">
+    <string name="name" value="Witch Cat Card"/>
+    <string name="desc" value="A card featuring Witch Cat."/>
+  </imgdir>
 </imgdir>

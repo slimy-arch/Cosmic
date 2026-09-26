@@ -363,7 +363,8 @@ public enum SendOpcode {
     STAT_DETAIL_RATES(0x3740), // custom: Kaentake stat detail window drop/meso rate and damage bonus cells
     INVENTORY_CASH(0x3741), // custom: Kaentake inventory window NX row (NX Credit)
     BAG_WINDOW(0x3725), // custom: Kaentake storage bag window snapshot
-    CASHSHOP_WINDOW_SYNC(0x3731); // custom: Kaentake standalone cash shop window replies
+    CASHSHOP_WINDOW_SYNC(0x3731), // custom: Kaentake standalone cash shop window replies
+    MONSTER_BOOK_RESULT(0x3733); // custom: Kaentake Monster Book replies (drop %, item hits, droppers)
     private int code = -2;
 
     SendOpcode(int code) {
