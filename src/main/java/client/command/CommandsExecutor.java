@@ -25,6 +25,10 @@ package client.command;
 
 import client.Client;
 import client.command.commands.gm0.ChangeLanguageCommand;
+import client.command.commands.gm0.CashBagCommand;
+import client.command.commands.gm0.ChairBagCommand;
+import client.command.commands.gm0.OreBagCommand;
+import client.command.commands.gm0.ScrollBagCommand;
 import client.command.commands.gm0.DisposeCommand;
 import client.command.commands.gm0.DropLimitCommand;
 import client.command.commands.gm0.EnableAuthCommand;
@@ -342,6 +346,10 @@ public class CommandsExecutor {
 
         addCommand(new String[]{"help", "commands"}, HelpCommand.class);
         addCommand("droplimit", DropLimitCommand.class);
+        addCommand(new String[]{"orebag", "obag"}, OreBagCommand.class);         // kaentake Storage Bag
+        addCommand(new String[]{"scrollbag", "sbag"}, ScrollBagCommand.class);
+        addCommand(new String[]{"chairbag", "chbag"}, ChairBagCommand.class);
+        addCommand(new String[]{"cashbag", "cbag"}, CashBagCommand.class);
         addCommand("time", TimeCommand.class);
         addCommand("credits", StaffCommand.class);
         addCommand("uptime", UptimeCommand.class);

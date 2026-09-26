@@ -46,7 +46,12 @@ public enum ItemFactory {
     MERCHANT(6, false),
     CASH_OVERALL(7, true),
     MARRIAGE_GIFTS(8, false),
-    DUEY(9, false);
+    DUEY(9, false),
+    // kaentake Storage Bag tabs, keyed by orestorages.storageid like STORAGE
+    OREBAG(10, true),
+    SCROLLBAG(11, true),
+    CHAIRBAG(12, true),
+    CASHBAG(13, true);
     private final int value;
     private final boolean account;
 

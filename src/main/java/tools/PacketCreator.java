@@ -3619,6 +3619,29 @@ public class PacketCreator {
         return p;
     }
 
+    /**
+     * kaentake Storage Bag snapshot (SendOpcode.BAG_WINDOW): byte resp (1 = show, opening the window if closed;
+     * 2 = refresh the client's copy only), byte bagKind, short count, then per item a short bag slot and the
+     * item without its position (GW_ItemSlotBase::Decode), then a short[] of stack quantities in the same order,
+     * then a byte: this tab's pickup auto-collect toggle (the window's AUTO button).
+     */
+    public static Packet bagWindowSnapshot(int bagKind, server.OreStorage storage, boolean show, boolean autoCollect) {
+        OutPacket p = OutPacket.create(SendOpcode.BAG_WINDOW);
+        p.writeByte(show ? 1 : 2);
+        p.writeByte(bagKind);
+        List<Item> items = storage.getItems();
+        p.writeShort(items.size());
+        for (int i = 0; i < items.size(); i++) {
+            p.writeShort(i);
+            addItemInfo(p, items.get(i), true);
+        }
+        for (Item item : items) {
+            p.writeShort(item.getQuantity());
+        }
+        p.writeBool(autoCollect);
+        return p;
+    }
+
     public static Packet getStorage(int npcId, byte slots, Collection<Item> items, long meso) {
         final OutPacket p = OutPacket.create(SendOpcode.STORAGE);
         p.writeByte(0x16);
