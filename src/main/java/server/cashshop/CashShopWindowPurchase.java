@@ -167,7 +167,7 @@ public final class CashShopWindowPurchase {
                 total += r.price();
             }
             final CashShop cs = chr.getCashShop();
-            if (total > cs.getCash(CashShop.NX_CREDIT)) {
+            if (total > cs.getNxCredit()) {
                 return new Result(CashShopWindowPackets.BUY_NO_NX, 0, 0, 0);
             }
 
@@ -251,11 +251,11 @@ public final class CashShopWindowPurchase {
             }
 
             // ---- PHASE 5: deduct, and only now ----
-            cs.gainCash(CashShop.NX_CREDIT, (int) -total);
+            cs.gainNxCredit(-total);
 
             log.info("{} bought {} cash item(s) for {} NX from the Cash Shop window",
                     chr.getName(), delivered, total);
-            return new Result(CashShopWindowPackets.BUY_OK, 0, delivered, (int) total);
+            return new Result(CashShopWindowPackets.BUY_OK, 0, delivered, (int) Math.min(total, Integer.MAX_VALUE));
         } catch (Exception e) {
             log.error("Cash Shop window: cart purchase failed for {}", chr.getName(), e);
             return new Result(CashShopWindowPackets.BUY_UNKNOWN_ITEM, 0, 0, 0);
