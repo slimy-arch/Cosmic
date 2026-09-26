@@ -113,6 +113,8 @@ import server.Storage;
 import server.ThreadManager;
 import server.TimerManager;
 import server.Trade;
+import server.colorprism.ColorPrismPackets;
+import server.colorprism.TintValues;
 import server.events.Events;
 import server.events.RescueGaga;
 import server.events.gm.Fitness;
@@ -282,6 +284,14 @@ public class Character extends AbstractCharacterObject {
     private MonsterBook monsterbook;
     private final DamageSkinInventory damageSkinInv = new DamageSkinInventory(); // custom: Kaentake damage skin
     private int activeDamageSkin = 0;
+    // Coloring Prism look tints (hue/chroma/bright, see server.colorprism.TintValues). skinTint is
+    // NOT skincolor: that still picks the fixed skin, this recolours whichever one is worn.
+    private short hairTintHue, faceTintHue, skinTintHue;
+    private byte hairTintChroma, hairTintBright, faceTintChroma, faceTintBright, skinTintChroma, skinTintBright;
+    // Coloring Prism skill tints: skill id -> {hue, chroma, bright}, body art and caster-effect art
+    // separately. Concurrent because the autosave thread iterates them while packets write them.
+    private final Map<Integer, int[]> skillTints = new ConcurrentHashMap<>();
+    private final Map<Integer, int[]> skillFxTints = new ConcurrentHashMap<>();
     private CashShop cashshop;
     private final Set<NewYearCardRecord> newyears = new LinkedHashSet<>();
     private final SavedLocation[] savedLocations;
@@ -2910,6 +2920,187 @@ public class Character extends AbstractCharacterObject {
         updateLocalStats();
         if (getMessenger() != null) {
             getWorldServer().updateMessenger(getMessenger(), getName(), getWorld(), client.getChannel());
+        }
+        syncWeaponTint();   // swapping between two dyed equips repaints now, not on the next map change
+    }
+
+    // ---- Coloring Prism ----------------------------------------------------------------------
+
+    /** Pushes this character's tints to its own client and the map's worn-tint table to everyone. */
+    public void syncWeaponTint() {
+        if (client != null) {   // equip paths also run during login and in the cash shop
+            sendPacket(ColorPrismPackets.snapshot(this));
+            ColorPrismPackets.broadcastMapTable(getMap());
+        }
+    }
+
+    public short getHairTintHue() {
+        return hairTintHue;
+    }
+
+    public byte getHairTintChroma() {
+        return hairTintChroma;
+    }
+
+    public byte getHairTintBright() {
+        return hairTintBright;
+    }
+
+    public boolean isHairTinted() {
+        return !TintValues.isIdentity(hairTintHue, hairTintChroma, hairTintBright);
+    }
+
+    public void setHairTint(int hue, int chroma, int bright) {
+        hairTintHue = TintValues.normalizeHue(hue);
+        hairTintChroma = TintValues.clamp(chroma);
+        hairTintBright = TintValues.clamp(bright);
+    }
+
+    public void clearHairTint() {
+        setHairTint(0, 0, 0);
+    }
+
+    public short getFaceTintHue() {
+        return faceTintHue;
+    }
+
+    public byte getFaceTintChroma() {
+        return faceTintChroma;
+    }
+
+    public byte getFaceTintBright() {
+        return faceTintBright;
+    }
+
+    public boolean isFaceTinted() {
+        return !TintValues.isIdentity(faceTintHue, faceTintChroma, faceTintBright);
+    }
+
+    public void setFaceTint(int hue, int chroma, int bright) {
+        faceTintHue = TintValues.normalizeHue(hue);
+        faceTintChroma = TintValues.clamp(chroma);
+        faceTintBright = TintValues.clamp(bright);
+    }
+
+    public void clearFaceTint() {
+        setFaceTint(0, 0, 0);
+    }
+
+    public short getSkinTintHue() {
+        return skinTintHue;
+    }
+
+    public byte getSkinTintChroma() {
+        return skinTintChroma;
+    }
+
+    public byte getSkinTintBright() {
+        return skinTintBright;
+    }
+
+    public boolean isSkinTinted() {
+        return !TintValues.isIdentity(skinTintHue, skinTintChroma, skinTintBright);
+    }
+
+    public void setSkinTint(int hue, int chroma, int bright) {
+        skinTintHue = TintValues.normalizeHue(hue);
+        skinTintChroma = TintValues.clamp(chroma);
+        skinTintBright = TintValues.clamp(bright);
+    }
+
+    public void clearSkinTint() {
+        setSkinTint(0, 0, 0);
+    }
+
+    public Map<Integer, int[]> getSkillTints() {
+        return Collections.unmodifiableMap(skillTints);
+    }
+
+    public Map<Integer, int[]> getSkillFxTints() {
+        return Collections.unmodifiableMap(skillFxTints);
+    }
+
+    public boolean isSkillBodyTinted(int skillId) {
+        return skillTints.containsKey(skillId);
+    }
+
+    public boolean isSkillFxTinted(int skillId) {
+        return skillFxTints.containsKey(skillId);
+    }
+
+    public void setSkillTint(int skillId, int hue, int chroma, int bright) {
+        putSkillTint(skillTints, skillId, hue, chroma, bright);
+    }
+
+    public void setSkillFxTint(int skillId, int hue, int chroma, int bright) {
+        putSkillTint(skillFxTints, skillId, hue, chroma, bright);
+    }
+
+    public void clearSkillTint(int skillId) {
+        skillTints.remove(skillId);
+    }
+
+    public void clearSkillFxTint(int skillId) {
+        skillFxTints.remove(skillId);
+    }
+
+    /** An identity tint REMOVES the entry, so "never dyed" and "dyed back" are one state. */
+    private static void putSkillTint(Map<Integer, int[]> map, int skillId, int hue, int chroma, int bright) {
+        int h = TintValues.normalizeHue(hue), c = TintValues.clamp(chroma), b = TintValues.clamp(bright);
+        if (TintValues.isIdentity(h, c, b)) {
+            map.remove(skillId);
+        } else {
+            map.put(skillId, new int[]{h, c, b});
+        }
+    }
+
+    /**
+     * Writes the look tints and replaces this character's skilltints rows. Runs inside
+     * saveCharToDB's transaction: a statement outside it could commit while the rest rolls back.
+     */
+    private void saveColorPrismTints(Connection con) throws SQLException {
+        try (PreparedStatement ps = con.prepareStatement("UPDATE characters SET hairtinthue = ?, hairtintchroma = ?, hairtintbright = ?, "
+                + "facetinthue = ?, facetintchroma = ?, facetintbright = ?, skintinthue = ?, skintintchroma = ?, skintintbright = ? WHERE id = ?")) {
+            ps.setInt(1, hairTintHue);
+            ps.setInt(2, hairTintChroma);
+            ps.setInt(3, hairTintBright);
+            ps.setInt(4, faceTintHue);
+            ps.setInt(5, faceTintChroma);
+            ps.setInt(6, faceTintBright);
+            ps.setInt(7, skinTintHue);
+            ps.setInt(8, skinTintChroma);
+            ps.setInt(9, skinTintBright);
+            ps.setInt(10, id);
+            ps.executeUpdate();
+        }
+
+        // Delete and reinsert: the two maps are the whole truth, and a cleared tint is an absent key.
+        try (PreparedStatement ps = con.prepareStatement("DELETE FROM skilltints WHERE characterid = ?")) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        }
+        Set<Integer> skillIds = new LinkedHashSet<>(skillTints.keySet());
+        skillIds.addAll(skillFxTints.keySet());
+        if (skillIds.isEmpty()) {
+            return;
+        }
+        final int[] none = {0, 0, 0};
+        try (PreparedStatement ps = con.prepareStatement("INSERT INTO skilltints (characterid, skillid, tinthue, tintchroma, tintbright, "
+                + "tintfxhue, tintfxchroma, tintfxbright) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")) {
+            for (int skillId : skillIds) {
+                int[] body = skillTints.getOrDefault(skillId, none);
+                int[] fx = skillFxTints.getOrDefault(skillId, none);
+                ps.setInt(1, id);
+                ps.setInt(2, skillId);
+                ps.setInt(3, body[0]);
+                ps.setInt(4, body[1]);
+                ps.setInt(5, body[2]);
+                ps.setInt(6, fx[0]);
+                ps.setInt(7, fx[1]);
+                ps.setInt(8, fx[2]);
+                ps.addBatch();
+            }
+            ps.executeBatch();
         }
     }
 
@@ -7415,6 +7606,9 @@ public class Character extends AbstractCharacterObject {
                     ret.autoBag[1] = rs.getBoolean("autoScrollStorage");
                     ret.autoBag[2] = rs.getBoolean("autoChairStorage");
                     ret.autoBag[3] = rs.getBoolean("autoCashStorage");
+                    ret.setHairTint(rs.getInt("hairtinthue"), rs.getInt("hairtintchroma"), rs.getInt("hairtintbright"));
+                    ret.setFaceTint(rs.getInt("facetinthue"), rs.getInt("facetintchroma"), rs.getInt("facetintbright"));
+                    ret.setSkinTint(rs.getInt("skintinthue"), rs.getInt("skintintchroma"), rs.getInt("skintintbright"));
 
                     wserv = Server.getInstance().getWorld(ret.world);
 
@@ -7682,6 +7876,19 @@ public class Character extends AbstractCharacterObject {
                             if (pSkill != null) { // edit reported by Shavit (=＾● ⋏ ●＾=), thanks Zein for noticing an NPE here
                                 ret.skills.put(pSkill, new SkillEntry(rs.getByte("skilllevel"), rs.getInt("masterlevel"), rs.getLong("expiration")));
                             }
+                        }
+                    }
+                }
+
+                // Coloring Prism skill tints (one row carries both the body and the effect colour)
+                try (PreparedStatement ps = con.prepareStatement("SELECT skillid, tinthue, tintchroma, tintbright, tintfxhue, tintfxchroma, tintfxbright FROM skilltints WHERE characterid = ?")) {
+                    ps.setInt(1, charid);
+
+                    try (ResultSet rs = ps.executeQuery()) {
+                        while (rs.next()) {
+                            final int skillId = rs.getInt("skillid");
+                            ret.setSkillTint(skillId, rs.getInt("tinthue"), rs.getInt("tintchroma"), rs.getInt("tintbright"));
+                            ret.setSkillFxTint(skillId, rs.getInt("tintfxhue"), rs.getInt("tintfxchroma"), rs.getInt("tintfxbright"));
                         }
                     }
                 }
@@ -9186,6 +9393,7 @@ public class Character extends AbstractCharacterObject {
                     psBag.setInt(5, id);
                     psBag.executeUpdate();
                 }
+                saveColorPrismTints(con);
                 boolean[] savedBag = new boolean[OreStorage.KIND_COUNT];
                 if (bags != null) {
                     for (int kind = 0; kind < OreStorage.KIND_COUNT; kind++) {

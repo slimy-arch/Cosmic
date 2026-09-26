@@ -2002,4 +2002,16 @@
     <string name="name" value="Hyper Teleport Rock"/>
     <string name="desc" value="Click a destination on the World Map to teleport there. This item is not consumed."/>
   </imgdir>
+  <imgdir name="5782000">
+    <string name="name" value="Coloring Prism"/>
+    <string name="desc" value="Double-click to open the #cColoring Prism# window.
+
+#cItems# dyes whatever you drag onto the slot, any equip or a Cash effect item. The two badges under the preview choose whether you are dyeing the item itself or the effects it plays, and each keeps its own color.
+#cSkills# dyes a skill you drag in from your Skill window.
+#cHair#, #cEyes# and #cSkin# dye your own look, and need nothing dragged in.
+
+Drag the #cHue, Chroma and Value# sliders until it looks the way you want, then press OK. One prism is used per dye, and the color is kept until you dye it again.
+
+Zero all three sliders before OK to put that color back to its original shade."/>
+  </imgdir>
 </imgdir>

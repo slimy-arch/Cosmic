@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Picked up by changelog-root.xml: <includeAll path="extensions" relativeToChangelogFile="true"/>.
+     Do NOT also <include> it: registering a changeset twice aborts Liquibase at boot. -->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!-- ===================================================================================
+         Coloring Prism (5782000) dye system. Ported from the kaentake "as-shipped" package,
+         whose changelog stacked an unguarded changeset under guarded duplicates of itself;
+         this is the same end schema written once.
+
+         Hue columns are SIGNED on purpose: 0 = leave alone, 1..359 = rotate by that many
+         degrees, -1..-360 = absolute target hue encoded as -(degrees + 1). Chroma and
+         brightness are -100..100. All-zero means "never dyed", so there is no flag column.
+
+         Every INSERT into inventoryitems / inventoryequipment in ItemFactory names its
+         columns, so appending these cannot shift a positional VALUES list.
+         =================================================================================== -->
+
+    <!-- The equip's own colour, then its effect sprites' colour. -->
+    <changeSet id="coloring-prism-equip-tints" author="colorprism">
+        <preConditions onFail="MARK_RAN">
+            <not><columnExists tableName="inventoryequipment" columnName="tinthue"/></not>
+        </preConditions>
+        <addColumn tableName="inventoryequipment">
+            <column name="tinthue" type="SMALLINT" defaultValueNumeric="0"><constraints nullable="false"/></column>
+            <column name="tintchroma" type="TINYINT" defaultValueNumeric="0"><constraints nullable="false"/></column>
+            <column name="tintbright" type="TINYINT" defaultValueNumeric="0"><constraints nullable="false"/></column>
+            <column name="tintfxhue" type="SMALLINT" defaultValueNumeric="0"><constraints nullable="false"/></column>
+            <column name="tintfxchroma" type="TINYINT" defaultValueNumeric="0"><constraints nullable="false"/></column>
+            <column name="tintfxbright" type="TINYINT" defaultValueNumeric="0"><constraints nullable="false"/></column>
+        </addColumn>
+    </changeSet>
+
+    <!-- Hair, eyes, then skin. skintint* rotates whichever fixed skin `skincolor` selects. -->
+    <changeSet id="coloring-prism-look-tints" author="colorprism">
+        <preConditions onFail="MARK_RAN">
+            <not><columnExists tableName="characters" columnName="hairtinthue"/></not>
+        </preConditions>
+        <addColumn tableName="characters">
+            <column name="hairtinthue" type="SMALLINT" defaultValueNumeric="0"><constraints nullable="false"/></column>
+            <column name="hairtintchroma" type="TINYINT" defaultValueNumeric="0"><constraints nullable="false"/></column>
+            <column name="hairtintbright" type="TINYINT" defaultValueNumeric="0"><constraints nullable="false"/></column>
+            <column name="facetinthue" type="SMALLINT" defaultValueNumeric="0"><constraints nullable="false"/></column>
+            <column name="facetintchroma" type="TINYINT" defaultValueNumeric="0"><constraints nullable="false"/></column>
+            <column name="facetintbright" type="TINYINT" defaultValueNumeric="0"><constraints nullable="false"/></column>
+            <column name="skintinthue" type="SMALLINT" defaultValueNumeric="0"><constraints nullable="false"/></column>
+            <column name="skintintchroma" type="TINYINT" defaultValueNumeric="0"><constraints nullable="false"/></column>
+            <column name="skintintbright" type="TINYINT" defaultValueNumeric="0"><constraints nullable="false"/></column>
+        </addColumn>
+    </changeSet>
+
+    <!-- Cash effect items (5010000..5019999). Named efftint*, not tint*: ItemFactory joins
+         inventoryitems and inventoryequipment with SELECT * ... USING(inventoryitemid), and
+         two same-named columns there is a hard "Duplicate column name" on the login path. -->
+    <changeSet id="coloring-prism-cash-effect-tints" author="colorprism">
+        <preConditions onFail="MARK_RAN">
+            <not><columnExists tableName="inventoryitems" columnName="efftinthue"/></not>
+        </preConditions>
+        <addColumn tableName="inventoryitems">
+            <column name="efftinthue" type="SMALLINT" defaultValueNumeric="0"><constraints nullable="false"/></column>
+            <column name="efftintchroma" type="TINYINT" defaultValueNumeric="0"><constraints nullable="false"/></column>
+            <column name="efftintbright" type="TINYINT" defaultValueNumeric="0"><constraints nullable="false"/></column>
+        </addColumn>
+    </changeSet>
+
+    <!-- A skill has no inventory row, and a character may dye any number of them. The body
+         colour (tint*) and the caster-effect colour (tintfx*) are independent. -->
+    <changeSet id="coloring-prism-skill-tints" author="colorprism">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="skilltints"/></not>
+        </preConditions>
+        <createTable tableName="skilltints">
+            <column name="characterid" type="INT"><constraints nullable="false"/></column>
+            <column name="skillid" type="INT"><constraints nullable="false"/></column>
+            <column name="tinthue" type="SMALLINT" defaultValueNumeric="0"><constraints nullable="false"/></column>
+            <column name="tintchroma" type="TINYINT" defaultValueNumeric="0"><constraints nullable="false"/></column>
+            <column name="tintbright" type="TINYINT" defaultValueNumeric="0"><constraints nullable="false"/></column>
+            <column name="tintfxhue" type="SMALLINT" defaultValueNumeric="0"><constraints nullable="false"/></column>
+            <column name="tintfxchroma" type="TINYINT" defaultValueNumeric="0"><constraints nullable="false"/></column>
+            <column name="tintfxbright" type="TINYINT" defaultValueNumeric="0"><constraints nullable="false"/></column>
+        </createTable>
+        <addPrimaryKey tableName="skilltints" columnNames="characterid, skillid" constraintName="pk_skilltints"/>
+        <addForeignKeyConstraint baseTableName="skilltints" baseColumnNames="characterid"
+                                 constraintName="fk_skilltints_character"
+                                 referencedTableName="characters" referencedColumnNames="id"
+                                 onUpdate="CASCADE" onDelete="CASCADE"/>
+    </changeSet>
+
+    <!-- GM shop (1337, @gmshop) copy for testing. Position 87 is the Hyper Teleport Rock
+         (tables/029-hyper-teleport-rock-shop.sql). Players buy it in the Cash Shop window
+         instead: see cashshop/catalog.tsv. -->
+    <changeSet id="coloring-prism-gmshop" author="colorprism">
+        <sql>
+            INSERT INTO shopitems (shopid, itemid, price, pitch, position)
+            SELECT 1337, 5782000, 1, 0, 88
+            FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM shopitems WHERE shopid = 1337 AND itemid = 5782000);
+        </sql>
+    </changeSet>
+</databaseChangeLog>

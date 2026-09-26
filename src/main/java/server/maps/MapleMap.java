@@ -2537,6 +2537,10 @@ public class MapleMap {
         chr.receivePartyMemberHP();
         announcePlayerDiseases(chr.getClient());
 
+        // custom: Kaentake Coloring Prism. A broadcast, not a send: the arrival needs everyone's
+        // worn tints and everyone already here needs the arrival's.
+        server.colorprism.ColorPrismPackets.broadcastMapTable(this);
+
         // custom: Kaentake damage skins — tell the newcomer every resident's skin and everyone else theirs.
         for (Character other : getAllPlayers()) {
             if (other != chr && other.getActiveDamageSkin() != 0) {
