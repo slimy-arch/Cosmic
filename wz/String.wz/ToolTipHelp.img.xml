@@ -133,88 +133,124 @@
         <imgdir name="8">
           <string name="Title" value="Strength (STR)"/>
           <string name="Desc" value="The stat needed to use heavy weapons and/or armors.\nIt determines the attacking ability of the warriors and pirates (Brawlers)."/>
-          <vector name="lt" x="8" y="243"/>
-          <vector name="rb" x="55" y="259"/>
+          <vector name="lt" x="8" y="261"/>
+          <vector name="rb" x="55" y="277"/>
         </imgdir>
         <imgdir name="9">
           <string name="Title" value="Dexterity (DEX)"/>
           <string name="Desc" value="This stat is vital to making direct attacks using a weapon. This is the most significant stat when it comes to the strength of the attacks for warriors and pirates (Gunslingers). "/>
-          <vector name="lt" x="8" y="262"/>
-          <vector name="rb" x="55" y="277"/>
+          <vector name="lt" x="8" y="280"/>
+          <vector name="rb" x="55" y="295"/>
         </imgdir>
         <imgdir name="10">
           <string name="Title" value="Intelligence (INT)"/>
           <string name="Desc" value="The higher this stat, the higher the accuracy and strenghth of your magic attack. The most important stat that determines the magic attacks for mages."/>
-          <vector name="lt" x="8" y="280"/>
-          <vector name="rb" x="55" y="295"/>
+          <vector name="lt" x="8" y="298"/>
+          <vector name="rb" x="55" y="313"/>
         </imgdir>
         <imgdir name="11">
           <string name="Title" value="Luck (LUK)"/>
           <string name="Desc" value="The higher it is, the higher the avoidability is. \nIt determines the Thief&apos;s attacking ability and the Mage&apos;s magic attack accuracy. \nAlso, the higher it is, the less EXP a character loses by dying."/>
-          <vector name="lt" x="8" y="298"/>
-          <vector name="rb" x="55" y="313"/>
+          <vector name="lt" x="8" y="316"/>
+          <vector name="rb" x="55" y="331"/>
         </imgdir>
         <imgdir name="12">
           <string name="Title" value="AP(Ability Point)"/>
           <string name="Desc" value="Amount to increase STR, DEX, INT,LUK, HP and MP. For STR, DEX, INT and LUK, every 1 AP used will increase the stats by 1.  For HP and MP, it differs pending on the jobs and characters.  5 Points will be given upon level up."/>
-          <vector name="lt" x="7" y="192"/>
-          <vector name="rb" x="90" y="214"/>
+          <vector name="lt" x="7" y="210"/>
+          <vector name="rb" x="90" y="232"/>
         </imgdir>
       </imgdir>
       <imgdir name="StatDetail">
         <imgdir name="0">
           <vector name="lt" x="13" y="7"/>
-          <vector name="rb" x="70" y="22"/>
+          <vector name="rb" x="75" y="22"/>
           <string name="Title" value="Attack"/>
           <string name="Desc" value="The stat that impacts the damage caused by physical attacks. This stat is related to strength (STR) for warriors and magicians, dexterity (DEX) for bowmen, strength, dexterity and luck (LUK) for thieves and strength and dexterity for pirates. The above stat and the equipment&apos;s physical attack are added to decide on the overall physical attack.  "/>
         </imgdir>
         <imgdir name="1">
           <vector name="lt" x="13" y="25"/>
-          <vector name="rb" x="70" y="40"/>
-          <string name="Title" value="Weapon Def."/>
-          <string name="Desc" value="The stat that determines the ability to defend the weapon attack.\nBased on all equipped armors&apos; weapon def. "/>
+          <vector name="rb" x="75" y="40"/>
+          <string name="Title" value="Weapon Atk."/>
+          <string name="Desc" value="The stat that impacts the damage caused by physical attacks. This stat is related to strength (STR) for warriors and magicians, dexterity (DEX) for bowmen, strength, dexterity and luck (LUK) for thieves and strength and dexterity for pirates. The above stat and the equipment&apos;s physical attack are added to decide on the overall physical attack.  "/>
         </imgdir>
         <imgdir name="2">
-          <vector name="lt" x="13" y="43"/>
-          <vector name="rb" x="70" y="58"/>
-          <string name="Title" value="Magic"/>
+          <vector name="lt" x="135" y="25"/>
+          <vector name="rb" x="197" y="40"/>
+          <string name="Title" value="Magic Atk."/>
           <string name="Desc" value="The stat that determines the success rate and the attacking ability of spells.\nBased on INT and equipped items&apos; magic power."/>
         </imgdir>
         <imgdir name="3">
           <vector name="lt" x="13" y="61"/>
-          <vector name="rb" x="70" y="76"/>
+          <vector name="rb" x="75" y="76"/>
+          <string name="Title" value="Weapon Def."/>
+          <string name="Desc" value="The stat that determines the ability to defend the weapon attack.\nBased on all equipped armors&apos; weapon def. "/>
+        </imgdir>
+        <imgdir name="4">
+          <vector name="lt" x="135" y="61"/>
+          <vector name="rb" x="197" y="76"/>
           <string name="Title" value="Magic Def."/>
           <string name="Desc" value="The stat for defending spells.\nBased on magic def. of every armor that&apos;s been equipped."/>
         </imgdir>
-        <imgdir name="4">
+        <imgdir name="5">
           <vector name="lt" x="13" y="79"/>
-          <vector name="rb" x="70" y="94"/>
+          <vector name="rb" x="75" y="94"/>
           <string name="Title" value="Accuracy"/>
           <string name="Desc" value="The stat that determines the accuracy of weapon attack. \nThe higher, the more accurate.\nBased on dexterity and the equipment item options."/>
         </imgdir>
-        <imgdir name="5">
-          <vector name="lt" x="13" y="97"/>
-          <vector name="rb" x="70" y="112"/>
-          <string name="Title" value="Avoidability"/>
+        <imgdir name="6">
+          <vector name="lt" x="135" y="79"/>
+          <vector name="rb" x="197" y="94"/>
+          <string name="Title" value="Evasion"/>
           <string name="Desc" value="The stat that enables the character to avoid weapon damage.\nThe higher it is, the better the character avoids weapon damage.\nBased on dexterity, luck, and the equipment item options."/>
         </imgdir>
-        <imgdir name="6">
-          <vector name="lt" x="13" y="115"/>
-          <vector name="rb" x="70" y="130"/>
-          <string name="Title" value=""/>
-          <string name="Desc" value=""/>
-        </imgdir>
         <imgdir name="7">
+          <vector name="lt" x="13" y="97"/>
+          <vector name="rb" x="75" y="112"/>
+          <string name="Title" value="Critical Rate"/>
+          <string name="Desc" value="The chance for a physical attack to be a critical hit. Every character starts at 10%.\nCritical Shot, Critical Throw, Critical Punch and Sharp Eyes add to it.\nSpells cannot be critical hits."/>
+        </imgdir>
+        <imgdir name="8">
+          <vector name="lt" x="135" y="97"/>
+          <vector name="rb" x="197" y="112"/>
+          <string name="Title" value="Critical Dam."/>
+          <string name="Desc" value="How hard a critical hit lands, as a percentage of a normal hit. Every character starts at 150%.\nCritical skills and Sharp Eyes add their bonus on top."/>
+        </imgdir>
+        <imgdir name="9">
           <vector name="lt" x="13" y="133"/>
-          <vector name="rb" x="70" y="148"/>
+          <vector name="rb" x="75" y="148"/>
           <string name="Title" value="Speed"/>
           <string name="Desc" value="A character&apos;s speed can increase upto 140%. Can be changed through equipment item options or skills."/>
         </imgdir>
-        <imgdir name="8">
-          <vector name="lt" x="13" y="151"/>
-          <vector name="rb" x="70" y="166"/>
+        <imgdir name="10">
+          <vector name="lt" x="135" y="133"/>
+          <vector name="rb" x="197" y="148"/>
           <string name="Title" value="Jump"/>
           <string name="Desc" value="A character&apos;s jump ability can increase upto 123%. \nCan be changed through equipment item options or skills."/>
+        </imgdir>
+        <imgdir name="11">
+          <vector name="lt" x="13" y="43"/>
+          <vector name="rb" x="75" y="58"/>
+          <string name="Title" value="Normal Dmg."/>
+          <string name="Desc" value="Extra damage dealt to normal monsters.\nNo equipment or skill grants this yet."/>
+        </imgdir>
+        <imgdir name="12">
+          <vector name="lt" x="135" y="43"/>
+          <vector name="rb" x="197" y="58"/>
+          <string name="Title" value="Boss Dmg."/>
+          <string name="Desc" value="Extra damage dealt to bosses.\nNo equipment or skill grants this yet."/>
+        </imgdir>
+        <imgdir name="13">
+          <vector name="lt" x="13" y="115"/>
+          <vector name="rb" x="75" y="130"/>
+          <string name="Title" value="Drop Rate"/>
+          <string name="Desc" value="How likely monsters are to drop items, compared with the normal rate.\nIncludes the world rate, drop coupons, item-drop buffs and equipment."/>
+        </imgdir>
+        <imgdir name="14">
+          <vector name="lt" x="135" y="115"/>
+          <vector name="rb" x="197" y="130"/>
+          <string name="Title" value="Meso Rate"/>
+          <string name="Desc" value="How many mesos monsters drop, compared with the normal rate.\nIncludes the world rate, meso coupons, Meso Up and equipment."/>
         </imgdir>
       </imgdir>
     </imgdir>

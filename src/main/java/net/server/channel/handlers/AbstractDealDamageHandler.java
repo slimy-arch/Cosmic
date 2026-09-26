@@ -628,7 +628,11 @@ public abstract class AbstractDealDamageHandler extends AbstractPacketHandler {
         long calcDmgMax;
 
         if (magic && ret.skill != 0) {   // thanks onechord for noticing a few false positives stemming from maxdmg as 0
-            calcDmgMax = (long) (Math.ceil((chr.getTotalMagic() * Math.ceil(chr.getTotalMagic() / 1000.0) + chr.getTotalMagic()) / 30.0) + Math.ceil(chr.getTotalInt() / 200.0));
+            // Custom magic formula (kaentake magicdmg.cpp): the client's max is
+            // (INT * 5 + MAD) * MAD / 100 + INT, times the spell's matk / 100. The matk
+            // multiply happens below, so the base here is the formula / 100.
+            double magicMax = (chr.getTotalInt() * 5.0 + chr.getTotalMagic()) * chr.getTotalMagic() / 100.0 + chr.getTotalInt();
+            calcDmgMax = (long) Math.ceil(magicMax / 100.0);
         } else if (ret.skill == 4001344 || ret.skill == NightWalker.LUCKY_SEVEN || ret.skill == NightLord.TRIPLE_THROW) {
             calcDmgMax = (long) ((chr.getTotalLuk() * 5) * Math.ceil(chr.getTotalWatk() / 100.0));
         } else if (ret.skill == DragonKnight.DRAGON_ROAR) {
@@ -744,7 +748,9 @@ public abstract class AbstractDealDamageHandler extends AbstractPacketHandler {
             calcDmgMax += 80000; // Aran Tutorial.
         }
 
-        boolean canCrit = chr.getJob().isA((Job.BOWMAN)) || chr.getJob().isA(Job.THIEF) || chr.getJob().isA(Job.NIGHTWALKER1) || chr.getJob().isA(Job.WINDARCHER1) || chr.getJob() == Job.ARAN3 || chr.getJob() == Job.ARAN4 || chr.getJob() == Job.MARAUDER || chr.getJob() == Job.BUCCANEER;
+        // Every physical attack can crit: the client gives all characters a base crit
+        // (kaentake critrouting.cpp). Spells never crit, since MDamage has no crit roll.
+        boolean canCrit = !magic;
 
         if (chr.getBuffEffect(BuffStat.SHARP_EYES) != null) {
             // Any class that has sharp eyes can crit. Also, since it stacks with normal crit go ahead
