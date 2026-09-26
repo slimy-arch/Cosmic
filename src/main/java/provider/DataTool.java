@@ -92,6 +92,16 @@ public class DataTool {
         }
     }
 
+    // maxHP-style values: an <int>, or a <string> holding a whole number beyond Integer.MAX_VALUE.
+    // Throws like getIntConvert(String, Data) when the node is missing.
+    public static long getLongConvert(String path, Data data) {
+        Data d = data.getChildByPath(path);
+        if (d.getType() == DataType.STRING) {
+            return Long.parseLong(getString(d).trim());
+        }
+        return getInt(d);
+    }
+
     public static int getIntConvert(String path, Data data) {
         Data d = data.getChildByPath(path);
         if (d.getType() == DataType.STRING) {

@@ -117,7 +117,8 @@ public class LifeFactory {
             attackInfos.addAll(linkStats.getRight());
         }
 
-        stats.setHp(DataTool.getIntConvert("maxHP", monsterInfoData));
+        stats.setHp(DataTool.getLongConvert("maxHP", monsterInfoData));
+        MobHpOverrides.apply(mid, stats); // mob-hp-overrides.yaml: HP above the WZ int range
         stats.setFriendly(DataTool.getIntConvert("damagedByMob", monsterInfoData, stats.isFriendly() ? 1 : 0) == 1);
         stats.setPADamage(DataTool.getIntConvert("PADamage", monsterInfoData));
         stats.setPDDamage(DataTool.getIntConvert("PDDamage", monsterInfoData));
@@ -246,6 +247,13 @@ public class LifeFactory {
         }
 
         return new Pair<>(stats, attackInfos);
+    }
+
+    // !reloadmobhp: the next getMonster re-reads WZ stats and re-applies the overrides.
+    public static void clearCachedMonsterStats() {
+        synchronized (monsterStats) {
+            monsterStats.clear();
+        }
     }
 
     public static Monster getMonster(int mid) {

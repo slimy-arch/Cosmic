@@ -120,6 +120,7 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Matze
@@ -1421,7 +1422,7 @@ public class StatEffect {
             }
         }
         if (hpR != 0) {
-            hpchange += (int) (applyfrom.getCurrentMaxHp() * hpR) / (applyfrom.hasDisease(Disease.ZOMBIFY) ? 2 : 1);
+            hpchange += capPercentPotionHeal((int) (applyfrom.getCurrentMaxHp() * hpR)) / (applyfrom.hasDisease(Disease.ZOMBIFY) ? 2 : 1);
         }
         if (primary) {
             if (hpCon != 0) {
@@ -1435,6 +1436,28 @@ public class StatEffect {
         }
 
         return hpchange;
+    }
+
+    // With HP/MP up to 999,999, a %-of-max potion would out-heal every flat potion. Cap the
+    // percentage part of item heals: the Power Elixir family at 99,999, every other hpR/mpR
+    // consumable (Elixir, Honster, Mana Bull, sushi, ...) at 49,999. Skills and negative rates
+    // (e.g. 2022228's -40%) pass through unchanged.
+    private static final int POWER_ELIXIR_HEAL_CAP = 99_999;
+    private static final int PERCENT_POTION_HEAL_CAP = 49_999;
+    private static final Set<Integer> POWER_ELIXIRS = Set.of(
+            2000005, // Power Elixir
+            2000019, // Power Elixir
+            2022176, // Power Elixir
+            2022457, // Power Elixir
+            2022162, // Party Power Elixir
+            2022432  // Mu Lung Dojo Power Elixir
+    );
+
+    private int capPercentPotionHeal(int heal) {
+        if (skill || heal <= 0) {
+            return heal;
+        }
+        return Math.min(heal, POWER_ELIXIRS.contains(sourceid) ? POWER_ELIXIR_HEAL_CAP : PERCENT_POTION_HEAL_CAP);
     }
 
     private int makeHealHP(double rate, double stat, double lowerfactor, double upperfactor) {
@@ -1451,7 +1474,7 @@ public class StatEffect {
             }
         }
         if (mpR != 0) {
-            mpchange += (int) (applyfrom.getCurrentMaxMp() * mpR);
+            mpchange += capPercentPotionHeal((int) (applyfrom.getCurrentMaxMp() * mpR));
         }
         if (primary) {
             if (mpCon != 0) {

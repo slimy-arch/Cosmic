@@ -51,7 +51,7 @@ public class MonsterStatFetcher {
 
                 Data monsterInfoData = monsterData.getChildByPath("info");
                 MonsterStats stats = new MonsterStats();
-                stats.setHp(DataTool.getIntConvert("maxHP", monsterInfoData));
+                stats.setHp(DataTool.getLongConvert("maxHP", monsterInfoData));
                 stats.setFriendly(DataTool.getIntConvert("damagedByMob", monsterInfoData, 0) == 1);
                 stats.setPADamage(DataTool.getIntConvert("PADamage", monsterInfoData));
                 stats.setPDDamage(DataTool.getIntConvert("PDDamage", monsterInfoData));

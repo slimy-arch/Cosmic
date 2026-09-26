@@ -140,6 +140,7 @@ import client.command.commands.gm3.QuestCompleteCommand;
 import client.command.commands.gm3.QuestResetCommand;
 import client.command.commands.gm3.QuestStartCommand;
 import client.command.commands.gm3.ReloadDropsCommand;
+import client.command.commands.gm3.ReloadMobHpCommand;
 import client.command.commands.gm3.ReloadEventsCommand;
 import client.command.commands.gm3.ReloadMapCommand;
 import client.command.commands.gm3.ReloadPortalsCommand;
@@ -447,6 +448,7 @@ public class CommandsExecutor {
         addCommand("inmap", 3, InMapCommand.class);
         addCommand("reloadevents", 3, ReloadEventsCommand.class);
         addCommand("reloaddrops", 3, ReloadDropsCommand.class);
+        addCommand("reloadmobhp", 3, ReloadMobHpCommand.class);
         addCommand("reloadportals", 3, ReloadPortalsCommand.class);
         addCommand("reloadmap", 3, ReloadMapCommand.class);
         addCommand("reloadshops", 3, ReloadShopsCommand.class);

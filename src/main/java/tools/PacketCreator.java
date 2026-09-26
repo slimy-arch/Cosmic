@@ -2356,7 +2356,8 @@ public class PacketCreator {
         for (SummonAttackTarget target : targets) {
             p.writeInt(target.monsterOid()); // oid
             p.writeByte(6); // who knows
-            p.writeInt(target.damage()); // damage
+            p.writeInt((int) Math.min(Math.max(0L, target.damage()), Integer.MAX_VALUE)); // damage-long: int + long
+            p.writeLong(Math.max(0L, target.damage()));
         }
 
         return p;
@@ -2436,8 +2437,17 @@ public class PacketCreator {
                 if (skill == ChiefBandit.MESO_EXPLOSION) {
                     p.writeByte(value.damageLines().size());
                 }
-                for (Integer damageLine : value.damageLines()) {
-                    p.writeInt(damageLine);
+                // damage-long: [int clamped | crit bit][long real], read by the client's
+                // CUserRemote::OnAttack decode hooks (damagelong.cpp).
+                List<Long> lines = value.damageLines();
+                for (int j = 0; j < lines.size(); j++) {
+                    long line = Math.max(0L, lines.get(j));
+                    int n = (int) Math.min(line, Integer.MAX_VALUE);
+                    if (value.isCrit(j)) {
+                        n |= Integer.MIN_VALUE;
+                    }
+                    p.writeInt(n);
+                    p.writeLong(line);
                 }
             }
         }
@@ -4196,19 +4206,24 @@ public class PacketCreator {
         return p;
     }
 
-    public static Packet damageMonster(int oid, int damage) {
-        return damageMonster(oid, damage, 0, 0);
+    public static Packet damageMonster(int oid, long damage) {
+        return damageMonster(oid, damage, 0, 0, 0);
+    }
+
+    // attackerId: the character whose damage skin draws the number (DoT ticks, Heaven's Hammer, ...).
+    public static Packet damageMonster(int oid, long damage, int attackerId) {
+        return damageMonster(oid, damage, 0, 0, attackerId);
     }
 
     public static Packet healMonster(int oid, int heal, int curhp, int maxhp) {
-        return damageMonster(oid, -heal, curhp, maxhp);
+        return damageMonster(oid, -heal, curhp, maxhp, 0);
     }
 
-    private static Packet damageMonster(int oid, int damage, int curhp, int maxhp) {
+    private static Packet damageMonster(int oid, long damage, int curhp, int maxhp, int attackerId) {
         final OutPacket p = OutPacket.create(SendOpcode.DAMAGE_MONSTER);
         p.writeInt(oid);
         p.writeByte(0);
-        p.writeInt(damage);
+        writeMobDamage(p, damage, attackerId);
         p.writeInt(curhp);
         p.writeInt(maxhp);
         return p;
@@ -6865,13 +6880,21 @@ public class PacketCreator {
         return builder.toString();
     }
 
+    // damage-long: DAMAGE_MONSTER carries [int min(dmg, INT_MAX), or -heal as is][long dmg][int attacker id];
+    // read by the client's CMob::OnDamaged decode hook (damagelong.cpp). Attacker 0 = stock digits.
+    private static void writeMobDamage(OutPacket p, long damage, int attackerId) {
+        p.writeInt(damage < 0 ? Monster.clampToInt(damage) : (int) Math.min(damage, Integer.MAX_VALUE));
+        p.writeLong(damage);
+        p.writeInt(attackerId);
+    }
+
     public static Packet MobDamageMobFriendly(Monster mob, int damage, int remainingHp) {
         final OutPacket p = OutPacket.create(SendOpcode.DAMAGE_MONSTER);
         p.writeInt(mob.getObjectId());
         p.writeByte(1); // direction ?
-        p.writeInt(damage);
+        writeMobDamage(p, damage, 0);
         p.writeInt(remainingHp);
-        p.writeInt(mob.getMaxHp());
+        p.writeInt(Monster.clampToInt(mob.getMaxHp()));
         return p;
     }
 

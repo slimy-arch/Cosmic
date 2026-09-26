@@ -48,7 +48,7 @@ import java.util.List;
 public final class SummonDamageHandler extends AbstractDealDamageHandler {
     private static final Logger log = LoggerFactory.getLogger(SummonDamageHandler.class);
 
-    public record SummonAttackTarget(int monsterOid, int damage, short delay) {}
+    public record SummonAttackTarget(int monsterOid, long damage, short delay) {}
 
     @Override
     public void handlePacket(InPacket p, Client c) {
@@ -79,7 +79,10 @@ public final class SummonDamageHandler extends AbstractDealDamageHandler {
             Point curPos = p.readPos();
             Point nextPos = p.readPos();
             short delay = p.readShort();
-            int damage = p.readInt();
+            // damage-long: [int min(real, INT_MAX)][long real]; the long is used only past the int range
+            int raw = p.readInt();
+            long real = p.readLong();
+            long damage = raw == Integer.MAX_VALUE && real > Integer.MAX_VALUE ? real : Math.max(0, raw);
             targets.add(new SummonAttackTarget(monsterOid, damage, delay));
         }
         player.getMap().broadcastMessage(player, PacketCreator.summonAttack(player.getId(), summon.getObjectId(),
@@ -89,22 +92,15 @@ public final class SummonDamageHandler extends AbstractDealDamageHandler {
             return;
         }
 
-        boolean magic = summonEffect.getWatk() == 0;
-        int maxDmg = calcMaxDamage(summonEffect, player, magic);    // thanks Darter (YungMoozi) for reporting unchecked max dmg
-        long dptSummonDamage = 0L; // DamageRank: clamped damage of this summon attack
+        // damage-long: the old calcMaxDamage clamp is gone. It is an int estimate from stats the client
+        // no longer caps at 1999, so it would silently cut every uncapped summon hit (same trade-off as
+        // the magnitude DAMAGE_HACK checks removed from AbstractDealDamageHandler.parseDamage).
+        long dptSummonDamage = 0L; // DamageRank: damage of this summon attack
         for (SummonAttackTarget target : targets) {
-            int damage = target.damage();
+            long damage = target.damage();
             Monster mob = player.getMap().getMonsterByOid(target.monsterOid());
             if (mob == null) {
                 continue;
-            }
-
-            if (damage > maxDmg) {
-                AutobanFactory.DAMAGE_HACK.alert(c.getPlayer(), "Possible packet editing summon damage exploit.");
-                final String mobName = MonsterInformationProvider.getInstance().getMobNameFromId(mob.getId());
-                log.info("Possible exploit - chr {} used a summon of skillId {} to attack {} with damage {} (max: {})",
-                        c.getPlayer().getName(), summon.getSkill(), mobName, damage, maxDmg);
-                damage = maxDmg;
             }
 
             if (damage > 0 && summonEffect.getMonsterStati().size() > 0) {

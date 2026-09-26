@@ -90,7 +90,7 @@ public class Monster extends AbstractLoadedLife {
 
     private ChangeableStats ostats = null;  //unused, v83 WZs offers no support for changeable stats.
     private MonsterStats stats;
-    private final AtomicInteger hp = new AtomicInteger(1);
+    private final AtomicLong hp = new AtomicLong(1);
     private final AtomicLong maxHpPlusHeal = new AtomicLong(1);
     private int mp;
     private WeakReference<Character> controller = new WeakReference<>(null);
@@ -235,23 +235,23 @@ public class Monster extends AbstractLoadedLife {
         return r;
     }
 
-    public int getHp() {
+    public long getHp() {
         return hp.get();
     }
 
-    public synchronized void addHp(int hp) {
+    public synchronized void addHp(long hp) {
         if (this.hp.get() <= 0) {
             return;
         }
         this.hp.addAndGet(hp);
     }
 
-    public synchronized void setStartingHp(int hp) {
+    public synchronized void setStartingHp(long hp) {
         stats.setHp(hp);    // refactored mob stats after non-static HP pool suggestion thanks to twigs
         this.hp.set(hp);
     }
 
-    public int getMaxHp() {
+    public long getMaxHp() {
         return stats.getHp();
     }
 
@@ -323,7 +323,7 @@ public class Monster extends AbstractLoadedLife {
     }
 
     public void setHpZero() {     // force HP = 0
-        applyAndGetHpDamage(Integer.MAX_VALUE, false);
+        applyAndGetHpDamage(Long.MAX_VALUE, false);
     }
 
     private boolean applyAnimationIfRoaming(int attackPos, MobSkill skill) {   // roam: not casting attack or skill animations
@@ -351,8 +351,8 @@ public class Monster extends AbstractLoadedLife {
         }
     }
 
-    public synchronized Integer applyAndGetHpDamage(int delta, boolean stayAlive) {
-        int curHp = hp.get();
+    public synchronized Long applyAndGetHpDamage(long delta, boolean stayAlive) {
+        long curHp = hp.get();
         if (curHp <= 0) {       // this monster is already dead
             return null;
         }
@@ -361,18 +361,16 @@ public class Monster extends AbstractLoadedLife {
             if (stayAlive) {
                 curHp--;
             }
-            int trueDamage = Math.min(curHp, delta);
+            long trueDamage = Math.min(curHp, delta);
 
             hp.addAndGet(-trueDamage);
             return trueDamage;
         } else {
-            int trueHeal = -delta;
-            int hp2Heal = curHp + trueHeal;
-            int maxHp = getMaxHp();
-
-            if (hp2Heal > maxHp) {
-                trueHeal -= (hp2Heal - maxHp);
-            }
+            // Capped at the missing HP up front: curHp + heal could overflow a long,
+            // and -Long.MIN_VALUE is still negative.
+            long maxHp = getMaxHp();
+            long trueHeal = delta == Long.MIN_VALUE ? Long.MAX_VALUE : -delta;
+            trueHeal = Math.max(0, Math.min(trueHeal, maxHp - curHp));
 
             hp.addAndGet(trueHeal);
             return trueHeal;
@@ -388,7 +386,7 @@ public class Monster extends AbstractLoadedLife {
             from.setPlayerAggro(this.hashCode());
             from.getMap().broadcastBossHpMessage(this, this.hashCode(), makeBossHPBarPacket(), getPosition());
         } else if (!isBoss()) {
-            int remainingHP = (int) Math.max(1, hp.get() * 100f / getMaxHp());
+            int remainingHP = (int) Math.max(1, hp.get() * 100d / getMaxHp());
             Packet packet = PacketCreator.showMonsterHP(getObjectId(), remainingHP);
             if (from.getParty() != null) {
                 for (PartyCharacter mpc : from.getParty().getMembers()) {
@@ -403,7 +401,7 @@ public class Monster extends AbstractLoadedLife {
         }
     }
 
-    public boolean damage(Character attacker, int damage, boolean stayAlive) {
+    public boolean damage(Character attacker, long damage, boolean stayAlive) {
         boolean lastHit = false;
 
         this.lockMonster();
@@ -453,8 +451,8 @@ public class Monster extends AbstractLoadedLife {
      * @param damage
      * @param stayAlive
      */
-    private void applyDamage(Character from, int damage, boolean stayAlive, boolean fake) {
-        Integer trueDamage = applyAndGetHpDamage(damage, stayAlive);
+    private void applyDamage(Character from, long damage, boolean stayAlive, boolean fake) {
+        Long trueDamage = applyAndGetHpDamage(damage, stayAlive);
         if (trueDamage == null) {
             return;
         }
@@ -476,12 +474,12 @@ public class Monster extends AbstractLoadedLife {
         broadcastMobHpBar(from);
     }
 
-    public void applyFakeDamage(Character from, int damage, boolean stayAlive) {
+    public void applyFakeDamage(Character from, long damage, boolean stayAlive) {
         applyDamage(from, damage, stayAlive, true);
     }
 
-    public void heal(int hp, int mp) {
-        Integer hpHealed = applyAndGetHpDamage(-hp, false);
+    public void heal(long hp, int mp) {
+        Long hpHealed = applyAndGetHpDamage(-hp, false);
         if (hpHealed == null) {
             return;
         }
@@ -494,7 +492,7 @@ public class Monster extends AbstractLoadedLife {
         setMp(mp2Heal);
 
         if (hp > 0) {
-            getMap().broadcastMessage(PacketCreator.healMonster(getObjectId(), hp, getHp(), getMaxHp()));
+            getMap().broadcastMessage(PacketCreator.healMonster(getObjectId(), clampToInt(hp), clampToInt(getHp()), clampToInt(getMaxHp())));
         }
 
         maxHpPlusHeal.addAndGet(hpHealed);
@@ -937,7 +935,7 @@ public class Monster extends AbstractLoadedLife {
         }
     }
 
-    private void dispatchMonsterDamaged(Character from, int trueDmg) {
+    private void dispatchMonsterDamaged(Character from, long trueDmg) {
         MonsterListener[] listenersList;
         statiLock.lock();
         try {
@@ -951,7 +949,7 @@ public class Monster extends AbstractLoadedLife {
         }
     }
 
-    private void dispatchMonsterHealed(int trueHeal) {
+    private void dispatchMonsterHealed(long trueHeal) {
         MonsterListener[] listenersList;
         statiLock.lock();
         try {
@@ -1033,7 +1031,25 @@ public class Monster extends AbstractLoadedLife {
     }
 
     public Packet makeBossHPBarPacket() {
-        return PacketCreator.showBossHP(getId(), getHp(), getMaxHp(), getTagColor(), getTagBgColor());
+        // The v83 boss bar takes int HP/maxHP and only draws their ratio, so a long pool is
+        // rescaled onto [0, Integer.MAX_VALUE] with the ratio kept.
+        long maxHp = getMaxHp();
+        long curHp = Math.max(0, getHp());
+        int barHp;
+        int barMaxHp;
+        if (maxHp > Integer.MAX_VALUE) {
+            barMaxHp = Integer.MAX_VALUE;
+            barHp = (int) Math.min(Integer.MAX_VALUE, Math.ceil((double) curHp / maxHp * Integer.MAX_VALUE));
+        } else {
+            barMaxHp = (int) maxHp;
+            barHp = (int) curHp;
+        }
+        return PacketCreator.showBossHP(getId(), barHp, barMaxHp, getTagColor(), getTagBgColor());
+    }
+
+    // Packets and int-typed APIs still carry 32-bit HP/damage: saturate rather than wrap.
+    public static int clampToInt(long value) {
+        return (int) Math.max(Integer.MIN_VALUE, Math.min(Integer.MAX_VALUE, value));
     }
 
     public boolean hasBossHPBar() {
@@ -1221,8 +1237,10 @@ public class Monster extends AbstractLoadedLife {
         int animationTime;
         if (poison) {
             int poisonLevel = from.getSkillLevel(status.getSkill());
-            int poisonDamage = Math.min(Short.MAX_VALUE, (int) (getMaxHp() / (70.0 - poisonLevel) + 0.999));
-            status.setValue(MonsterStatus.POISON, poisonDamage);
+            // damage-long: vanilla capped a tick at Short.MAX_VALUE (32,767); now 1/(70 - level) of max HP.
+            // The status value is a short on the wire (applyMonsterStatus), so only that copy is clamped.
+            long poisonDamage = (long) Math.ceil(getMaxHp() / (70.0 - poisonLevel));
+            status.setValue(MonsterStatus.POISON, (int) Math.min(Short.MAX_VALUE, poisonDamage));
             animationTime = broadcastStatusEffect(status);
 
             overtimeAction = new DamageTask(poisonDamage, from, status, 0);
@@ -1237,19 +1255,17 @@ public class Monster extends AbstractLoadedLife {
                 }
                 matk = SkillFactory.getSkill(skillid).getEffect(poisonLevel).getMatk();
                 int luk = from.getLuk();
-                int maxDmg = (int) Math.ceil(Math.min(Short.MAX_VALUE, 0.2 * luk * matk));
-                int minDmg = (int) Math.ceil(Math.min(Short.MAX_VALUE, 0.1 * luk * matk));
-                int gap = maxDmg - minDmg;
-                if (gap == 0) {
-                    gap = 1;
-                }
-                int poisonDamage = 0;
+                // damage-long: the Short.MAX_VALUE caps are gone; only the short status values are clamped.
+                long maxDmg = (long) Math.ceil(0.2 * luk * matk);
+                long minDmg = (long) Math.ceil(0.1 * luk * matk);
+                long gap = Math.max(1, maxDmg - minDmg);
+                long poisonDamage = 0;
                 for (int i = 0; i < getVenomMulti(); i++) {
-                    poisonDamage += (Randomizer.nextInt(gap) + minDmg);
+                    poisonDamage += (long) (Randomizer.nextDouble() * gap) + minDmg;
                 }
-                poisonDamage = Math.min(Short.MAX_VALUE, poisonDamage);
-                status.setValue(MonsterStatus.VENOMOUS_WEAPON, poisonDamage);
-                status.setValue(MonsterStatus.POISON, poisonDamage);
+                int statusValue = (int) Math.min(Short.MAX_VALUE, poisonDamage);
+                status.setValue(MonsterStatus.VENOMOUS_WEAPON, statusValue);
+                status.setValue(MonsterStatus.POISON, statusValue);
                 animationTime = broadcastStatusEffect(status);
 
                 overtimeAction = new DamageTask(poisonDamage, from, status, 0);
@@ -1269,9 +1285,13 @@ public class Monster extends AbstractLoadedLife {
         } else if (status.getSkill().getId() == 4121004 || status.getSkill().getId() == 4221004) { // Ninja Ambush
             final Skill skill = SkillFactory.getSkill(status.getSkill().getId());
             final byte level = from.getSkillLevel(skill);
-            final int damage = (int) ((from.getStr() + from.getLuk()) * ((3.7 * skill.getEffect(level).getDamage()) / 100));
+            // damage-long: vanilla was (base STR + LUK) x 3.7 x damage% - no attack term, so ~12k a tick
+            // next to 30b+ hits. Now each tick is a damage% skill hit (100% at level 30) off the max-hit
+            // estimate (weapon multiplier x total stats x total PAD). The status value is a short on the
+            // wire; the tick itself is broadcast in full by DamageTask.
+            final long damage = (long) Math.ceil(from.calculateMaxBaseDamageLong(from.getTotalWatk()) * (skill.getEffect(level).getDamage() / 100.0));
 
-            status.setValue(MonsterStatus.NINJA_AMBUSH, damage);
+            status.setValue(MonsterStatus.NINJA_AMBUSH, (int) Math.min(Short.MAX_VALUE, damage));
             animationTime = broadcastStatusEffect(status);
 
             overtimeAction = new DamageTask(damage, from, status, 2);
@@ -1610,13 +1630,13 @@ public class Monster extends AbstractLoadedLife {
 
     private final class DamageTask implements Runnable {
 
-        private final int dealDamage;
+        private final long dealDamage;
         private final Character chr;
         private final MonsterStatusEffect status;
         private final int type;
         private final MapleMap map;
 
-        private DamageTask(int dealDamage, Character chr, MonsterStatusEffect status, int type) {
+        private DamageTask(long dealDamage, Character chr, MonsterStatusEffect status, int type) {
             this.dealDamage = dealDamage;
             this.chr = chr;
             this.status = status;
@@ -1626,17 +1646,26 @@ public class Monster extends AbstractLoadedLife {
 
         @Override
         public void run() {
-            int curHp = hp.get();
+            long curHp = hp.get();
             if (curHp <= 1) {
                 MobStatusService service = (MobStatusService) map.getChannelServer().getServiceAccess(ChannelServices.MOB_STATUS);
                 service.interruptMobStatus(map.getId(), status);
                 return;
             }
 
-            int damage = dealDamage;
+            long damage = dealDamage;
+            if (type == 2) {
+                // damage-long: Ninja Ambush ticks are skill hits (100% of the max-hit estimate) and may kill,
+                // with the normal kill path (EXP, drops). Stock left the mob at 1 HP and ended the ambush,
+                // which at uncapped damage meant one tick and done. Poison / web stay non-lethal.
+                map.broadcastMessage(PacketCreator.damageMonster(getObjectId(), damage, chr.getId()), getPosition());
+                map.damageMonster(chr, Monster.this, damage);
+                chr.dptOnDamage(Character.DAMAGE_RANK_DOT_SKILL_ID, Math.min(damage, curHp)); // DamageRank
+                return;
+            }
             if (damage >= curHp) {
                 damage = curHp - 1;
-                if (type == 1 || type == 2) {
+                if (type == 1) {
                     MobStatusService service = (MobStatusService) map.getChannelServer().getServiceAccess(ChannelServices.MOB_STATUS);
                     service.interruptMobStatus(map.getId(), status);
                 }
@@ -1650,13 +1679,10 @@ public class Monster extends AbstractLoadedLife {
                 }
                 chr.dptOnDamage(Character.DAMAGE_RANK_DOT_SKILL_ID, damage); // DamageRank
 
-                if (type == 1) {
-                    map.broadcastMessage(PacketCreator.damageMonster(getObjectId(), damage), getPosition());
-                } else if (type == 2) {
-                    if (damage < dealDamage) {    // ninja ambush (type 2) is already displaying DOT to the caster
-                        map.broadcastMessage(PacketCreator.damageMonster(getObjectId(), damage), getPosition());
-                    }
-                }
+                // damage-long: every tick is broadcast with its real value and the attacker (damage skin).
+                // The client no longer draws Poison / Venom / Ninja Ambush ticks from the mob's short
+                // status value, which could not show more than 32,767 (damagelong.cpp).
+                map.broadcastMessage(PacketCreator.damageMonster(getObjectId(), damage, chr.getId()), getPosition());
             }
         }
     }
@@ -1749,7 +1775,7 @@ public class Monster extends AbstractLoadedLife {
         return ostats;
     }
 
-    public final int getMobMaxHp() {
+    public final long getMobMaxHp() {
         if (ostats != null) {
             return ostats.hp;
         }

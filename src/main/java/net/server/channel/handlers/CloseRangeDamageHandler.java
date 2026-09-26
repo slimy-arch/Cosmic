@@ -39,6 +39,7 @@ import constants.skills.Rogue;
 import constants.skills.WindArcher;
 import net.packet.InPacket;
 import server.StatEffect;
+import server.life.Monster;
 import tools.PacketCreator;
 import tools.Pair;
 
@@ -140,13 +141,13 @@ public final class CloseRangeDamageHandler extends AbstractDealDamageHandler {
             }
         }
         if (attack.numAttacked > 0 && attack.skill == DragonKnight.SACRIFICE) {
-            int totDamageToOneMonster = 0; // sacrifice attacks only 1 mob with 1 attack
+            long totDamageToOneMonster = 0; // sacrifice attacks only 1 mob with 1 attack
             final Iterator<AttackTarget> dmgIt = attack.targets.values().iterator();
             if (dmgIt.hasNext()) {
                 totDamageToOneMonster = dmgIt.next().damageLines().getFirst();
             }
 
-            chr.safeAddHP(-1 * totDamageToOneMonster * attack.getAttackEffect(chr, null).getX() / 100);
+            chr.safeAddHP(-Monster.clampToInt((long) ((double) totDamageToOneMonster * attack.getAttackEffect(chr, null).getX() / 100)));
         }
         if (attack.numAttacked > 0 && attack.skill == 1211002) {
             boolean advcharge_prob = false;
