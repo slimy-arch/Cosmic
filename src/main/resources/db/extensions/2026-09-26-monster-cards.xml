@@ -1,0 +1,917 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Picked up by changelog-root.xml: <includeAll path="extensions" relativeToChangelogFile="true"/>
+     (loaded from the classpath via ClassLoaderResourceAccessor, so it must live in
+     src/main/resources/db/extensions/ and be packaged into the jar). -->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!-- ===================================================================================
+         Cards minted for the mobs that still had none, 2026-09-26 (spec 6.F task F4).
+
+         403 monsters that drop something or spawn in a map's `life` block had no card in
+         Item/Consume/0238.img, no monstercarddata row and no 238xxxx drop row. The card ITEMS
+         were created alongside this changeset in both WZ trees - the client
+         (the extracted Data tree) and the repo dump - by tools/card_minter, taking
+         0238.img from 343 to 746 cards.
+
+         Ids were allocated in the colour tier the existing catalogue puts that mob in:
+         boss -> 2388xxx, otherwise by level with the
+         bands measured off the existing cards (<=15, <=30, <=45, <=60, <=79, <=95, <=124, else),
+         taking the lowest free sequence number in that tier - free in BOTH the WZ and
+         monstercarddata, so a later import cannot collide.
+
+         Chance follows this server's existing card rows: 341 normal mobs at 8000 and 62 bosses at 24000
+         (the modal chance of the 238xxxx drop_data rows; drop_rate = boss_drop_rate = 10 here).
+
+         Deliberately NOT here: mobs with no img in the client Data, PQ target dummies /
+         tutorial props, invisible placeholder stubs, mobs that would repeat an existing card's
+         name AND sprite, the eight mobs an earlier review turned down by name, and the curated
+         removals of the 2026-09-26 review (lv1 statues, PQ/event/region variants, props,
+         duplicate names). Mobs sharing a name with an existing card reuse it (separate changeset).
+         =================================================================================== -->
+    <changeSet id="2026-09-26-mint-cards-curated" author="claude" dbms="mysql,mariadb">
+        <comment>403 new monster cards: drop_data row + monstercarddata mapping</comment>
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (100120, 2380020, 1, 1, 0, 8000)</sql>   <!-- Tino -> Tino Card (Lv.1) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9302000, 2380021, 1, 1, 0, 8000)</sql>   <!-- Golden Pig -> Golden Pig Card (Lv.1) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (100121, 2380022, 1, 1, 0, 8000)</sql>   <!-- Tiv -> Tiv Card (Lv.3) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (100122, 2380023, 1, 1, 0, 8000)</sql>   <!-- Timu -> Timu Card (Lv.5) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (100123, 2380024, 1, 1, 0, 8000)</sql>   <!-- Tiru -> Tiru Card (Lv.7) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420001, 2380025, 1, 1, 0, 8000)</sql>   <!-- Frog -> Frog Card (Lv.8) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (100124, 2380026, 1, 1, 0, 8000)</sql>   <!-- Tiguru -> Tiguru Card (Lv.9) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400506, 2380027, 1, 1, 0, 8000)</sql>   <!-- Candle Monster -> Candle Monster Card (Lv.10) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9500144, 2380028, 1, 1, 0, 8000)</sql>   <!-- Coke Snail -> Coke Snail Card (Lv.10) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300064, 2380029, 1, 1, 0, 8000)</sql>   <!-- Goblin Fire -> Goblin Fire Card (Lv.11) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400570, 2380030, 1, 1, 0, 8000)</sql>   <!-- Anniversary Cake -> Anniversary Cake Card (Lv.15) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420005, 2380031, 1, 1, 0, 8000)</sql>   <!-- White Rooster -> White Rooster Card (Lv.15) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9500151, 2380032, 1, 1, 0, 8000)</sql>   <!-- Coke Slime -> Coke Slime Card (Lv.15) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420502, 2381039, 1, 1, 0, 8000)</sql>   <!-- Biner -> Biner Card (Lv.18) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400538, 2381040, 1, 1, 0, 8000)</sql>   <!-- Street Slime -> Street Slime Card (Lv.19) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400595, 2381041, 1, 1, 0, 8000)</sql>   <!-- Blood Stirge -> Blood Stirge Card (Lv.20) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400601, 2381042, 1, 1, 0, 8000)</sql>   <!-- Birthday Candle -> Birthday Candle Card (Lv.20) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400638, 2381043, 1, 1, 0, 8000)</sql>   <!-- Rotting Skeleton -> Rotting Skeleton Card (Lv.20) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9500152, 2381044, 1, 1, 0, 8000)</sql>   <!-- Coke Mushroom -> Coke Mushroom Card (Lv.20) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9600001, 2381045, 1, 1, 0, 8000)</sql>   <!-- Rooster -> Rooster Card (Lv.20) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400539, 2381046, 1, 1, 0, 8000)</sql>   <!-- Urban Fungus -> Urban Fungus Card (Lv.21) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9600002, 2381047, 1, 1, 0, 8000)</sql>   <!-- Duck -> Duck Card (Lv.22) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300027, 2381048, 1, 1, 0, 8000)</sql>   <!-- Devil Slime -> Devil Slime Card (Lv.23) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420506, 2381049, 1, 1, 0, 8000)</sql>   <!-- Batoo -> Batoo Card (Lv.23) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400000, 2381050, 1, 1, 0, 8000)</sql>   <!-- Crow -> Crow Card (Lv.25) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400540, 2381051, 1, 1, 0, 8000)</sql>   <!-- Killa Bee -> Killa Bee Card (Lv.25) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400602, 2381052, 1, 1, 0, 8000)</sql>   <!-- Strawberry Cake -> Strawberry Cake Card (Lv.25) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9500153, 2381053, 1, 1, 0, 8000)</sql>   <!-- Coketump -> Coketump Card (Lv.25) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9600003, 2381054, 1, 1, 0, 8000)</sql>   <!-- Sheep -> Sheep Card (Lv.25) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400547, 2381055, 1, 1, 0, 8000)</sql>   <!-- Boomer -> Boomer Card (Lv.27) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420500, 2381056, 1, 1, 0, 8000)</sql>   <!-- Stopnow -> Stopnow Card (Lv.28) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9100013, 2381057, 1, 1, 0, 8000)</sql>   <!-- Adin -> Adin Card (Lv.30) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300093, 2381058, 1, 1, 0, 8000)</sql>   <!-- Tylus -> Tylus Card (Lv.30) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400001, 2381059, 1, 1, 0, 8000)</sql>   <!-- Fire Raccoon -> Fire Raccoon Card (Lv.30) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400002, 2381060, 1, 1, 0, 8000)</sql>   <!-- Cloud Fox -> Cloud Fox Card (Lv.30) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400507, 2381061, 1, 1, 0, 8000)</sql>   <!-- Cake Monster -> Cake Monster Card (Lv.30) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400518, 2381062, 1, 1, 0, 8000)</sql>   <!-- Magik Fierry B -> Magik Fierry B Card (Lv.30) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400548, 2381063, 1, 1, 0, 8000)</sql>   <!-- Mighty Maple Eater -> Mighty Maple Eater Card (Lv.30) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400558, 2381064, 1, 1, 0, 8000)</sql>   <!-- Psycho Jack -> Psycho Jack Card (Lv.30) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9500154, 2381065, 1, 1, 0, 8000)</sql>   <!-- Coketump Lite -> Coketump Lite Card (Lv.30) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9600004, 2381066, 1, 1, 0, 8000)</sql>   <!-- Goat -> Goat Card (Lv.30) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400509, 2382073, 1, 1, 0, 8000)</sql>   <!-- Sakura Cellion -> Sakura Cellion Card (Lv.33) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420503, 2382074, 1, 1, 0, 8000)</sql>   <!-- Nospeed -> Nospeed Card (Lv.33) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9600006, 2382075, 1, 1, 0, 8000)</sql>   <!-- Cow -> Cow Card (Lv.33) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (3400000, 2382077, 1, 1, 0, 8000)</sql>   <!-- Cherry Bubble Tea -> Cherry Bubble Tea Card (Lv.35) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (3400004, 2382078, 1, 1, 0, 8000)</sql>   <!-- Yeti Doll -> Yeti Doll Card (Lv.35) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (3400006, 2382079, 1, 1, 0, 8000)</sql>   <!-- Jr. Pepe Doll -> Jr. Pepe Doll Card (Lv.35) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (6130104, 2382080, 1, 1, 0, 8000)</sql>   <!-- Boogie -> Boogie Card (Lv.35) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9001005, 2382081, 1, 1, 0, 8000)</sql>   <!-- OctoPirate -> OctoPirate Card (Lv.35) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9001011, 2382082, 1, 1, 0, 8000)</sql>   <!-- Tiguru of Exam -> Tiguru of Exam Card (Lv.35) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9001012, 2382083, 1, 1, 0, 8000)</sql>   <!-- Scarred Bear -> Scarred Bear Card (Lv.35) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9500143, 2382084, 1, 1, 0, 8000)</sql>   <!-- Coke Pig -> Coke Pig Card (Lv.35) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9600005, 2382085, 1, 1, 0, 8000)</sql>   <!-- Black Goat -> Black Goat Card (Lv.35) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (3400001, 2382086, 1, 1, 0, 8000)</sql>   <!-- Mango Bubble Tea -> Mango Bubble Tea Card (Lv.36) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400542, 2382087, 1, 1, 0, 8000)</sql>   <!-- Fire Tusk -> Fire Tusk Card (Lv.36) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (3400002, 2382088, 1, 1, 0, 8000)</sql>   <!-- Melon Bubble Tea -> Melon Bubble Tea Card (Lv.37) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300224, 2382089, 1, 1, 0, 8000)</sql>   <!-- Black Sheep -> Black Sheep Card (Lv.37) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400515, 2382090, 1, 1, 0, 8000)</sql>   <!-- Indigo Eye -> Indigo Eye Card (Lv.38) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9500145, 2382091, 1, 1, 0, 8000)</sql>   <!-- Coke Seal -> Coke Seal Card (Lv.38) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9600007, 2382097, 1, 1, 0, 8000)</sql>   <!-- Plow Ox -> Plow Ox Card (Lv.38) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9700005, 2382098, 1, 1, 0, 8000)</sql>   <!-- Pyramid Skeleton -> Pyramid Skeleton Card (Lv.39) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9700006, 2382099, 1, 1, 0, 8000)</sql>   <!-- Mummy -> Mummy Card (Lv.39) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9700007, 2382100, 1, 1, 0, 8000)</sql>   <!-- Pharaoh Snake -> Pharaoh Snake Card (Lv.39) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9700008, 2382101, 1, 1, 0, 8000)</sql>   <!-- Anubis -> Anubis Card (Lv.39) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (4300000, 2382102, 1, 1, 0, 8000)</sql>   <!-- Blue Perfume -> Blue Perfume Card (Lv.40) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400011, 2382103, 1, 1, 0, 8000)</sql>   <!-- Paper Lantern Ghost -> Paper Lantern Ghost Card (Lv.40) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400516, 2382104, 1, 1, 0, 8000)</sql>   <!-- Crystal Boar -> Crystal Boar Card (Lv.40) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400563, 2382105, 1, 1, 0, 8000)</sql>   <!-- Nightmare -> Nightmare Card (Lv.40) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400573, 2382106, 1, 1, 0, 8000)</sql>   <!-- Baby typhon -> Baby typhon Card (Lv.40) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400603, 2382107, 1, 1, 0, 8000)</sql>   <!-- Angry Strawberry Cake -> Angry Strawberry Cake Card (Lv.40) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420003, 2382108, 1, 1, 0, 8000)</sql>   <!-- Red Lizard -> Red Lizard Card (Lv.40) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (4300002, 2382109, 1, 1, 0, 8000)</sql>   <!-- Yellow Perfume -> Yellow Perfume Card (Lv.41) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400543, 2382110, 1, 1, 0, 8000)</sql>   <!-- Electrophant -> Electrophant Card (Lv.41) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (4090000, 2382111, 1, 1, 0, 8000)</sql>   <!-- Iron Hook -> Iron Hook Card (Lv.42) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (4300004, 2382112, 1, 1, 0, 8000)</sql>   <!-- Pink Perfume -> Pink Perfume Card (Lv.42) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300239, 2382113, 1, 1, 0, 8000)</sql>   <!-- Zeta -> Zeta Card (Lv.42) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9500146, 2382114, 1, 1, 0, 8000)</sql>   <!-- Play Seal -> Play Seal Card (Lv.42) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (4300006, 2382115, 1, 1, 0, 8000)</sql>   <!-- Kid Mannequin -> Kid Mannequin Card (Lv.43) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300084, 2382116, 1, 1, 0, 8000)</sql>   <!-- Deathly Fear -> Deathly Fear Card (Lv.43) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420508, 2382117, 1, 1, 0, 8000)</sql>   <!-- Octobunny -> Octobunny Card (Lv.43) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (4300007, 2382118, 1, 1, 0, 8000)</sql>   <!-- Female Mannequin -> Female Mannequin Card (Lv.44) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400546, 2382119, 1, 1, 0, 8000)</sql>   <!-- I.AM.ROBOT -> I.AM.ROBOT Card (Lv.44) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (4300008, 2382120, 1, 1, 0, 8000)</sql>   <!-- Male Mannequin -> Male Mannequin Card (Lv.45) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300378, 2382121, 1, 1, 0, 8000)</sql>   <!-- Giant Nependeath -> Giant Nependeath Card (Lv.45) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400004, 2382122, 1, 1, 0, 8000)</sql>   <!-- Big Cloud Fox -> Big Cloud Fox Card (Lv.45) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400100, 2382123, 1, 1, 0, 8000)</sql>   <!-- Extra A -> Extra A Card (Lv.45) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400584, 2382124, 1, 1, 0, 8000)</sql>   <!-- Leprechaun -> Leprechaun Card (Lv.45) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400604, 2382125, 1, 1, 0, 8000)</sql>   <!-- Deluxe Candle -> Deluxe Candle Card (Lv.45) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420527, 2382126, 1, 1, 0, 8000)</sql>   <!-- Chlorotrap -> Chlorotrap Card (Lv.45) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9500148, 2382127, 1, 1, 0, 8000)</sql>   <!-- Igloo Turtle -> Igloo Turtle Card (Lv.45) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (4300009, 2383050, 1, 1, 0, 8000)</sql>   <!-- Latest Hits Compilation -> Latest Hits Compilation Card (Lv.46) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (4300010, 2383051, 1, 1, 0, 8000)</sql>   <!-- Greatest Oldies -> Greatest Oldies Card (Lv.47) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400101, 2383052, 1, 1, 0, 8000)</sql>   <!-- Extra B -> Extra B Card (Lv.47) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420528, 2383053, 1, 1, 0, 8000)</sql>   <!-- Emo Slime -> Emo Slime Card (Lv.47) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (4300011, 2383054, 1, 1, 0, 8000)</sql>   <!-- Cheap Amplifier -> Cheap Amplifier Card (Lv.48) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420507, 2383055, 1, 1, 0, 8000)</sql>   <!-- Trucker -> Trucker Card (Lv.48) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (4300012, 2383060, 1, 1, 0, 8000)</sql>   <!-- Fancy Amplifier -> Fancy Amplifier Card (Lv.49) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400102, 2383061, 1, 1, 0, 8000)</sql>   <!-- Extra C -> Extra C Card (Lv.50) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400544, 2383062, 1, 1, 0, 8000)</sql>   <!-- Gryphon -> Gryphon Card (Lv.50) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400559, 2383063, 1, 1, 0, 8000)</sql>   <!-- Sophilia Doll Ground -> Sophilia Doll Ground Card (Lv.50) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400560, 2383064, 1, 1, 0, 8000)</sql>   <!-- Sophilia Doll -> Sophilia Doll Card (Lv.50) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400588, 2383065, 1, 1, 0, 8000)</sql>   <!-- Phantom Tree -> Phantom Tree Card (Lv.50) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400639, 2383066, 1, 1, 0, 8000)</sql>   <!-- Dead Scarecrow -> Dead Scarecrow Card (Lv.50) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420504, 2383067, 1, 1, 0, 8000)</sql>   <!-- Tippo Red -> Tippo Red Card (Lv.50) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9500149, 2383068, 1, 1, 0, 8000)</sql>   <!-- Coke Golem -> Coke Golem Card (Lv.50) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300235, 2383069, 1, 1, 0, 8000)</sql>   <!-- Croko -> Croko Card (Lv.52) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420529, 2383070, 1, 1, 0, 8000)</sql>   <!-- Dark Fission -> Dark Fission Card (Lv.52) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420505, 2383071, 1, 1, 0, 8000)</sql>   <!-- Tippo Blue -> Tippo Blue Card (Lv.53) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300162, 2383072, 1, 1, 0, 8000)</sql>   <!-- Willi -> Willi Card (Lv.55) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420530, 2383073, 1, 1, 0, 8000)</sql>   <!-- Oly Oly -> Oly Oly Card (Lv.56) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420509, 2383074, 1, 1, 0, 8000)</sql>   <!-- Pac Pinky -> Pac Pinky Card (Lv.58) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300237, 2383075, 1, 1, 0, 8000)</sql>   <!-- Ghost Pixie -> Ghost Pixie Card (Lv.59) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420531, 2383076, 1, 1, 0, 8000)</sql>   <!-- Scaredy Scarlion -> Scaredy Scarlion Card (Lv.59) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420532, 2383077, 1, 1, 0, 8000)</sql>   <!-- Ratatula -> Ratatula Card (Lv.59) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (6130201, 2383078, 1, 1, 0, 8000)</sql>   <!-- Blin -> Blin Card (Lv.60) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300050, 2383079, 1, 1, 0, 8000)</sql>   <!-- Flying Boogie -> Flying Boogie Card (Lv.60) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400003, 2383080, 1, 1, 0, 8000)</sql>   <!-- Nightghost -> Nightghost Card (Lv.60) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400012, 2383081, 1, 1, 0, 8000)</sql>   <!-- Water Goblin -> Water Goblin Card (Lv.60) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400561, 2383082, 1, 1, 0, 8000)</sql>   <!-- Voodoo -> Voodoo Card (Lv.60) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400562, 2383083, 1, 1, 0, 8000)</sql>   <!-- Hoodoo -> Hoodoo Card (Lv.60) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400605, 2383084, 1, 1, 0, 8000)</sql>   <!-- Chocolate Cake -> Chocolate Cake Card (Lv.60) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420002, 2383085, 1, 1, 0, 8000)</sql>   <!-- Python -> Python Card (Lv.60) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420511, 2383086, 1, 1, 0, 8000)</sql>   <!-- Selkie Jr. -> Selkie Jr. Card (Lv.60) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9500150, 2383087, 1, 1, 0, 8000)</sql>   <!-- Ice Golem -> Ice Golem Card (Lv.60) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420533, 2384041, 1, 1, 0, 8000)</sql>   <!-- Rodeo -> Rodeo Card (Lv.61) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300033, 2384042, 1, 1, 0, 8000)</sql>   <!-- Jr. Gargoyle -> Jr. Gargoyle Card (Lv.62) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300172, 2384043, 1, 1, 0, 8000)</sql>   <!-- Poisoned Lord Tree -> Poisoned Lord Tree Card (Lv.62) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300246, 2384044, 1, 1, 0, 8000)</sql>   <!-- Tree Road -> Tree Road Card (Lv.62) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400110, 2384045, 1, 1, 0, 8000)</sql>   <!-- Leader A -> Leader A Card (Lv.62) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300020, 2384046, 1, 1, 0, 8000)</sql>   <!-- Muscle Stone -> Muscle Stone Card (Lv.63) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420510, 2384047, 1, 1, 0, 8000)</sql>   <!-- Slimy -> Slimy Card (Lv.63) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400111, 2384048, 1, 1, 0, 8000)</sql>   <!-- Leader B -> Leader B Card (Lv.64) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300019, 2384049, 1, 1, 0, 8000)</sql>   <!-- Master Muscle Stone -> Master Muscle Stone Card (Lv.65) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300173, 2384050, 1, 1, 0, 8000)</sql>   <!-- Poisoned Stone Bug -> Poisoned Stone Bug Card (Lv.65) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300175, 2384051, 1, 1, 0, 8000)</sql>   <!-- Poison Flower -> Poison Flower Card (Lv.65) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420534, 2384052, 1, 1, 0, 8000)</sql>   <!-- Charmer -> Charmer Card (Lv.65) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300022, 2384053, 1, 1, 0, 8000)</sql>   <!-- Black Knight -> Black Knight Card (Lv.66) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300023, 2384054, 1, 1, 0, 8000)</sql>   <!-- Myst Knight -> Myst Knight Card (Lv.66) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300024, 2384055, 1, 1, 0, 8000)</sql>   <!-- Puppet Golem -> Puppet Golem Card (Lv.67) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300025, 2384056, 1, 1, 0, 8000)</sql>   <!-- Gargoyle -> Gargoyle Card (Lv.68) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420512, 2384057, 1, 1, 0, 8000)</sql>   <!-- Mr. Anchor -> Mr. Anchor Card (Lv.68) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420535, 2384058, 1, 1, 0, 8000)</sql>   <!-- Jester Scarlion -> Jester Scarlion Card (Lv.68) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (7120103, 2384059, 1, 1, 0, 8000)</sql>   <!-- Red Slime -> Red Slime Card (Lv.70) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300101, 2384060, 1, 1, 0, 8000)</sql>   <!-- Tamable Hog -> Tamable Hog Card (Lv.70) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300102, 2384061, 1, 1, 0, 8000)</sql>   <!-- Watchhog -> Watchhog Card (Lv.70) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300137, 2384062, 1, 1, 0, 8000)</sql>   <!-- Juliet -> Juliet Card (Lv.70) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300138, 2384063, 1, 1, 0, 8000)</sql>   <!-- Romeo -> Romeo Card (Lv.70) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400576, 2384064, 1, 1, 0, 8000)</sql>   <!-- Windraider -> Windraider Card (Lv.70) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400640, 2384065, 1, 1, 0, 8000)</sql>   <!-- Twisted Jester -> Twisted Jester Card (Lv.70) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9500147, 2384066, 1, 1, 0, 8000)</sql>   <!-- Yeti and Coketump -> Yeti and Coketump Card (Lv.70) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (7120104, 2384067, 1, 1, 0, 8000)</sql>   <!-- Silver Slime -> Silver Slime Card (Lv.71) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (7120105, 2384068, 1, 1, 0, 8000)</sql>   <!-- Gold Slime -> Gold Slime Card (Lv.72) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400103, 2384069, 1, 1, 0, 8000)</sql>   <!-- Extra D -> Extra D Card (Lv.72) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420536, 2384070, 1, 1, 0, 8000)</sql>   <!-- Froscola -> Froscola Card (Lv.72) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (7120106, 2384071, 1, 1, 0, 8000)</sql>   <!-- Overlord A -> Overlord A Card (Lv.75) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (7120107, 2384072, 1, 1, 0, 8000)</sql>   <!-- Overlord B -> Overlord B Card (Lv.75) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400586, 2384073, 1, 1, 0, 8000)</sql>   <!-- Crimson Tree -> Crimson Tree Card (Lv.75) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420537, 2384074, 1, 1, 0, 8000)</sql>   <!-- Yabber Doo -> Yabber Doo Card (Lv.75) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300146, 2384075, 1, 1, 0, 8000)</sql>   <!-- Cyti -> Cyti Card (Lv.76) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (7120108, 2384076, 1, 1, 0, 8000)</sql>   <!-- Robby -> Robby Card (Lv.77) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (7120109, 2384077, 1, 1, 0, 8000)</sql>   <!-- Iruvata -> Iruvata Card (Lv.79) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300270, 2385024, 1, 1, 0, 8000)</sql>   <!-- Mingu -> Mingu Card (Lv.80) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400400, 2385026, 1, 1, 0, 8000)</sql>   <!-- Genin -> Genin Card (Lv.80) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400545, 2385027, 1, 1, 0, 8000)</sql>   <!-- Wolf Spider -> Wolf Spider Card (Lv.80) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400581, 2385028, 1, 1, 0, 8000)</sql>   <!-- Stormbreaker -> Stormbreaker Card (Lv.80) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8120102, 2385029, 1, 1, 0, 8000)</sql>   <!-- Afterlord -> Afterlord Card (Lv.82) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420538, 2385030, 1, 1, 0, 8000)</sql>   <!-- Booper Scarlion -> Booper Scarlion Card (Lv.82) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8120103, 2385031, 1, 1, 0, 8000)</sql>   <!-- Prototype Lord -> Prototype Lord Card (Lv.84) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420514, 2385032, 1, 1, 0, 8000)</sql>   <!-- Berserkie -> Berserkie Card (Lv.85) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8120104, 2385033, 1, 1, 0, 8000)</sql>   <!-- Maverick Type A -> Maverick Type A Card (Lv.86) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420539, 2385034, 1, 1, 0, 8000)</sql>   <!-- Vikerola -> Vikerola Card (Lv.87) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8120105, 2385035, 1, 1, 0, 8000)</sql>   <!-- Maverick Type S -> Maverick Type S Card (Lv.88) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8120106, 2385036, 1, 1, 0, 8000)</sql>   <!-- Maverick Type D -> Maverick Type D Card (Lv.89) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400578, 2385037, 1, 1, 0, 8000)</sql>   <!-- Firebrand -> Firebrand Card (Lv.90) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420515, 2385038, 1, 1, 0, 8000)</sql>   <!-- Veetron -> Veetron Card (Lv.90) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8140511, 2385039, 1, 1, 0, 8000)</sql>   <!-- Imperial Guard -> Imperial Guard Card (Lv.91) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8140512, 2385040, 1, 1, 0, 8000)</sql>   <!-- Royal Guard -> Royal Guard Card (Lv.93) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420540, 2385041, 1, 1, 0, 8000)</sql>   <!-- Gallopera -> Gallopera Card (Lv.94) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400580, 2385042, 1, 1, 0, 8000)</sql>   <!-- Elderwraith -> Elderwraith Card (Lv.95) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420516, 2385043, 1, 1, 0, 8000)</sql>   <!-- Slygie -> Slygie Card (Lv.95) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400013, 2386018, 1, 1, 0, 8000)</sql>   <!-- Dreamy Ghost -> Dreamy Ghost Card (Lv.100) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400404, 2386019, 1, 1, 0, 8000)</sql>   <!-- Ashigaru -> Ashigaru Card (Lv.100) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400574, 2386020, 1, 1, 0, 8000)</sql>   <!-- Typhon -> Typhon Card (Lv.100) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400579, 2386025, 1, 1, 0, 8000)</sql>   <!-- Nightshadow -> Nightshadow Card (Lv.100) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420518, 2386026, 1, 1, 0, 8000)</sql>   <!-- Montrecer -> Montrecer Card (Lv.105) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420517, 2386027, 1, 1, 0, 8000)</sql>   <!-- Petrifighter -> Petrifighter Card (Lv.110) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420519, 2386028, 1, 1, 0, 8000)</sql>   <!-- Duku -> Duku Card (Lv.115) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8210000, 2386029, 1, 1, 0, 8000)</sql>   <!-- Crocky the Gatekeeper -> Crocky the Gatekeeper Card (Lv.117) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8210006, 2386030, 1, 1, 0, 8000)</sql>   <!-- Prison Guard Boar -> Prison Guard Boar Card (Lv.117) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8210007, 2386031, 1, 1, 0, 8000)</sql>   <!-- Prison Guard Rhino -> Prison Guard Rhino Card (Lv.117) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8210002, 2386032, 1, 1, 0, 8000)</sql>   <!-- Blood Reindeer -> Blood Reindeer Card (Lv.120) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400401, 2386033, 1, 1, 0, 8000)</sql>   <!-- Chunin -> Chunin Card (Lv.120) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400582, 2386034, 1, 1, 0, 8000)</sql>   <!-- Crimson Guardian -> Crimson Guardian Card (Lv.120) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8210003, 2386035, 1, 1, 0, 8000)</sql>   <!-- Bearwolf -> Bearwolf Card (Lv.122) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8220016, 2386036, 1, 1, 0, 8000)</sql>   <!-- Corrupted Wyvern -> Corrupted Wyvern Card (Lv.124) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8220017, 2386037, 1, 1, 0, 8000)</sql>   <!-- Corrupted Cornian -> Corrupted Cornian Card (Lv.124) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8220018, 2386038, 1, 1, 0, 8000)</sql>   <!-- Corrupted Skelegon -> Corrupted Skelegon Card (Lv.124) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8220019, 2386039, 1, 1, 0, 8000)</sql>   <!-- Corrupted Kentaurus -> Corrupted Kentaurus Card (Lv.124) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8210004, 2387005, 1, 1, 0, 8000)</sql>   <!-- Grey Vulture -> Grey Vulture Card (Lv.125) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8210005, 2387014, 1, 1, 0, 8000)</sql>   <!-- Castle Golem -> Castle Golem Card (Lv.127) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400406, 2387015, 1, 1, 0, 8000)</sql>   <!-- Kunoichi -> Kunoichi Card (Lv.130) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400743, 2387016, 1, 1, 0, 8000)</sql>   <!-- Angry Guard Dog -> Angry Guard Dog Card (Lv.140) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400402, 2387017, 1, 1, 0, 8000)</sql>   <!-- Jonin -> Jonin Card (Lv.145) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300354, 2387018, 1, 1, 0, 8000)</sql>   <!-- Wolf Underling -> Wolf Underling Card (Lv.150) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400403, 2387019, 1, 1, 0, 8000)</sql>   <!-- Ninto -> Ninto Card (Lv.155) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8600000, 2387020, 1, 1, 0, 8000)</sql>   <!-- Mutant Snail -> Mutant Snail Card (Lv.162) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8600004, 2387021, 1, 1, 0, 8000)</sql>   <!-- Mutant Tino -> Mutant Tino Card (Lv.163) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8220020, 2387022, 1, 1, 0, 8000)</sql>   <!-- Corrupted Chief Memory Guardian -> Corrupted Chief Memory Guardian Card (Lv.164) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8600001, 2387023, 1, 1, 0, 8000)</sql>   <!-- Mutant Orange Mushroom -> Mutant Orange Mushroom Card (Lv.164) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8600005, 2387024, 1, 1, 0, 8000)</sql>   <!-- Mutant Tiru -> Mutant Tiru Card (Lv.165) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8220021, 2387025, 1, 1, 0, 8000)</sql>   <!-- Corrupted Time Monk Trainee -> Corrupted Time Monk Trainee Card (Lv.166) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8600002, 2387026, 1, 1, 0, 8000)</sql>   <!-- Mutant Slime -> Mutant Slime Card (Lv.166) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8600006, 2387027, 1, 1, 0, 8000)</sql>   <!-- Mutant Tiguru -> Mutant Tiguru Card (Lv.167) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8600003, 2387028, 1, 1, 0, 8000)</sql>   <!-- Mutant Ribbon Pig -> Mutant Ribbon Pig Card (Lv.168) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8610005, 2387029, 1, 1, 0, 8000)</sql>   <!-- Official Knight A -> Official Knight A Card (Lv.168) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8610000, 2387030, 1, 1, 0, 8000)</sql>   <!-- Dawn -> Dawn Card (Lv.169) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8610006, 2387031, 1, 1, 0, 8000)</sql>   <!-- Official Knight B -> Official Knight B Card (Lv.170) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8610001, 2387032, 1, 1, 0, 8000)</sql>   <!-- Blaze -> Blaze Card (Lv.171) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8610007, 2387033, 1, 1, 0, 8000)</sql>   <!-- Official Knight C -> Official Knight C Card (Lv.172) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8610002, 2387034, 1, 1, 0, 8000)</sql>   <!-- Wind -> Wind Card (Lv.173) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8610008, 2387035, 1, 1, 0, 8000)</sql>   <!-- Official Knight D -> Official Knight D Card (Lv.174) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8610003, 2387036, 1, 1, 0, 8000)</sql>   <!-- Night -> Night Card (Lv.175) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8610009, 2387037, 1, 1, 0, 8000)</sql>   <!-- Official Knight E -> Official Knight E Card (Lv.176) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8610004, 2387038, 1, 1, 0, 8000)</sql>   <!-- Thunder -> Thunder Card (Lv.177) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8610010, 2387039, 1, 1, 0, 8000)</sql>   <!-- Advanced Knight A -> Advanced Knight A Card (Lv.177) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8610011, 2387040, 1, 1, 0, 8000)</sql>   <!-- Advanced Knight B -> Advanced Knight B Card (Lv.179) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8610012, 2387041, 1, 1, 0, 8000)</sql>   <!-- Advanced Knight C -> Advanced Knight C Card (Lv.180) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8610013, 2387042, 1, 1, 0, 8000)</sql>   <!-- Advanced Knight D -> Advanced Knight D Card (Lv.182) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8610014, 2387043, 1, 1, 0, 8000)</sql>   <!-- Advanced Knight E -> Advanced Knight E Card (Lv.184) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8620000, 2387044, 1, 1, 0, 8000)</sql>   <!-- Swollen Stump -> Swollen Stump Card (Lv.190) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8620001, 2387045, 1, 1, 0, 8000)</sql>   <!-- Swollen Dark Stump -> Swollen Dark Stump Card (Lv.191) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8620002, 2387046, 1, 1, 0, 8000)</sql>   <!-- Swollen Axe Stump -> Swollen Axe Stump Card (Lv.192) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8620003, 2387047, 1, 1, 0, 8000)</sql>   <!-- Pillaging Wild Boar -> Pillaging Wild Boar Card (Lv.192) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8620004, 2387048, 1, 1, 0, 8000)</sql>   <!-- Pillaging Iron Boar -> Pillaging Iron Boar Card (Lv.193) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8620005, 2387049, 1, 1, 0, 8000)</sql>   <!-- Pillaging Fire Boars -> Pillaging Fire Boars Card (Lv.194) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8620006, 2387050, 1, 1, 0, 8000)</sql>   <!-- Sinister Wooden Mask -> Sinister Wooden Mask Card (Lv.194) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8620007, 2387051, 1, 1, 0, 8000)</sql>   <!-- Sinister Rocky Mask -> Sinister Rocky Mask Card (Lv.195) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8620008, 2387052, 1, 1, 0, 8000)</sql>   <!-- Sinister Steel Mask -> Sinister Steel Mask Card (Lv.196) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8620009, 2387053, 1, 1, 0, 8000)</sql>   <!-- Ancient Golem -> Ancient Golem Card (Lv.196) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8620010, 2387054, 1, 1, 0, 8000)</sql>   <!-- Ancient Dark Golem -> Ancient Dark Golem Card (Lv.197) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8620011, 2387055, 1, 1, 0, 8000)</sql>   <!-- Ancient Mixed Golem -> Ancient Mixed Golem Card (Lv.198) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8641000, 2387056, 1, 1, 0, 8000)</sql>   <!-- Happy Erda -> Happy Erda Card (Lv.200) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300021, 2387057, 1, 1, 0, 8000)</sql>   <!-- Dark Muscle Stone -> Dark Muscle Stone Card (Lv.200) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300091, 2387058, 1, 1, 0, 8000)</sql>   <!-- Buff Rocky in the Dark -> Buff Rocky in the Dark Card (Lv.200) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400010, 2387059, 1, 1, 0, 8000)</sql>   <!-- Flaming Raccoon -> Flaming Raccoon Card (Lv.200) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400704, 2387060, 1, 1, 0, 8000)</sql>   <!-- Beef Eater -> Beef Eater Card (Lv.200) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8641001, 2387061, 1, 1, 0, 8000)</sql>   <!-- Raging Erda -> Raging Erda Card (Lv.201) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8641002, 2387062, 1, 1, 0, 8000)</sql>   <!-- Sad Erda -> Sad Erda Card (Lv.202) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8641003, 2387063, 1, 1, 0, 8000)</sql>   <!-- Joyful Erda -> Joyful Erda Card (Lv.203) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8641004, 2387064, 1, 1, 0, 8000)</sql>   <!-- Stone Erda -> Stone Erda Card (Lv.204) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8641005, 2387065, 1, 1, 0, 8000)</sql>   <!-- Blazing Erda -> Blazing Erda Card (Lv.205) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8641006, 2387066, 1, 1, 0, 8000)</sql>   <!-- Soulful Erda -> Soulful Erda Card (Lv.206) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8641007, 2387067, 1, 1, 0, 8000)</sql>   <!-- Tranquil Erda -> Tranquil Erda Card (Lv.207) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8641012, 2387068, 1, 1, 0, 8000)</sql>   <!-- Arma's Follower -> Arma's Follower Card (Lv.209) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8642000, 2387069, 1, 1, 0, 8000)</sql>   <!-- Pinedeer -> Pinedeer Card (Lv.210) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8642002, 2387070, 1, 1, 0, 8000)</sql>   <!-- Ewenana -> Ewenana Card (Lv.210) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8642001, 2387071, 1, 1, 0, 8000)</sql>   <!-- Bighorn Pinedeer -> Bighorn Pinedeer Card (Lv.211) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8642003, 2387072, 1, 1, 0, 8000)</sql>   <!-- Ramanana -> Ramanana Card (Lv.211) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8642004, 2387073, 1, 1, 0, 8000)</sql>   <!-- Flyon -> Flyon Card (Lv.212) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8642006, 2387074, 1, 1, 0, 8000)</sql>   <!-- Unripe Wolfruit -> Unripe Wolfruit Card (Lv.212) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8642005, 2387075, 1, 1, 0, 8000)</sql>   <!-- Angry Flyon -> Angry Flyon Card (Lv.213) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8642007, 2387076, 1, 1, 0, 8000)</sql>   <!-- Ripe Wolfruit -> Ripe Wolfruit Card (Lv.213) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8642008, 2387077, 1, 1, 0, 8000)</sql>   <!-- Green Catfish -> Green Catfish Card (Lv.214) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8642010, 2387078, 1, 1, 0, 8000)</sql>   <!-- Rhyturtle -> Rhyturtle Card (Lv.215) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8642009, 2387079, 1, 1, 0, 8000)</sql>   <!-- Blue Catfish -> Blue Catfish Card (Lv.216) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8642011, 2387080, 1, 1, 0, 8000)</sql>   <!-- Boss Rhyturtle -> Boss Rhyturtle Card (Lv.216) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8642012, 2387081, 1, 1, 0, 8000)</sql>   <!-- Crilia -> Crilia Card (Lv.217) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8642014, 2387082, 1, 1, 0, 8000)</sql>   <!-- Birdshark -> Birdshark Card (Lv.218) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8642013, 2387083, 1, 1, 0, 8000)</sql>   <!-- Patriarch Crilia -> Patriarch Crilia Card (Lv.219) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8642015, 2387084, 1, 1, 0, 8000)</sql>   <!-- Patriarch Birdshark -> Patriarch Birdshark Card (Lv.219) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8643001, 2387085, 1, 1, 0, 8000)</sql>   <!-- Paper Bag Alley Citizen -> Paper Bag Alley Citizen Card (Lv.220) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8643002, 2387086, 1, 1, 0, 8000)</sql>   <!-- Wood Board Alley Citizen -> Wood Board Alley Citizen Card (Lv.221) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8643003, 2387087, 1, 1, 0, 8000)</sql>   <!-- Gallina -> Gallina Card (Lv.221) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8643004, 2387088, 1, 1, 0, 8000)</sql>   <!-- Gallus -> Gallus Card (Lv.222) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8643005, 2387089, 1, 1, 0, 8000)</sql>   <!-- Angry Victory Plate -> Angry Victory Plate Card (Lv.222) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8643006, 2387090, 1, 1, 0, 8000)</sql>   <!-- Crooked Victory Plate -> Crooked Victory Plate Card (Lv.223) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8643008, 2387091, 1, 1, 0, 8000)</sql>   <!-- Angry Masquerade Citizen -> Angry Masquerade Citizen Card (Lv.223) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8643009, 2387092, 1, 1, 0, 8000)</sql>   <!-- Insane Masquerade Citizen -> Insane Masquerade Citizen Card (Lv.224) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8643012, 2387093, 1, 1, 0, 8000)</sql>   <!-- Weakened Dreamkeeper -> Weakened Dreamkeeper Card (Lv.224) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8643007, 2387094, 1, 1, 0, 8000)</sql>   <!-- Red Dancing Shoes -> Red Dancing Shoes Card (Lv.225) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8643000, 2387095, 1, 1, 0, 8000)</sql>   <!-- Dreamkeeper -> Dreamkeeper Card (Lv.226) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8643010, 2387096, 1, 1, 0, 8000)</sql>   <!-- Blue-eyed Gargoyle -> Blue-eyed Gargoyle Card (Lv.227) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8643011, 2387097, 1, 1, 0, 8000)</sql>   <!-- Red-eyed Gargoyle -> Red-eyed Gargoyle Card (Lv.228) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644000, 2387098, 1, 1, 0, 8000)</sql>   <!-- Water Spirit -> Water Spirit Card (Lv.230) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644001, 2387099, 1, 1, 0, 8000)</sql>   <!-- Sun Spirit -> Sun Spirit Card (Lv.231) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644002, 2387100, 1, 1, 0, 8000)</sql>   <!-- Earth Spirit -> Earth Spirit Card (Lv.232) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644003, 2387101, 1, 1, 0, 8000)</sql>   <!-- Snow Cloud Spirit -> Snow Cloud Spirit Card (Lv.233) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644004, 2387102, 1, 1, 0, 8000)</sql>   <!-- Thunder Cloud Spirit -> Thunder Cloud Spirit Card (Lv.234) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644005, 2387103, 1, 1, 0, 8000)</sql>   <!-- Toxic Spirit -> Toxic Spirit Card (Lv.235) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644006, 2387104, 1, 1, 0, 8000)</sql>   <!-- Volatile Spirit -> Volatile Spirit Card (Lv.236) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644400, 2387105, 1, 1, 0, 8000)</sql>   <!-- Xenoroid Echo Type A -> Xenoroid Echo Type A Card (Lv.236) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644401, 2387106, 1, 1, 0, 8000)</sql>   <!-- Xenoroid Echo Type B -> Xenoroid Echo Type B Card (Lv.236) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644007, 2387107, 1, 1, 0, 8000)</sql>   <!-- Befuddled Spirit -> Befuddled Spirit Card (Lv.237) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644402, 2387108, 1, 1, 0, 8000)</sql>   <!-- Nameless Cat -> Nameless Cat Card (Lv.237) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644008, 2387109, 1, 1, 0, 8000)</sql>   <!-- Anguished Spirit -> Anguished Spirit Card (Lv.238) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644403, 2387110, 1, 1, 0, 8000)</sql>   <!-- Powerful Gangster -> Powerful Gangster Card (Lv.238) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644404, 2387111, 1, 1, 0, 8000)</sql>   <!-- Strong Gangster -> Strong Gangster Card (Lv.238) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644009, 2387112, 1, 1, 0, 8000)</sql>   <!-- Mournful Spirit -> Mournful Spirit Card (Lv.239) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644405, 2387113, 1, 1, 0, 8000)</sql>   <!-- Blue Shadow -> Blue Shadow Card (Lv.239) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644010, 2387114, 1, 1, 0, 8000)</sql>   <!-- Discordant Spirit -> Discordant Spirit Card (Lv.240) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644406, 2387115, 1, 1, 0, 8000)</sql>   <!-- Red Shadow -> Red Shadow Card (Lv.240) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644500, 2387116, 1, 1, 0, 8000)</sql>   <!-- Ahtuin -> Ahtuin Card (Lv.240) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644407, 2387117, 1, 1, 0, 8000)</sql>   <!-- Experiment Gone Wrong -> Experiment Gone Wrong Card (Lv.241) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644408, 2387118, 1, 1, 0, 8000)</sql>   <!-- Big Experiment Gone Wrong -> Big Experiment Gone Wrong Card (Lv.241) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644501, 2387119, 1, 1, 0, 8000)</sql>   <!-- Atus -> Atus Card (Lv.241) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644409, 2387120, 1, 1, 0, 8000)</sql>   <!-- Thralled Guard -> Thralled Guard Card (Lv.242) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644502, 2387121, 1, 1, 0, 8000)</sql>   <!-- Bellalion -> Bellalion Card (Lv.242) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644410, 2387122, 1, 1, 0, 8000)</sql>   <!-- Thralled Warhammer Knight -> Thralled Warhammer Knight Card (Lv.243) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644503, 2387123, 1, 1, 0, 8000)</sql>   <!-- Bellalis -> Bellalis Card (Lv.243) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644411, 2387124, 1, 1, 0, 8000)</sql>   <!-- Thralled Wizard -> Thralled Wizard Card (Lv.244) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644504, 2387125, 1, 1, 0, 8000)</sql>   <!-- Aranya -> Aranya Card (Lv.244) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644412, 2387126, 1, 1, 0, 8000)</sql>   <!-- Thralled Archer -> Thralled Archer Card (Lv.245) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644505, 2387127, 1, 1, 0, 8000)</sql>   <!-- Aranea -> Aranea Card (Lv.245) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644506, 2387128, 1, 1, 0, 8000)</sql>   <!-- Keeper of Light -> Keeper of Light Card (Lv.246) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644507, 2387129, 1, 1, 0, 8000)</sql>   <!-- Keeper of Darkness -> Keeper of Darkness Card (Lv.247) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644508, 2387130, 1, 1, 0, 8000)</sql>   <!-- Light Executor -> Light Executor Card (Lv.248) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644509, 2387131, 1, 1, 0, 8000)</sql>   <!-- Dark Executor -> Dark Executor Card (Lv.249) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644614, 2387132, 1, 1, 0, 8000)</sql>   <!-- Soot Beast -> Soot Beast Card (Lv.250) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644615, 2387133, 1, 1, 0, 8000)</sql>   <!-- Soot Talon -> Soot Talon Card (Lv.251) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644616, 2387134, 1, 1, 0, 8000)</sql>   <!-- Soot Slug -> Soot Slug Card (Lv.252) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644617, 2387135, 1, 1, 0, 8000)</sql>   <!-- Soot Core -> Soot Core Card (Lv.253) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644618, 2387136, 1, 1, 0, 8000)</sql>   <!-- Crushing Glare -> Crushing Glare Card (Lv.254) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644619, 2387137, 1, 1, 0, 8000)</sql>   <!-- Burst Glare -> Burst Glare Card (Lv.254) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644700, 2387138, 1, 1, 0, 8000)</sql>   <!-- Entangled Fragment -> Entangled Fragment Card (Lv.255) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644701, 2387139, 1, 1, 0, 8000)</sql>   <!-- Faith Fragment -> Faith Fragment Card (Lv.255) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644702, 2387140, 1, 1, 0, 8000)</sql>   <!-- Dark Miscreation -> Dark Miscreation Card (Lv.256) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644703, 2387141, 1, 1, 0, 8000)</sql>   <!-- Dark Construct -> Dark Construct Card (Lv.256) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644704, 2387142, 1, 1, 0, 8000)</sql>   <!-- Despairing Wing -> Despairing Wing Card (Lv.257) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644705, 2387143, 1, 1, 0, 8000)</sql>   <!-- Despairing Blade -> Despairing Blade Card (Lv.257) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644706, 2387144, 1, 1, 0, 8000)</sql>   <!-- Silent Knight -> Silent Knight Card (Lv.258) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644707, 2387145, 1, 1, 0, 8000)</sql>   <!-- Silent Scout -> Silent Scout Card (Lv.258) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644708, 2387146, 1, 1, 0, 8000)</sql>   <!-- Silent Rogue -> Silent Rogue Card (Lv.258) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644709, 2387147, 1, 1, 0, 8000)</sql>   <!-- Silent Watchman -> Silent Watchman Card (Lv.259) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644710, 2387148, 1, 1, 0, 8000)</sql>   <!-- Silent Assassin -> Silent Assassin Card (Lv.259) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644711, 2387149, 1, 1, 0, 8000)</sql>   <!-- Despairing Soul -> Despairing Soul Card (Lv.259) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8644712, 2387150, 1, 1, 0, 8000)</sql>   <!-- Despairing Prisoner -> Despairing Prisoner Card (Lv.259) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8645010, 2387151, 1, 1, 0, 8000)</sql>   <!-- Ancestion -> Ancestion Card (Lv.260) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8645012, 2387152, 1, 1, 0, 8000)</sql>   <!-- Transcendion -> Transcendion Card (Lv.261) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8645011, 2387153, 1, 1, 0, 8000)</sql>   <!-- Ascendion -> Ascendion Card (Lv.262) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8645023, 2387154, 1, 1, 0, 8000)</sql>   <!-- Foreberion -> Foreberion Card (Lv.263) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8645022, 2387155, 1, 1, 0, 8000)</sql>   <!-- Embrion -> Embrion Card (Lv.264) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300312, 2388034, 1, 1, 0, 24000)</sql>   <!-- Pigmy that lays Golden Eggs -> Pigmy that lays Golden Eggs Card (Lv.10, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300367, 2388035, 1, 1, 0, 24000)</sql>   <!-- Witch Bear -> Witch Bear Card (Lv.10, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420015, 2388036, 1, 1, 0, 24000)</sql>   <!-- NooNoo -> NooNoo Card (Lv.15, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300269, 2388037, 1, 1, 0, 24000)</sql>   <!-- So Gong -> So Gong Card (Lv.20, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400609, 2388038, 1, 1, 0, 24000)</sql>   <!-- Andras -> Andras Card (Lv.25, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400610, 2388044, 1, 1, 0, 24000)</sql>   <!-- Amdusias -> Amdusias Card (Lv.25, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400611, 2388045, 1, 1, 0, 24000)</sql>   <!-- Crocell -> Crocell Card (Lv.25, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400612, 2388047, 1, 1, 0, 24000)</sql>   <!-- Marbas -> Marbas Card (Lv.25, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400613, 2388048, 1, 1, 0, 24000)</sql>   <!-- Valefor -> Valefor Card (Lv.25, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300344, 2388049, 1, 1, 0, 24000)</sql>   <!-- Puppeteer -> Puppeteer Card (Lv.28, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400633, 2388050, 1, 1, 0, 24000)</sql>   <!-- Astaroth -> Astaroth Card (Lv.32, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9500182, 2388051, 1, 1, 0, 24000)</sql>   <!-- Watermelon Guard Hogol -> Watermelon Guard Hogol Card (Lv.35, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9500318, 2388056, 1, 1, 0, 24000)</sql>   <!-- Angry Snowman -> Angry Snowman Card (Lv.40, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (4300013, 2388057, 1, 1, 0, 24000)</sql>   <!-- Spirit of Rock -> Spirit of Rock Card (Lv.49, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300350, 2388058, 1, 1, 0, 24000)</sql>   <!-- Mu Gong's Shadow -> Mu Gong's Shadow Card (Lv.54, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400569, 2388059, 1, 1, 0, 24000)</sql>   <!-- Big Puff Daddy -> Big Puff Daddy Card (Lv.60, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (6090002, 2388060, 1, 1, 0, 24000)</sql>   <!-- Bamboo Warrior -> Bamboo Warrior Card (Lv.68, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300324, 2388061, 1, 1, 0, 24000)</sql>   <!-- Viking -> Viking Card (Lv.69, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (7120100, 2388062, 1, 1, 0, 24000)</sql>   <!-- Gatekeeper Nex -> Gatekeeper Nex Card (Lv.70, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400606, 2388063, 1, 1, 0, 24000)</sql>   <!-- Giant Cake -> Giant Cake Card (Lv.70, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9500319, 2388064, 1, 1, 0, 24000)</sql>   <!-- Giant Snowman -> Giant Snowman Card (Lv.70, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9500323, 2388065, 1, 1, 0, 24000)</sql>   <!-- Kitty from Cheese Storage -> Kitty from Cheese Storage Card (Lv.70, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9500336, 2388066, 1, 1, 0, 24000)</sql>   <!-- P Junior -> P Junior Card (Lv.70, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300266, 2388071, 1, 1, 0, 24000)</sql>   <!-- High Darkstar -> High Darkstar Card (Lv.71, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (7220003, 2388072, 1, 1, 0, 24000)</sql>   <!-- Bergamot -> Bergamot Card (Lv.77, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9001004, 2388073, 1, 1, 0, 24000)</sql>   <!-- Shadow Kyrin -> Shadow Kyrin Card (Lv.80, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9001009, 2388074, 1, 1, 0, 24000)</sql>   <!-- Master of Disguise -> Master of Disguise Card (Lv.80, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9001013, 2388075, 1, 1, 0, 24000)</sql>   <!-- Thief Crow -> Thief Crow Card (Lv.80, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300088, 2388076, 1, 1, 0, 24000)</sql>   <!-- Dark Lord's Disciple -> Dark Lord's Disciple Card (Lv.80, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300267, 2388077, 1, 1, 0, 24000)</sql>   <!-- Low Darkstar -> Low Darkstar Card (Lv.80, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8220010, 2388078, 1, 1, 0, 24000)</sql>   <!-- Dunas -> Dunas Card (Lv.81, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8220011, 2388079, 1, 1, 0, 24000)</sql>   <!-- Aufheben -> Aufheben Card (Lv.85, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8220012, 2388080, 1, 1, 0, 24000)</sql>   <!-- Oberon -> Oberon Card (Lv.90, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8220013, 2388081, 1, 1, 0, 24000)</sql>   <!-- Nibelung -> Nibelung Card (Lv.95, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400120, 2388082, 1, 1, 0, 24000)</sql>   <!-- Male Boss -> Male Boss Card (Lv.95, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400594, 2388083, 1, 1, 0, 24000)</sql>   <!-- Master Guardian -> Master Guardian Card (Lv.100, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420513, 2388084, 1, 1, 0, 24000)</sql>   <!-- Capt. Latanica -> Capt. Latanica Card (Lv.100, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400549, 2388085, 1, 1, 0, 24000)</sql>   <!-- Headless Horseman -> Headless Horseman Card (Lv.101, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400575, 2388086, 1, 1, 0, 24000)</sql>   <!-- Bigfoot -> Bigfoot Card (Lv.110, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400014, 2388087, 1, 1, 0, 24000)</sql>   <!-- Black Crow -> Black Crow Card (Lv.115, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300158, 2388088, 1, 1, 0, 24000)</sql>   <!-- Kyrin -> Kyrin Card (Lv.120, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300159, 2388089, 1, 1, 0, 24000)</sql>   <!-- Inferno Kyrin -> Inferno Kyrin Card (Lv.120, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400121, 2388090, 1, 1, 0, 24000)</sql>   <!-- Female Boss -> Female Boss Card (Lv.130, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400590, 2388091, 1, 1, 0, 24000)</sql>   <!-- Margana -> Margana Card (Lv.130, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400591, 2388092, 1, 1, 0, 24000)</sql>   <!-- Red Nirg -> Red Nirg Card (Lv.130, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400592, 2388093, 1, 1, 0, 24000)</sql>   <!-- Rellik -> Rellik Card (Lv.130, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400593, 2388094, 1, 1, 0, 24000)</sql>   <!-- Hsalf -> Hsalf Card (Lv.130, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9001014, 2388095, 1, 1, 0, 24000)</sql>   <!-- Uncontrollable Maha -> Uncontrollable Maha Card (Lv.140, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420544, 2388096, 1, 1, 0, 24000)</sql>   <!-- Furious Targa -> Furious Targa Card (Lv.140, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420549, 2388097, 1, 1, 0, 24000)</sql>   <!-- Furious Scarlion Boss -> Furious Scarlion Boss Card (Lv.140, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8210013, 2388098, 1, 1, 0, 24000)</sql>   <!-- Prison Guard Ani -> Prison Guard Ani Card (Lv.150, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400112, 2388099, 1, 1, 0, 24000)</sql>   <!-- Bodyguard A -> Bodyguard A Card (Lv.152, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400113, 2388100, 1, 1, 0, 24000)</sql>   <!-- Bodyguard B -> Bodyguard B Card (Lv.155, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400405, 2388101, 1, 1, 0, 24000)</sql>   <!-- Kacchuu Musha -> Kacchuu Musha Card (Lv.160, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400300, 2388102, 1, 1, 0, 24000)</sql>   <!-- The Boss -> The Boss Card (Lv.175, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9400748, 2388103, 1, 1, 0, 24000)</sql>   <!-- MV -> MV Card (Lv.180, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8645051, 2388104, 1, 1, 0, 24000)</sql>   <!-- Cygnus Soldier -> Cygnus Soldier Card (Lv.200, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8645053, 2388105, 1, 1, 0, 24000)</sql>   <!-- Resistance Soldier -> Resistance Soldier Card (Lv.200, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8645057, 2388106, 1, 1, 0, 24000)</sql>   <!-- Belle -> Belle Card (Lv.200, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8645058, 2388107, 1, 1, 0, 24000)</sql>   <!-- Brighton -> Brighton Card (Lv.200, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300311, 2388108, 1, 1, 0, 24000)</sql>   <!-- Bam Bam Cat -> Bam Bam Cat Card (Lv.200, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300313, 2388109, 1, 1, 0, 24000)</sql>   <!-- Witch Cat -> Witch Cat Card (Lv.200, boss) -->
+
+        <!-- monstercarddata: cardid -> mobid, what the Monster Book uses to credit the card -->
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2380020, 100120)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2380021, 9302000)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2380022, 100121)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2380023, 100122)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2380024, 100123)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2380025, 9420001)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2380026, 100124)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2380027, 9400506)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2380028, 9500144)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2380029, 9300064)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2380030, 9400570)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2380031, 9420005)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2380032, 9500151)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2381039, 9420502)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2381040, 9400538)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2381041, 9400595)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2381042, 9400601)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2381043, 9400638)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2381044, 9500152)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2381045, 9600001)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2381046, 9400539)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2381047, 9600002)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2381048, 9300027)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2381049, 9420506)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2381050, 9400000)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2381051, 9400540)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2381052, 9400602)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2381053, 9500153)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2381054, 9600003)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2381055, 9400547)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2381056, 9420500)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2381057, 9100013)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2381058, 9300093)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2381059, 9400001)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2381060, 9400002)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2381061, 9400507)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2381062, 9400518)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2381063, 9400548)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2381064, 9400558)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2381065, 9500154)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2381066, 9600004)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382073, 9400509)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382074, 9420503)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382075, 9600006)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382077, 3400000)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382078, 3400004)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382079, 3400006)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382080, 6130104)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382081, 9001005)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382082, 9001011)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382083, 9001012)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382084, 9500143)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382085, 9600005)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382086, 3400001)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382087, 9400542)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382088, 3400002)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382089, 9300224)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382090, 9400515)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382091, 9500145)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382097, 9600007)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382098, 9700005)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382099, 9700006)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382100, 9700007)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382101, 9700008)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382102, 4300000)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382103, 9400011)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382104, 9400516)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382105, 9400563)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382106, 9400573)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382107, 9400603)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382108, 9420003)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382109, 4300002)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382110, 9400543)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382111, 4090000)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382112, 4300004)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382113, 9300239)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382114, 9500146)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382115, 4300006)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382116, 9300084)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382117, 9420508)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382118, 4300007)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382119, 9400546)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382120, 4300008)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382121, 9300378)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382122, 9400004)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382123, 9400100)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382124, 9400584)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382125, 9400604)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382126, 9420527)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382127, 9500148)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383050, 4300009)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383051, 4300010)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383052, 9400101)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383053, 9420528)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383054, 4300011)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383055, 9420507)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383060, 4300012)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383061, 9400102)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383062, 9400544)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383063, 9400559)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383064, 9400560)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383065, 9400588)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383066, 9400639)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383067, 9420504)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383068, 9500149)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383069, 9300235)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383070, 9420529)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383071, 9420505)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383072, 9300162)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383073, 9420530)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383074, 9420509)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383075, 9300237)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383076, 9420531)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383077, 9420532)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383078, 6130201)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383079, 9300050)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383080, 9400003)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383081, 9400012)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383082, 9400561)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383083, 9400562)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383084, 9400605)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383085, 9420002)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383086, 9420511)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383087, 9500150)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384041, 9420533)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384042, 9300033)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384043, 9300172)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384044, 9300246)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384045, 9400110)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384046, 9300020)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384047, 9420510)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384048, 9400111)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384049, 9300019)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384050, 9300173)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384051, 9300175)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384052, 9420534)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384053, 9300022)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384054, 9300023)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384055, 9300024)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384056, 9300025)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384057, 9420512)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384058, 9420535)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384059, 7120103)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384060, 9300101)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384061, 9300102)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384062, 9300137)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384063, 9300138)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384064, 9400576)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384065, 9400640)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384066, 9500147)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384067, 7120104)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384068, 7120105)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384069, 9400103)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384070, 9420536)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384071, 7120106)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384072, 7120107)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384073, 9400586)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384074, 9420537)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384075, 9300146)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384076, 7120108)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2384077, 7120109)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2385024, 9300270)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2385026, 9400400)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2385027, 9400545)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2385028, 9400581)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2385029, 8120102)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2385030, 9420538)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2385031, 8120103)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2385032, 9420514)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2385033, 8120104)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2385034, 9420539)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2385035, 8120105)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2385036, 8120106)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2385037, 9400578)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2385038, 9420515)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2385039, 8140511)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2385040, 8140512)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2385041, 9420540)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2385042, 9400580)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2385043, 9420516)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2386018, 9400013)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2386019, 9400404)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2386020, 9400574)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2386025, 9400579)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2386026, 9420518)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2386027, 9420517)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2386028, 9420519)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2386029, 8210000)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2386030, 8210006)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2386031, 8210007)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2386032, 8210002)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2386033, 9400401)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2386034, 9400582)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2386035, 8210003)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2386036, 8220016)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2386037, 8220017)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2386038, 8220018)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2386039, 8220019)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387005, 8210004)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387014, 8210005)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387015, 9400406)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387016, 9400743)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387017, 9400402)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387018, 9300354)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387019, 9400403)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387020, 8600000)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387021, 8600004)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387022, 8220020)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387023, 8600001)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387024, 8600005)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387025, 8220021)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387026, 8600002)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387027, 8600006)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387028, 8600003)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387029, 8610005)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387030, 8610000)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387031, 8610006)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387032, 8610001)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387033, 8610007)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387034, 8610002)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387035, 8610008)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387036, 8610003)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387037, 8610009)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387038, 8610004)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387039, 8610010)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387040, 8610011)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387041, 8610012)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387042, 8610013)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387043, 8610014)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387044, 8620000)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387045, 8620001)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387046, 8620002)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387047, 8620003)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387048, 8620004)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387049, 8620005)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387050, 8620006)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387051, 8620007)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387052, 8620008)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387053, 8620009)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387054, 8620010)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387055, 8620011)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387056, 8641000)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387057, 9300021)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387058, 9300091)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387059, 9400010)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387060, 9400704)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387061, 8641001)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387062, 8641002)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387063, 8641003)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387064, 8641004)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387065, 8641005)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387066, 8641006)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387067, 8641007)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387068, 8641012)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387069, 8642000)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387070, 8642002)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387071, 8642001)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387072, 8642003)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387073, 8642004)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387074, 8642006)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387075, 8642005)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387076, 8642007)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387077, 8642008)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387078, 8642010)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387079, 8642009)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387080, 8642011)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387081, 8642012)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387082, 8642014)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387083, 8642013)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387084, 8642015)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387085, 8643001)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387086, 8643002)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387087, 8643003)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387088, 8643004)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387089, 8643005)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387090, 8643006)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387091, 8643008)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387092, 8643009)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387093, 8643012)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387094, 8643007)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387095, 8643000)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387096, 8643010)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387097, 8643011)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387098, 8644000)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387099, 8644001)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387100, 8644002)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387101, 8644003)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387102, 8644004)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387103, 8644005)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387104, 8644006)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387105, 8644400)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387106, 8644401)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387107, 8644007)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387108, 8644402)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387109, 8644008)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387110, 8644403)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387111, 8644404)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387112, 8644009)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387113, 8644405)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387114, 8644010)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387115, 8644406)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387116, 8644500)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387117, 8644407)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387118, 8644408)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387119, 8644501)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387120, 8644409)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387121, 8644502)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387122, 8644410)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387123, 8644503)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387124, 8644411)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387125, 8644504)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387126, 8644412)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387127, 8644505)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387128, 8644506)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387129, 8644507)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387130, 8644508)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387131, 8644509)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387132, 8644614)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387133, 8644615)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387134, 8644616)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387135, 8644617)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387136, 8644618)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387137, 8644619)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387138, 8644700)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387139, 8644701)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387140, 8644702)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387141, 8644703)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387142, 8644704)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387143, 8644705)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387144, 8644706)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387145, 8644707)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387146, 8644708)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387147, 8644709)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387148, 8644710)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387149, 8644711)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387150, 8644712)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387151, 8645010)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387152, 8645012)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387153, 8645011)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387154, 8645023)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2387155, 8645022)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388034, 9300312)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388035, 9300367)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388036, 9420015)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388037, 9300269)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388038, 9400609)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388044, 9400610)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388045, 9400611)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388047, 9400612)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388048, 9400613)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388049, 9300344)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388050, 9400633)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388051, 9500182)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388056, 9500318)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388057, 4300013)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388058, 9300350)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388059, 9400569)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388060, 6090002)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388061, 9300324)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388062, 7120100)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388063, 9400606)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388064, 9500319)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388065, 9500323)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388066, 9500336)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388071, 9300266)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388072, 7220003)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388073, 9001004)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388074, 9001009)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388075, 9001013)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388076, 9300088)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388077, 9300267)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388078, 8220010)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388079, 8220011)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388080, 8220012)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388081, 8220013)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388082, 9400120)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388083, 9400594)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388084, 9420513)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388085, 9400549)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388086, 9400575)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388087, 9400014)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388088, 9300158)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388089, 9300159)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388090, 9400121)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388091, 9400590)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388092, 9400591)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388093, 9400592)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388094, 9400593)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388095, 9001014)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388096, 9420544)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388097, 9420549)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388098, 8210013)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388099, 9400112)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388100, 9400113)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388101, 9400405)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388102, 9400300)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388103, 9400748)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388104, 8645051)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388105, 8645053)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388106, 8645057)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388107, 8645058)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388108, 9300311)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388109, 9300313)</sql>
+
+        <rollback>
+            <sql>DELETE FROM drop_data WHERE questid = 0 AND (dropperid, itemid) IN ((100120, 2380020), (9302000, 2380021), (100121, 2380022), (100122, 2380023), (100123, 2380024), (9420001, 2380025), (100124, 2380026), (9400506, 2380027), (9500144, 2380028), (9300064, 2380029), (9400570, 2380030), (9420005, 2380031), (9500151, 2380032), (9420502, 2381039), (9400538, 2381040), (9400595, 2381041), (9400601, 2381042), (9400638, 2381043), (9500152, 2381044), (9600001, 2381045), (9400539, 2381046), (9600002, 2381047), (9300027, 2381048), (9420506, 2381049), (9400000, 2381050), (9400540, 2381051), (9400602, 2381052), (9500153, 2381053), (9600003, 2381054), (9400547, 2381055))</sql>
+            <sql>DELETE FROM drop_data WHERE questid = 0 AND (dropperid, itemid) IN ((9420500, 2381056), (9100013, 2381057), (9300093, 2381058), (9400001, 2381059), (9400002, 2381060), (9400507, 2381061), (9400518, 2381062), (9400548, 2381063), (9400558, 2381064), (9500154, 2381065), (9600004, 2381066), (9400509, 2382073), (9420503, 2382074), (9600006, 2382075), (3400000, 2382077), (3400004, 2382078), (3400006, 2382079), (6130104, 2382080), (9001005, 2382081), (9001011, 2382082), (9001012, 2382083), (9500143, 2382084), (9600005, 2382085), (3400001, 2382086), (9400542, 2382087), (3400002, 2382088), (9300224, 2382089), (9400515, 2382090), (9500145, 2382091), (9600007, 2382097))</sql>
+            <sql>DELETE FROM drop_data WHERE questid = 0 AND (dropperid, itemid) IN ((9700005, 2382098), (9700006, 2382099), (9700007, 2382100), (9700008, 2382101), (4300000, 2382102), (9400011, 2382103), (9400516, 2382104), (9400563, 2382105), (9400573, 2382106), (9400603, 2382107), (9420003, 2382108), (4300002, 2382109), (9400543, 2382110), (4090000, 2382111), (4300004, 2382112), (9300239, 2382113), (9500146, 2382114), (4300006, 2382115), (9300084, 2382116), (9420508, 2382117), (4300007, 2382118), (9400546, 2382119), (4300008, 2382120), (9300378, 2382121), (9400004, 2382122), (9400100, 2382123), (9400584, 2382124), (9400604, 2382125), (9420527, 2382126), (9500148, 2382127))</sql>
+            <sql>DELETE FROM drop_data WHERE questid = 0 AND (dropperid, itemid) IN ((4300009, 2383050), (4300010, 2383051), (9400101, 2383052), (9420528, 2383053), (4300011, 2383054), (9420507, 2383055), (4300012, 2383060), (9400102, 2383061), (9400544, 2383062), (9400559, 2383063), (9400560, 2383064), (9400588, 2383065), (9400639, 2383066), (9420504, 2383067), (9500149, 2383068), (9300235, 2383069), (9420529, 2383070), (9420505, 2383071), (9300162, 2383072), (9420530, 2383073), (9420509, 2383074), (9300237, 2383075), (9420531, 2383076), (9420532, 2383077), (6130201, 2383078), (9300050, 2383079), (9400003, 2383080), (9400012, 2383081), (9400561, 2383082), (9400562, 2383083))</sql>
+            <sql>DELETE FROM drop_data WHERE questid = 0 AND (dropperid, itemid) IN ((9400605, 2383084), (9420002, 2383085), (9420511, 2383086), (9500150, 2383087), (9420533, 2384041), (9300033, 2384042), (9300172, 2384043), (9300246, 2384044), (9400110, 2384045), (9300020, 2384046), (9420510, 2384047), (9400111, 2384048), (9300019, 2384049), (9300173, 2384050), (9300175, 2384051), (9420534, 2384052), (9300022, 2384053), (9300023, 2384054), (9300024, 2384055), (9300025, 2384056), (9420512, 2384057), (9420535, 2384058), (7120103, 2384059), (9300101, 2384060), (9300102, 2384061), (9300137, 2384062), (9300138, 2384063), (9400576, 2384064), (9400640, 2384065), (9500147, 2384066))</sql>
+            <sql>DELETE FROM drop_data WHERE questid = 0 AND (dropperid, itemid) IN ((7120104, 2384067), (7120105, 2384068), (9400103, 2384069), (9420536, 2384070), (7120106, 2384071), (7120107, 2384072), (9400586, 2384073), (9420537, 2384074), (9300146, 2384075), (7120108, 2384076), (7120109, 2384077), (9300270, 2385024), (9400400, 2385026), (9400545, 2385027), (9400581, 2385028), (8120102, 2385029), (9420538, 2385030), (8120103, 2385031), (9420514, 2385032), (8120104, 2385033), (9420539, 2385034), (8120105, 2385035), (8120106, 2385036), (9400578, 2385037), (9420515, 2385038), (8140511, 2385039), (8140512, 2385040), (9420540, 2385041), (9400580, 2385042), (9420516, 2385043))</sql>
+            <sql>DELETE FROM drop_data WHERE questid = 0 AND (dropperid, itemid) IN ((9400013, 2386018), (9400404, 2386019), (9400574, 2386020), (9400579, 2386025), (9420518, 2386026), (9420517, 2386027), (9420519, 2386028), (8210000, 2386029), (8210006, 2386030), (8210007, 2386031), (8210002, 2386032), (9400401, 2386033), (9400582, 2386034), (8210003, 2386035), (8220016, 2386036), (8220017, 2386037), (8220018, 2386038), (8220019, 2386039), (8210004, 2387005), (8210005, 2387014), (9400406, 2387015), (9400743, 2387016), (9400402, 2387017), (9300354, 2387018), (9400403, 2387019), (8600000, 2387020), (8600004, 2387021), (8220020, 2387022), (8600001, 2387023), (8600005, 2387024))</sql>
+            <sql>DELETE FROM drop_data WHERE questid = 0 AND (dropperid, itemid) IN ((8220021, 2387025), (8600002, 2387026), (8600006, 2387027), (8600003, 2387028), (8610005, 2387029), (8610000, 2387030), (8610006, 2387031), (8610001, 2387032), (8610007, 2387033), (8610002, 2387034), (8610008, 2387035), (8610003, 2387036), (8610009, 2387037), (8610004, 2387038), (8610010, 2387039), (8610011, 2387040), (8610012, 2387041), (8610013, 2387042), (8610014, 2387043), (8620000, 2387044), (8620001, 2387045), (8620002, 2387046), (8620003, 2387047), (8620004, 2387048), (8620005, 2387049), (8620006, 2387050), (8620007, 2387051), (8620008, 2387052), (8620009, 2387053), (8620010, 2387054))</sql>
+            <sql>DELETE FROM drop_data WHERE questid = 0 AND (dropperid, itemid) IN ((8620011, 2387055), (8641000, 2387056), (9300021, 2387057), (9300091, 2387058), (9400010, 2387059), (9400704, 2387060), (8641001, 2387061), (8641002, 2387062), (8641003, 2387063), (8641004, 2387064), (8641005, 2387065), (8641006, 2387066), (8641007, 2387067), (8641012, 2387068), (8642000, 2387069), (8642002, 2387070), (8642001, 2387071), (8642003, 2387072), (8642004, 2387073), (8642006, 2387074), (8642005, 2387075), (8642007, 2387076), (8642008, 2387077), (8642010, 2387078), (8642009, 2387079), (8642011, 2387080), (8642012, 2387081), (8642014, 2387082), (8642013, 2387083), (8642015, 2387084))</sql>
+            <sql>DELETE FROM drop_data WHERE questid = 0 AND (dropperid, itemid) IN ((8643001, 2387085), (8643002, 2387086), (8643003, 2387087), (8643004, 2387088), (8643005, 2387089), (8643006, 2387090), (8643008, 2387091), (8643009, 2387092), (8643012, 2387093), (8643007, 2387094), (8643000, 2387095), (8643010, 2387096), (8643011, 2387097), (8644000, 2387098), (8644001, 2387099), (8644002, 2387100), (8644003, 2387101), (8644004, 2387102), (8644005, 2387103), (8644006, 2387104), (8644400, 2387105), (8644401, 2387106), (8644007, 2387107), (8644402, 2387108), (8644008, 2387109), (8644403, 2387110), (8644404, 2387111), (8644009, 2387112), (8644405, 2387113), (8644010, 2387114))</sql>
+            <sql>DELETE FROM drop_data WHERE questid = 0 AND (dropperid, itemid) IN ((8644406, 2387115), (8644500, 2387116), (8644407, 2387117), (8644408, 2387118), (8644501, 2387119), (8644409, 2387120), (8644502, 2387121), (8644410, 2387122), (8644503, 2387123), (8644411, 2387124), (8644504, 2387125), (8644412, 2387126), (8644505, 2387127), (8644506, 2387128), (8644507, 2387129), (8644508, 2387130), (8644509, 2387131), (8644614, 2387132), (8644615, 2387133), (8644616, 2387134), (8644617, 2387135), (8644618, 2387136), (8644619, 2387137), (8644700, 2387138), (8644701, 2387139), (8644702, 2387140), (8644703, 2387141), (8644704, 2387142), (8644705, 2387143), (8644706, 2387144))</sql>
+            <sql>DELETE FROM drop_data WHERE questid = 0 AND (dropperid, itemid) IN ((8644707, 2387145), (8644708, 2387146), (8644709, 2387147), (8644710, 2387148), (8644711, 2387149), (8644712, 2387150), (8645010, 2387151), (8645012, 2387152), (8645011, 2387153), (8645023, 2387154), (8645022, 2387155), (9300312, 2388034), (9300367, 2388035), (9420015, 2388036), (9300269, 2388037), (9400609, 2388038), (9400610, 2388044), (9400611, 2388045), (9400612, 2388047), (9400613, 2388048), (9300344, 2388049), (9400633, 2388050), (9500182, 2388051), (9500318, 2388056), (4300013, 2388057), (9300350, 2388058), (9400569, 2388059), (6090002, 2388060), (9300324, 2388061), (7120100, 2388062))</sql>
+            <sql>DELETE FROM drop_data WHERE questid = 0 AND (dropperid, itemid) IN ((9400606, 2388063), (9500319, 2388064), (9500323, 2388065), (9500336, 2388066), (9300266, 2388071), (7220003, 2388072), (9001004, 2388073), (9001009, 2388074), (9001013, 2388075), (9300088, 2388076), (9300267, 2388077), (8220010, 2388078), (8220011, 2388079), (8220012, 2388080), (8220013, 2388081), (9400120, 2388082), (9400594, 2388083), (9420513, 2388084), (9400549, 2388085), (9400575, 2388086), (9400014, 2388087), (9300158, 2388088), (9300159, 2388089), (9400121, 2388090), (9400590, 2388091), (9400591, 2388092), (9400592, 2388093), (9400593, 2388094), (9001014, 2388095), (9420544, 2388096))</sql>
+            <sql>DELETE FROM drop_data WHERE questid = 0 AND (dropperid, itemid) IN ((9420549, 2388097), (8210013, 2388098), (9400112, 2388099), (9400113, 2388100), (9400405, 2388101), (9400300, 2388102), (9400748, 2388103), (8645051, 2388104), (8645053, 2388105), (8645057, 2388106), (8645058, 2388107), (9300311, 2388108), (9300313, 2388109))</sql>
+            <sql>DELETE FROM monstercarddata WHERE (cardid, mobid) IN ((2380020, 100120), (2380021, 9302000), (2380022, 100121), (2380023, 100122), (2380024, 100123), (2380025, 9420001), (2380026, 100124), (2380027, 9400506), (2380028, 9500144), (2380029, 9300064), (2380030, 9400570), (2380031, 9420005), (2380032, 9500151), (2381039, 9420502), (2381040, 9400538), (2381041, 9400595), (2381042, 9400601), (2381043, 9400638), (2381044, 9500152), (2381045, 9600001), (2381046, 9400539), (2381047, 9600002), (2381048, 9300027), (2381049, 9420506), (2381050, 9400000), (2381051, 9400540), (2381052, 9400602), (2381053, 9500153), (2381054, 9600003), (2381055, 9400547))</sql>
+            <sql>DELETE FROM monstercarddata WHERE (cardid, mobid) IN ((2381056, 9420500), (2381057, 9100013), (2381058, 9300093), (2381059, 9400001), (2381060, 9400002), (2381061, 9400507), (2381062, 9400518), (2381063, 9400548), (2381064, 9400558), (2381065, 9500154), (2381066, 9600004), (2382073, 9400509), (2382074, 9420503), (2382075, 9600006), (2382077, 3400000), (2382078, 3400004), (2382079, 3400006), (2382080, 6130104), (2382081, 9001005), (2382082, 9001011), (2382083, 9001012), (2382084, 9500143), (2382085, 9600005), (2382086, 3400001), (2382087, 9400542), (2382088, 3400002), (2382089, 9300224), (2382090, 9400515), (2382091, 9500145), (2382097, 9600007))</sql>
+            <sql>DELETE FROM monstercarddata WHERE (cardid, mobid) IN ((2382098, 9700005), (2382099, 9700006), (2382100, 9700007), (2382101, 9700008), (2382102, 4300000), (2382103, 9400011), (2382104, 9400516), (2382105, 9400563), (2382106, 9400573), (2382107, 9400603), (2382108, 9420003), (2382109, 4300002), (2382110, 9400543), (2382111, 4090000), (2382112, 4300004), (2382113, 9300239), (2382114, 9500146), (2382115, 4300006), (2382116, 9300084), (2382117, 9420508), (2382118, 4300007), (2382119, 9400546), (2382120, 4300008), (2382121, 9300378), (2382122, 9400004), (2382123, 9400100), (2382124, 9400584), (2382125, 9400604), (2382126, 9420527), (2382127, 9500148))</sql>
+            <sql>DELETE FROM monstercarddata WHERE (cardid, mobid) IN ((2383050, 4300009), (2383051, 4300010), (2383052, 9400101), (2383053, 9420528), (2383054, 4300011), (2383055, 9420507), (2383060, 4300012), (2383061, 9400102), (2383062, 9400544), (2383063, 9400559), (2383064, 9400560), (2383065, 9400588), (2383066, 9400639), (2383067, 9420504), (2383068, 9500149), (2383069, 9300235), (2383070, 9420529), (2383071, 9420505), (2383072, 9300162), (2383073, 9420530), (2383074, 9420509), (2383075, 9300237), (2383076, 9420531), (2383077, 9420532), (2383078, 6130201), (2383079, 9300050), (2383080, 9400003), (2383081, 9400012), (2383082, 9400561), (2383083, 9400562))</sql>
+            <sql>DELETE FROM monstercarddata WHERE (cardid, mobid) IN ((2383084, 9400605), (2383085, 9420002), (2383086, 9420511), (2383087, 9500150), (2384041, 9420533), (2384042, 9300033), (2384043, 9300172), (2384044, 9300246), (2384045, 9400110), (2384046, 9300020), (2384047, 9420510), (2384048, 9400111), (2384049, 9300019), (2384050, 9300173), (2384051, 9300175), (2384052, 9420534), (2384053, 9300022), (2384054, 9300023), (2384055, 9300024), (2384056, 9300025), (2384057, 9420512), (2384058, 9420535), (2384059, 7120103), (2384060, 9300101), (2384061, 9300102), (2384062, 9300137), (2384063, 9300138), (2384064, 9400576), (2384065, 9400640), (2384066, 9500147))</sql>
+            <sql>DELETE FROM monstercarddata WHERE (cardid, mobid) IN ((2384067, 7120104), (2384068, 7120105), (2384069, 9400103), (2384070, 9420536), (2384071, 7120106), (2384072, 7120107), (2384073, 9400586), (2384074, 9420537), (2384075, 9300146), (2384076, 7120108), (2384077, 7120109), (2385024, 9300270), (2385026, 9400400), (2385027, 9400545), (2385028, 9400581), (2385029, 8120102), (2385030, 9420538), (2385031, 8120103), (2385032, 9420514), (2385033, 8120104), (2385034, 9420539), (2385035, 8120105), (2385036, 8120106), (2385037, 9400578), (2385038, 9420515), (2385039, 8140511), (2385040, 8140512), (2385041, 9420540), (2385042, 9400580), (2385043, 9420516))</sql>
+            <sql>DELETE FROM monstercarddata WHERE (cardid, mobid) IN ((2386018, 9400013), (2386019, 9400404), (2386020, 9400574), (2386025, 9400579), (2386026, 9420518), (2386027, 9420517), (2386028, 9420519), (2386029, 8210000), (2386030, 8210006), (2386031, 8210007), (2386032, 8210002), (2386033, 9400401), (2386034, 9400582), (2386035, 8210003), (2386036, 8220016), (2386037, 8220017), (2386038, 8220018), (2386039, 8220019), (2387005, 8210004), (2387014, 8210005), (2387015, 9400406), (2387016, 9400743), (2387017, 9400402), (2387018, 9300354), (2387019, 9400403), (2387020, 8600000), (2387021, 8600004), (2387022, 8220020), (2387023, 8600001), (2387024, 8600005))</sql>
+            <sql>DELETE FROM monstercarddata WHERE (cardid, mobid) IN ((2387025, 8220021), (2387026, 8600002), (2387027, 8600006), (2387028, 8600003), (2387029, 8610005), (2387030, 8610000), (2387031, 8610006), (2387032, 8610001), (2387033, 8610007), (2387034, 8610002), (2387035, 8610008), (2387036, 8610003), (2387037, 8610009), (2387038, 8610004), (2387039, 8610010), (2387040, 8610011), (2387041, 8610012), (2387042, 8610013), (2387043, 8610014), (2387044, 8620000), (2387045, 8620001), (2387046, 8620002), (2387047, 8620003), (2387048, 8620004), (2387049, 8620005), (2387050, 8620006), (2387051, 8620007), (2387052, 8620008), (2387053, 8620009), (2387054, 8620010))</sql>
+            <sql>DELETE FROM monstercarddata WHERE (cardid, mobid) IN ((2387055, 8620011), (2387056, 8641000), (2387057, 9300021), (2387058, 9300091), (2387059, 9400010), (2387060, 9400704), (2387061, 8641001), (2387062, 8641002), (2387063, 8641003), (2387064, 8641004), (2387065, 8641005), (2387066, 8641006), (2387067, 8641007), (2387068, 8641012), (2387069, 8642000), (2387070, 8642002), (2387071, 8642001), (2387072, 8642003), (2387073, 8642004), (2387074, 8642006), (2387075, 8642005), (2387076, 8642007), (2387077, 8642008), (2387078, 8642010), (2387079, 8642009), (2387080, 8642011), (2387081, 8642012), (2387082, 8642014), (2387083, 8642013), (2387084, 8642015))</sql>
+            <sql>DELETE FROM monstercarddata WHERE (cardid, mobid) IN ((2387085, 8643001), (2387086, 8643002), (2387087, 8643003), (2387088, 8643004), (2387089, 8643005), (2387090, 8643006), (2387091, 8643008), (2387092, 8643009), (2387093, 8643012), (2387094, 8643007), (2387095, 8643000), (2387096, 8643010), (2387097, 8643011), (2387098, 8644000), (2387099, 8644001), (2387100, 8644002), (2387101, 8644003), (2387102, 8644004), (2387103, 8644005), (2387104, 8644006), (2387105, 8644400), (2387106, 8644401), (2387107, 8644007), (2387108, 8644402), (2387109, 8644008), (2387110, 8644403), (2387111, 8644404), (2387112, 8644009), (2387113, 8644405), (2387114, 8644010))</sql>
+            <sql>DELETE FROM monstercarddata WHERE (cardid, mobid) IN ((2387115, 8644406), (2387116, 8644500), (2387117, 8644407), (2387118, 8644408), (2387119, 8644501), (2387120, 8644409), (2387121, 8644502), (2387122, 8644410), (2387123, 8644503), (2387124, 8644411), (2387125, 8644504), (2387126, 8644412), (2387127, 8644505), (2387128, 8644506), (2387129, 8644507), (2387130, 8644508), (2387131, 8644509), (2387132, 8644614), (2387133, 8644615), (2387134, 8644616), (2387135, 8644617), (2387136, 8644618), (2387137, 8644619), (2387138, 8644700), (2387139, 8644701), (2387140, 8644702), (2387141, 8644703), (2387142, 8644704), (2387143, 8644705), (2387144, 8644706))</sql>
+            <sql>DELETE FROM monstercarddata WHERE (cardid, mobid) IN ((2387145, 8644707), (2387146, 8644708), (2387147, 8644709), (2387148, 8644710), (2387149, 8644711), (2387150, 8644712), (2387151, 8645010), (2387152, 8645012), (2387153, 8645011), (2387154, 8645023), (2387155, 8645022), (2388034, 9300312), (2388035, 9300367), (2388036, 9420015), (2388037, 9300269), (2388038, 9400609), (2388044, 9400610), (2388045, 9400611), (2388047, 9400612), (2388048, 9400613), (2388049, 9300344), (2388050, 9400633), (2388051, 9500182), (2388056, 9500318), (2388057, 4300013), (2388058, 9300350), (2388059, 9400569), (2388060, 6090002), (2388061, 9300324), (2388062, 7120100))</sql>
+            <sql>DELETE FROM monstercarddata WHERE (cardid, mobid) IN ((2388063, 9400606), (2388064, 9500319), (2388065, 9500323), (2388066, 9500336), (2388071, 9300266), (2388072, 7220003), (2388073, 9001004), (2388074, 9001009), (2388075, 9001013), (2388076, 9300088), (2388077, 9300267), (2388078, 8220010), (2388079, 8220011), (2388080, 8220012), (2388081, 8220013), (2388082, 9400120), (2388083, 9400594), (2388084, 9420513), (2388085, 9400549), (2388086, 9400575), (2388087, 9400014), (2388088, 9300158), (2388089, 9300159), (2388090, 9400121), (2388091, 9400590), (2388092, 9400591), (2388093, 9400592), (2388094, 9400593), (2388095, 9001014), (2388096, 9420544))</sql>
+            <sql>DELETE FROM monstercarddata WHERE (cardid, mobid) IN ((2388097, 9420549), (2388098, 8210013), (2388099, 9400112), (2388100, 9400113), (2388101, 9400405), (2388102, 9400300), (2388103, 9400748), (2388104, 8645051), (2388105, 8645053), (2388106, 8645057), (2388107, 8645058), (2388108, 9300311), (2388109, 9300313))</sql>
+        </rollback>
+    </changeSet>
+
+    <!-- ===================================================================================
+         10 uncarded mobs pointed at the EXISTING card of the same name, 2026-09-26.
+         No new card item is created for these: each mob gets a drop_data row for the existing
+         card and a monstercarddata row so the Monster Book credits it to that card.
+         Chance: 8 normal at 8000, 2 boss at 24000 (this server's existing card rows).
+         NOTE: MonsterBook.getCardTierSize() counts monstercarddata ROWS per tier, and
+         ItemInformationProvider.monsterBookID keeps the LAST row per cardid (book-cover mob).
+         =================================================================================== -->
+    <changeSet id="2026-09-26-reuse-same-name-cards" author="claude" dbms="mysql,mariadb">
+        <comment>10 mobs reuse an existing same-name card: drop_data + monstercarddata</comment>
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300129, 2382005, 1, 1, 0, 8000)</sql>   <!-- Ratz -> Ratz Card (Lv.30) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9420501, 2382056, 1, 1, 0, 8000)</sql>   <!-- Freezer -> Freezer Card (Lv.38) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300061, 2382068, 1, 1, 0, 8000)</sql>   <!-- Moon Bunny -> Moon Bunny Card (Lv.30) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300255, 2383007, 1, 1, 0, 8000)</sql>   <!-- Mithril Mutae -> Mithril Mutae Card (Lv.47) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8210001, 2383041, 1, 1, 0, 8000)</sql>   <!-- Reindeer -> Reindeer Card (Lv.119) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9300247, 2383059, 1, 1, 0, 8000)</sql>   <!-- Stone Bug -> Stone Bug Card (Lv.65) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (5220001, 2388003, 1, 1, 0, 24000)</sql>   <!-- King Clang -> King Clang Card (Lv.55, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (4220001, 2388030, 1, 1, 0, 24000)</sql>   <!-- Seruf -> Seruf Card (Lv.45, boss) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (8220008, 2388054, 1, 1, 0, 8000)</sql>   <!-- Unknow Snack Bar -> Snack Bar Card (Lv.85) -->
+        <sql>INSERT INTO drop_data (dropperid, itemid, minimum_quantity, maximum_quantity, questid, chance) VALUES (9410014, 2388054, 1, 1, 0, 8000)</sql>   <!-- Snack Bar -> Snack Bar Card (Lv.85) -->
+
+        <!-- monstercarddata: cardid -> mobid, what the Monster Book uses to credit the card -->
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382005, 9300129)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382056, 9420501)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2382068, 9300061)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383007, 9300255)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383041, 8210001)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2383059, 9300247)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388003, 5220001)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388030, 4220001)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388054, 8220008)</sql>
+        <sql>INSERT INTO monstercarddata (cardid, mobid) VALUES (2388054, 9410014)</sql>
+
+        <rollback>
+            <sql>DELETE FROM drop_data WHERE questid = 0 AND (dropperid, itemid) IN ((9300129, 2382005), (9420501, 2382056), (9300061, 2382068), (9300255, 2383007), (8210001, 2383041), (9300247, 2383059), (5220001, 2388003), (4220001, 2388030), (8220008, 2388054), (9410014, 2388054))</sql>
+            <sql>DELETE FROM monstercarddata WHERE (cardid, mobid) IN ((2382005, 9300129), (2382056, 9420501), (2382068, 9300061), (2383007, 9300255), (2383041, 8210001), (2383059, 9300247), (2388003, 5220001), (2388030, 4220001), (2388054, 8220008), (2388054, 9410014))</sql>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

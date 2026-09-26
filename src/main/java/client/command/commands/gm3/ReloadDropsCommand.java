@@ -26,6 +26,7 @@ package client.command.commands.gm3;
 import client.Character;
 import client.Client;
 import client.command.Command;
+import server.DropSearchService;
 import server.life.MonsterInformationProvider;
 
 public class ReloadDropsCommand extends Command {
@@ -37,6 +38,7 @@ public class ReloadDropsCommand extends Command {
     public void execute(Client c, String[] params) {
         Character player = c.getPlayer();
         MonsterInformationProvider.getInstance().clearDrops();
+        DropSearchService.clearDropCaches(); // Kaentake Monster Book: card map + item-search allow-list
         player.dropMessage(5, "Reloaded Drops");
     }
 }

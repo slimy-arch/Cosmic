@@ -208,6 +208,7 @@ public enum RecvOpcode {
     WORLD_MAP_PLAYERS(0x115), // custom: Kaentake world map tooltip "Players" request
     CASHSHOP_WINDOW_ACTION(0x3730), // custom: Kaentake standalone cash shop window [byte action ...]
     BAG_WINDOW(0x3724), // custom: Kaentake storage bag window [byte action, byte bagKind, ...]
+    MONSTER_BOOK_QUERY(0x3732), // custom: Kaentake Monster Book [byte type 0 int mob | 1 str query | 2 int item]
     HYPER_TELEPORT_ROCK(0x105); // custom: Kaentake world map click-to-teleport [int targetMapId]
 
     private int code = -2;
