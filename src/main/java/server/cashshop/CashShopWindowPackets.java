@@ -163,7 +163,7 @@ public final class CashShopWindowPackets {
 
     private static void writeCash(OutPacket p, Character chr) {
         final CashShop cs = chr.getCashShop();
-        p.writeInt(cs.getCash(CashShop.NX_CREDIT));
+        p.writeLong(cs.getNxCredit());   // long since the NX uncap (cashshopwnd.cpp Decode8)
         p.writeInt(cs.getCash(CashShop.MAPLE_POINT));
         p.writeInt(cs.getCash(CashShop.NX_PREPAID));
     }

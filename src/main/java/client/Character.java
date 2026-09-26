@@ -2091,7 +2091,7 @@ public class Character extends AbstractCharacterObject {
                                 this.getCashShop().gainCash(1, nxGain);
 
                                 if (YamlConfig.config.server.USE_ANNOUNCE_NX_COUPON_LOOT) {
-                                    showHint("You have earned #e#b" + nxGain + " NX#k#n. (" + this.getCashShop().getCash(CashShop.NX_CREDIT) + " NX)", 300);
+                                    showHint("You have earned #e#b" + nxGain + " NX#k#n. (" + this.getCashShop().getNxCredit() + " NX)", 300);
                                 }
 
                                 this.getMap().pickItemDrop(pickupPacket, mapitem);
@@ -2143,7 +2143,7 @@ public class Character extends AbstractCharacterObject {
                         this.getCashShop().gainCash(1, nxGain);
 
                         if (YamlConfig.config.server.USE_ANNOUNCE_NX_COUPON_LOOT) {
-                            showHint("You have earned #e#b" + nxGain + " NX#k#n. (" + this.getCashShop().getCash(CashShop.NX_CREDIT) + " NX)", 300);
+                            showHint("You have earned #e#b" + nxGain + " NX#k#n. (" + this.getCashShop().getNxCredit() + " NX)", 300);
                         }
                     } else if (applyConsumeOnPickup(mItem.getItemId())) {
                     } else if (autoCollectToBag(mItem) || InventoryManipulator.addFromDrop(client, mItem, true)) {
@@ -8397,7 +8397,7 @@ public class Character extends AbstractCharacterObject {
         if (client == null || !isLoggedin() || cashshop == null) {
             return;
         }
-        sendPacket(PacketCreator.inventoryCash(cashshop.getCash(CashShop.NX_CREDIT)));
+        sendPacket(PacketCreator.inventoryCash(cashshop.getNxCredit()));
     }
 
     public void receivePartyMemberHP() {

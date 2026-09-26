@@ -129,4 +129,8 @@
         <sqlFile path="db/tables/031-storagebag.sql"/>
     </changeSet>
 
+    <changeSet id="32" author="kaentake-nxuncap">
+        <sqlFile path="db/tables/032-nx-bigint.sql"/>
+    </changeSet>
+
 </databaseChangeLog>
