@@ -125,4 +125,8 @@
         <sqlFile path="db/tables/030-quickslot-26.sql"/>
     </changeSet>
 
+    <changeSet id="31" author="kaentake-storagebag">
+        <sqlFile path="db/tables/031-storagebag.sql"/>
+    </changeSet>
+
 </databaseChangeLog>

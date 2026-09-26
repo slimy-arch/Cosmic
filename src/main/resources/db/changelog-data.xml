@@ -55,4 +55,8 @@
         <sqlFile path="db/data/171-damagerank-keymap.sql"/>
     </changeSet>
 
+    <changeSet id="172" author="kaentake-storagebag">
+        <sqlFile path="db/data/172-storagebag-keymap.sql"/>
+    </changeSet>
+
 </databaseChangeLog>

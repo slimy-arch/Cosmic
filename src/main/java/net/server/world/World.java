@@ -62,6 +62,7 @@ import net.server.task.WeddingReservationTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scripting.event.EventInstanceManager;
+import server.OreStorage;
 import server.Storage;
 import server.TimerManager;
 import server.maps.AbstractMapObject;
@@ -146,6 +147,7 @@ public class World {
 
     private final Map<Integer, SortedMap<Integer, Character>> accountChars = new HashMap<>();
     private final Map<Integer, Storage> accountStorages = new HashMap<>();
+    private final Map<Integer, OreStorage[]> accountBags = new HashMap<>();   // kaentake Storage Bag, indexed by kind
     private final Lock accountCharsLock = new ReentrantLock(true);
 
     private final Set<Integer> queuedGuilds = new HashSet<>();
@@ -529,6 +531,32 @@ public class World {
 
     public Storage getAccountStorage(Integer accountId) {
         return accountStorages.get(accountId);
+    }
+
+    // kaentake Storage Bag: the four per-account bags (ore, scroll, chair, cash), loaded together and cached
+    // for the life of the world, like accountStorages.
+    public OreStorage[] getOrLoadAccountBags(Integer accountId) {
+        OreStorage[] bags;
+        accountCharsLock.lock();
+        try {
+            bags = accountBags.get(accountId);
+        } finally {
+            accountCharsLock.unlock();
+        }
+        if (bags != null) {
+            return bags;
+        }
+
+        OreStorage[] loaded = new OreStorage[OreStorage.KIND_COUNT];
+        for (int kind = 0; kind < OreStorage.KIND_COUNT; kind++) {
+            loaded[kind] = OreStorage.loadOrCreateFromDB(kind, accountId, this.id);
+        }
+        accountCharsLock.lock();
+        try {
+            return accountBags.computeIfAbsent(accountId, k -> loaded);
+        } finally {
+            accountCharsLock.unlock();
+        }
     }
 
     private static List<Entry<Integer, SortedMap<Integer, Character>>> getSortedAccountCharacterView(Map<Integer, SortedMap<Integer, Character>> map) {

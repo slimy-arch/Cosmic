@@ -36,6 +36,7 @@ import client.inventory.PetDataFactory;
 import client.inventory.WeaponType;
 import client.inventory.manipulator.CashIdGenerator;
 import client.inventory.manipulator.InventoryManipulator;
+import client.inventory.manipulator.KarmaManipulator;
 import client.keybind.KeyBinding;
 import client.keybind.QuickslotBinding;
 import client.newyear.NewYearCardRecord;
@@ -104,6 +105,7 @@ import server.ExpLogger;
 import server.ExpLogger.ExpLogRecord;
 import server.ItemInformationProvider;
 import server.ItemInformationProvider.ScriptedItem;
+import server.OreStorage;
 import server.Marriage;
 import server.Shop;
 import server.StatEffect;
@@ -270,6 +272,12 @@ public class Character extends AbstractCharacterObject {
     private Shop shop = null;
     private SkinColor skinColor = SkinColor.LIGHT;
     private Storage storage = null;
+    // kaentake Storage Bag, indexed by kind (0 ore, 1 scroll, 2 chair, 3 cash). The bags are per account and
+    // shared with the World cache; the auto-collect toggles are per character.
+    private OreStorage[] bags = null;
+    private final boolean[] usedBag = new boolean[OreStorage.KIND_COUNT];
+    private final boolean[] autoBag = new boolean[OreStorage.KIND_COUNT];
+    private int activeBag = -1;   // the tab the client last asked for; auto-collect refreshes only that one
     private Trade trade = null;
     private MonsterBook monsterbook;
     private final DamageSkinInventory damageSkinInv = new DamageSkinInventory(); // custom: Kaentake damage skin
@@ -2059,7 +2067,7 @@ public class Character extends AbstractCharacterObject {
                 Item mItem = mapitem.getItem();
                 boolean hasSpaceInventory = true;
                 ItemInformationProvider ii = ItemInformationProvider.getInstance();
-                if (ItemId.isNxCard(mapitem.getItemId()) || mapitem.getMeso() > 0 || ii.isConsumeOnPickup(mapitem.getItemId()) || (hasSpaceInventory = InventoryManipulator.checkSpace(client, mapitem.getItemId(), mItem.getQuantity(), mItem.getOwner()))) {
+                if (ItemId.isNxCard(mapitem.getItemId()) || mapitem.getMeso() > 0 || ii.isConsumeOnPickup(mapitem.getItemId()) || (mItem != null && autoBagKindFor(mItem) >= 0) || (hasSpaceInventory = InventoryManipulator.checkSpace(client, mapitem.getItemId(), mItem.getQuantity(), mItem.getOwner()))) {
                     int mapId = this.getMapId();
 
                     if ((MapId.isSelfLootableOnly(mapId))) {//happyville trees and guild PQ
@@ -2138,7 +2146,7 @@ public class Character extends AbstractCharacterObject {
                             showHint("You have earned #e#b" + nxGain + " NX#k#n. (" + this.getCashShop().getCash(CashShop.NX_CREDIT) + " NX)", 300);
                         }
                     } else if (applyConsumeOnPickup(mItem.getItemId())) {
-                    } else if (InventoryManipulator.addFromDrop(client, mItem, true)) {
+                    } else if (autoCollectToBag(mItem) || InventoryManipulator.addFromDrop(client, mItem, true)) {
                         if (mItem.getItemId() == ItemId.ARPQ_SPIRIT_JEWEL) {
                             updateAriantScore();
                         }
@@ -5096,6 +5104,117 @@ public class Character extends AbstractCharacterObject {
         usedStorage = true;
     }
 
+    // ---- kaentake Storage Bag ----
+
+    public OreStorage getBag(int kind) {
+        return (bags != null && kind >= 0 && kind < bags.length) ? bags[kind] : null;
+    }
+
+    public void setUsedBag(int kind) {
+        usedBag[kind] = true;
+    }
+
+    public boolean isAutoBag(int kind) {
+        return autoBag[kind];
+    }
+
+    public void setAutoBag(int kind, boolean on) {
+        autoBag[kind] = on;
+    }
+
+    public void activateBag(int kind) {
+        activeBag = kind;
+    }
+
+    /** Opens the bag window on {@code kind} (the reply to @orebag and friends). */
+    public void openBag(int kind) {
+        OreStorage bag = getBag(kind);
+        if (bag == null) {
+            return;
+        }
+        activeBag = kind;
+        sendPacket(PacketCreator.bagWindowSnapshot(kind, bag, true, autoBag[kind]));
+    }
+
+    /** Pushes {@code kind} to the client if the window last showed it (auto-collect, @<bag> on|off). */
+    public void refreshBagIfActive(int kind) {
+        OreStorage bag = getBag(kind);
+        if (bag != null && activeBag == kind) {
+            sendPacket(PacketCreator.bagWindowSnapshot(kind, bag, false, autoBag[kind]));   // updates the cache, never opens
+        }
+    }
+
+    /** Same GM gate as the NPC storage (StorageProcessor.hasGMRestrictions): the bags are account-shared too. */
+    public boolean canUseBags() {
+        return !(isGM() && gmLevel() < YamlConfig.config.server.MINIMUM_GM_LEVEL_TO_USE_STORAGE);
+    }
+
+    private boolean isSummonedPet(Item item) {
+        return item.getPetId() > -1 && getPetIndex(item.getPetId()) > -1;
+    }
+
+    /**
+     * Moves the whole stack at (type, pos) into bag {@code kind}. The bag takes a copy first and the inventory
+     * slot is emptied only once the bag accepted all of it, so a refusal changes nothing. Returns whether it moved.
+     */
+    public boolean moveToBag(int kind, InventoryType type, short pos) {
+        OreStorage bag = getBag(kind);
+        if (bag == null || !canUseBags()) {
+            return false;
+        }
+        Inventory inv = getInventory(type);
+        inv.lockInventory();
+        try {
+            Item item = inv.getItem(pos);
+            if (item == null || !ItemConstants.isBagAllowed(kind, item.getItemId()) || isSummonedPet(item)) {
+                return false;
+            }
+            Item copy = item.copy();
+            KarmaManipulator.toggleKarmaFlagToUntradeable(copy);
+            if (!bag.storeMerge(copy, client)) {
+                return false;
+            }
+            InventoryManipulator.removeFromSlot(client, type, pos, item.getQuantity(), false);
+        } finally {
+            inv.unlockInventory();
+        }
+        usedBag[kind] = true;
+        return true;
+    }
+
+    /** The bag kind a picked-up item auto-collects into, or -1. */
+    private int autoBagKindFor(Item item) {
+        if (bags == null || item.getPetId() > -1 || !canUseBags()) {
+            return -1;
+        }
+        int itemId = item.getItemId();
+        if (ItemInformationProvider.getInstance().isPickupRestricted(itemId)) {
+            return -1;   // one-of-a-kind: keep the stock inventory check
+        }
+        for (int kind = 0; kind < OreStorage.KIND_COUNT; kind++) {
+            if (autoBag[kind] && ItemConstants.isBagAllowed(kind, itemId)) {
+                return kind;
+            }
+        }
+        return -1;
+    }
+
+    /** Pickup auto-collect: stores a copy of the dropped item in its bag. False = not taken, use the inventory. */
+    private boolean autoCollectToBag(Item item) {
+        int kind = autoBagKindFor(item);
+        if (kind < 0) {
+            return false;
+        }
+        short quantity = item.getQuantity();
+        if (!bags[kind].storeMerge(item.copy(), client)) {
+            return false;
+        }
+        usedBag[kind] = true;
+        sendPacket(PacketCreator.getShowItemGain(item.getItemId(), quantity));
+        refreshBagIfActive(kind);
+        return true;
+    }
+
     public List<Ring> getFriendshipRings() {
         Collections.sort(friendshipRings);
         return friendshipRings;
@@ -7292,6 +7411,10 @@ public class Character extends AbstractCharacterObject {
                     ret.buddylist = new BuddyList(buddyCapacity);
                     ret.lastExpGainTime = rs.getTimestamp("lastExpGainTime").getTime();
                     ret.canRecvPartySearchInvite = rs.getBoolean("partySearch");
+                    ret.autoBag[0] = rs.getBoolean("autoOreStorage");
+                    ret.autoBag[1] = rs.getBoolean("autoScrollStorage");
+                    ret.autoBag[2] = rs.getBoolean("autoChairStorage");
+                    ret.autoBag[3] = rs.getBoolean("autoCashStorage");
 
                     wserv = Server.getInstance().getWorld(ret.world);
 
@@ -7680,6 +7803,7 @@ public class Character extends AbstractCharacterObject {
                     wserv.loadAccountStorage(ret.accountid);
                     ret.storage = wserv.getAccountStorage(ret.accountid);
                 }
+                ret.bags = wserv.getOrLoadAccountBags(ret.accountid);
                 
                 int startHp = ret.hp, startMp = ret.mp;
                 ret.reapplyLocalStats();
@@ -9045,7 +9169,29 @@ public class Character extends AbstractCharacterObject {
                     usedStorage = false;
                 }
 
+                try (PreparedStatement psBag = con.prepareStatement("UPDATE characters SET autoOreStorage = ?, autoScrollStorage = ?, autoChairStorage = ?, autoCashStorage = ? WHERE id = ?")) {
+                    for (int kind = 0; kind < OreStorage.KIND_COUNT; kind++) {
+                        psBag.setInt(kind + 1, autoBag[kind] ? 1 : 0);
+                    }
+                    psBag.setInt(5, id);
+                    psBag.executeUpdate();
+                }
+                boolean[] savedBag = new boolean[OreStorage.KIND_COUNT];
+                if (bags != null) {
+                    for (int kind = 0; kind < OreStorage.KIND_COUNT; kind++) {
+                        if (usedBag[kind]) {
+                            bags[kind].saveToDB(con);
+                            savedBag[kind] = true;
+                        }
+                    }
+                }
+
                 con.commit();
+                for (int kind = 0; kind < OreStorage.KIND_COUNT; kind++) {
+                    if (savedBag[kind]) {
+                        usedBag[kind] = false;   // only once committed, so a rollback re-saves next time
+                    }
+                }
             } catch (Exception e) {
                 con.rollback();
                 throw e;
