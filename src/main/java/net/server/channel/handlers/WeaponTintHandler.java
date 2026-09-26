@@ -27,6 +27,8 @@ import java.util.concurrent.ConcurrentHashMap;
  *   <li>{@code 2} restore     - invType(1) invPos(2) itemId(4) prismPos(2) layer(1)</li>
  *   <li>{@code 3} applyLook   - kind(1) hue(2) chroma(1) bright(1) prismPos(2)</li>
  *   <li>{@code 4} restoreLook - kind(1) prismPos(2)</li>
+ *   <li>{@code 5} applySkill  - skillId(4) hue(2) chroma(1) bright(1) prismPos(2) part(1)</li>
+ *   <li>{@code 6} restoreSkill- skillId(4) prismPos(2) part(1)</li>
  * </ul>
  * ONE item, {@link ItemId#COLORING_PRISM}, pays for all five of the window's tabs. Actions 1 and 2
  * name their target by inventory address, and it can be either an EQUIP, cash or not, whose
@@ -126,8 +128,9 @@ public final class WeaponTintHandler extends AbstractPacketHandler {
             // Skills. Named by SKILL ID: a skill has no inventory address, so unlike an equip
             // there is nothing to re-derive it from. What IS verified is that the character
             // actually knows the skill, which is what stops a client dyeing all 616.
+            // The trailing byte is the visual PART of the skill (1..17, TintValues), required.
             case ColorPrismPackets.ACTION_APPLY_SKILL -> {
-                if (p.available() < 4 + 2 + 1 + 1 + 2) {
+                if (p.available() < 4 + 2 + 1 + 1 + 2 + 1) {
                     return;
                 }
                 int skillId = p.readInt();
@@ -136,26 +139,28 @@ public final class WeaponTintHandler extends AbstractPacketHandler {
                 int chroma = p.readByte();
                 int bright = p.readByte();
                 short prismPos = p.readShort();
-                int layer = ColorPrismPackets.LAYER_BODY;
-                if (p.available() >= 1) {
-                    layer = p.readByte();
+                int part = p.readByte();
+                if (!TintValues.isValidSkillPart(part)) {
+                    fail(player, ColorPrismPackets.RESULT_FAILED, "That part of the skill can't be dyed.");
+                    return;
                 }
                 if (!checkTint(player, hue, chroma, bright)) {
                     return;
                 }
-                handleApplySkill(c, player, skillId, hue, chroma, bright, prismPos, layer);
+                handleApplySkill(c, player, skillId, hue, chroma, bright, prismPos, part);
             }
             case ColorPrismPackets.ACTION_RESTORE_SKILL -> {
-                if (p.available() < 4 + 2) {
+                if (p.available() < 4 + 2 + 1) {
                     return;
                 }
                 int skillId = p.readInt();
                 short prismPos = p.readShort();
-                int layer = ColorPrismPackets.LAYER_BODY;
-                if (p.available() >= 1) {
-                    layer = p.readByte();
+                int part = p.readByte();
+                if (!TintValues.isValidSkillPart(part)) {
+                    fail(player, ColorPrismPackets.RESULT_FAILED, "That part of the skill can't be dyed.");
+                    return;
                 }
-                handleRestoreSkill(c, player, skillId, prismPos, layer);
+                handleRestoreSkill(c, player, skillId, prismPos, part);
             }
             default -> {
             }
@@ -176,7 +181,7 @@ public final class WeaponTintHandler extends AbstractPacketHandler {
     }
 
     private void handleApplySkill(Client c, Character player, int skillId, int hue, int chroma,
-                                  int bright, short prismPos, int layer) {
+                                  int bright, short prismPos, int part) {
         if (!knowsSkill(player, skillId)) {
             fail(player, ColorPrismPackets.RESULT_FAILED, "You haven't learned that skill.");
             return;
@@ -186,11 +191,7 @@ public final class WeaponTintHandler extends AbstractPacketHandler {
             fail(player, ColorPrismPackets.RESULT_NO_ITEM, "You don't have a Coloring Prism.");
             return;
         }
-        if (layer == ColorPrismPackets.LAYER_EFFECTS) {
-            player.setSkillFxTint(skillId, hue, chroma, bright);
-        } else {
-            player.setSkillTint(skillId, hue, chroma, bright);
-        }
+        player.setSkillPartTint(skillId, part, hue, chroma, bright);
         InventoryManipulator.removeFromSlot(c, InventoryType.CASH, slot, (short) 1, false);
         // Forced now rather than left to logout, the same as every other apply path: a crash in
         // between would otherwise cost the player a prism and give nothing back.
@@ -198,22 +199,16 @@ public final class WeaponTintHandler extends AbstractPacketHandler {
         succeed(player);
     }
 
-    private void handleRestoreSkill(Client c, Character player, int skillId, short prismPos, int layer) {
+    private void handleRestoreSkill(Client c, Character player, int skillId, short prismPos, int part) {
         if (!knowsSkill(player, skillId)) {
             fail(player, ColorPrismPackets.RESULT_FAILED, "You haven't learned that skill.");
             return;
         }
-        final boolean tinted = (layer == ColorPrismPackets.LAYER_EFFECTS)
-                ? player.isSkillFxTinted(skillId)
-                : player.isSkillBodyTinted(skillId);
-        if (!tinted) {
+        if (!player.isSkillPartTinted(skillId, part)) {
             // Nothing to undo. Refuse WITHOUT consuming the prism: this is the path Reset then
-            // Confirm takes on a skill that was never dyed, and burning the item for a no-op
+            // Confirm takes on a part that was never dyed, and burning the item for a no-op
             // would be a trap.
-            fail(player, ColorPrismPackets.RESULT_NOT_TINTED,
-                    layer == ColorPrismPackets.LAYER_EFFECTS
-                            ? "That skill's effects are already their original color."
-                            : "That skill is already its original color.");
+            fail(player, ColorPrismPackets.RESULT_NOT_TINTED, "That part of the skill is already its original color.");
             return;
         }
         short slot = findItem(player, ItemId.COLORING_PRISM, prismPos);
@@ -221,11 +216,7 @@ public final class WeaponTintHandler extends AbstractPacketHandler {
             fail(player, ColorPrismPackets.RESULT_NO_ITEM, "You don't have a Coloring Prism.");
             return;
         }
-        if (layer == ColorPrismPackets.LAYER_EFFECTS) {
-            player.clearSkillFxTint(skillId);
-        } else {
-            player.clearSkillTint(skillId);
-        }
+        player.clearSkillPartTint(skillId, part);
         InventoryManipulator.removeFromSlot(c, InventoryType.CASH, slot, (short) 1, false);
         player.saveCharToDB();
         succeed(player);

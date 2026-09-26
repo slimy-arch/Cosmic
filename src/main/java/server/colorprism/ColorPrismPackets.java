@@ -86,19 +86,8 @@ public final class ColorPrismPackets {
      */
     public static final int TINT_KEY_EFFECT_BIAS = 10000000;
 
-    /**
-     * Skill tint keys are the skill id plus this. Skill ids run to seven digits and effect keys
-     * are an item id plus ten million, so thirty million puts skills clear of both with no
-     * overlap to disambiguate. The client computes the same number in {@code SkillTintKeyFor}.
-     */
-    public static final int TINT_KEY_SKILL_BIAS = 30000000;
-
-    /**
-     * A skill's EFFECT nodes ({@code effect}, {@code effect0}, ...) carry a second tint,
-     * the same way an item's glow does. Must match {@code kTintKey_SkillFxBias} in
-     * {@code weapontint.h}.
-     */
-    public static final int TINT_KEY_SKILL_FX_BIAS = 40000000;
+    // Skill tints are keyed per visual PART, see TintValues.skillPartKey. The old "+30M body /
+    // +40M effect" pair could not hold 8-digit (Cygnus / Aran) skill ids.
 
     /** Which half of an item a tint applies to. Matches {@code kTintLayer_*} in weapontint.h. */
     public static final int LAYER_BODY = 0;
@@ -182,20 +171,15 @@ public final class ColorPrismPackets {
     }
 
     /**
-     * Every DYED skill this character owns, as {key, hue, chroma, bright} rows under the skill
-     * body key and, separately, the skill-effect key. Sent with the looks rather than the
-     * equips because, like a look, a skill tint has no inventory address and is therefore
-     * outside the equip list's entry cap.
+     * Every DYED skill part this character owns, as {key, hue, chroma, bright} rows under its
+     * part key. Sent with the looks rather than the equips because, like a look, a skill tint
+     * has no inventory address and is therefore outside the equip list's entry cap.
      */
     private static List<int[]> skillTintsOf(Character player) {
         List<int[]> out = new ArrayList<>();
-        for (var e : player.getSkillTints().entrySet()) {
+        for (var e : player.getSkillPartTints().entrySet()) {
             int[] t = e.getValue();
-            out.add(new int[]{e.getKey() + TINT_KEY_SKILL_BIAS, t[0], t[1], t[2]});
-        }
-        for (var e : player.getSkillFxTints().entrySet()) {
-            int[] t = e.getValue();
-            out.add(new int[]{e.getKey() + TINT_KEY_SKILL_FX_BIAS, t[0], t[1], t[2]});
+            out.add(new int[]{e.getKey(), t[0], t[1], t[2]});
         }
         return out;
     }

@@ -288,10 +288,10 @@ public class Character extends AbstractCharacterObject {
     // NOT skincolor: that still picks the fixed skin, this recolours whichever one is worn.
     private short hairTintHue, faceTintHue, skinTintHue;
     private byte hairTintChroma, hairTintBright, faceTintChroma, faceTintBright, skinTintChroma, skinTintBright;
-    // Coloring Prism skill tints: skill id -> {hue, chroma, bright}, body art and caster-effect art
-    // separately. Concurrent because the autosave thread iterates them while packets write them.
-    private final Map<Integer, int[]> skillTints = new ConcurrentHashMap<>();
-    private final Map<Integer, int[]> skillFxTints = new ConcurrentHashMap<>();
+    // Coloring Prism skill tints, one per visual PART of a skill, keyed by the wire tint key
+    // (TintValues.skillPartKey) -> {hue, chroma, bright}. Concurrent because the autosave thread
+    // iterates it while packets write it.
+    private final Map<Integer, int[]> skillPartTints = new ConcurrentHashMap<>();
     private CashShop cashshop;
     private final Set<NewYearCardRecord> newyears = new LinkedHashSet<>();
     private final SavedLocation[] savedLocations;
@@ -3012,50 +3012,32 @@ public class Character extends AbstractCharacterObject {
         setSkinTint(0, 0, 0);
     }
 
-    public Map<Integer, int[]> getSkillTints() {
-        return Collections.unmodifiableMap(skillTints);
+    /** tint key (TintValues.skillPartKey) -> {hue, chroma, bright}; only non-identity entries. */
+    public Map<Integer, int[]> getSkillPartTints() {
+        return Collections.unmodifiableMap(skillPartTints);
     }
 
-    public Map<Integer, int[]> getSkillFxTints() {
-        return Collections.unmodifiableMap(skillFxTints);
-    }
-
-    public boolean isSkillBodyTinted(int skillId) {
-        return skillTints.containsKey(skillId);
-    }
-
-    public boolean isSkillFxTinted(int skillId) {
-        return skillFxTints.containsKey(skillId);
-    }
-
-    public void setSkillTint(int skillId, int hue, int chroma, int bright) {
-        putSkillTint(skillTints, skillId, hue, chroma, bright);
-    }
-
-    public void setSkillFxTint(int skillId, int hue, int chroma, int bright) {
-        putSkillTint(skillFxTints, skillId, hue, chroma, bright);
-    }
-
-    public void clearSkillTint(int skillId) {
-        skillTints.remove(skillId);
-    }
-
-    public void clearSkillFxTint(int skillId) {
-        skillFxTints.remove(skillId);
+    public boolean isSkillPartTinted(int skillId, int part) {
+        return skillPartTints.containsKey(TintValues.skillPartKey(skillId, part));
     }
 
     /** An identity tint REMOVES the entry, so "never dyed" and "dyed back" are one state. */
-    private static void putSkillTint(Map<Integer, int[]> map, int skillId, int hue, int chroma, int bright) {
+    public void setSkillPartTint(int skillId, int part, int hue, int chroma, int bright) {
+        final int key = TintValues.skillPartKey(skillId, part);
         int h = TintValues.normalizeHue(hue), c = TintValues.clamp(chroma), b = TintValues.clamp(bright);
         if (TintValues.isIdentity(h, c, b)) {
-            map.remove(skillId);
+            skillPartTints.remove(key);
         } else {
-            map.put(skillId, new int[]{h, c, b});
+            skillPartTints.put(key, new int[]{h, c, b});
         }
     }
 
+    public void clearSkillPartTint(int skillId, int part) {
+        skillPartTints.remove(TintValues.skillPartKey(skillId, part));
+    }
+
     /**
-     * Writes the look tints and replaces this character's skilltints rows. Runs inside
+     * Writes the look tints and replaces this character's skillparttints rows. Runs inside
      * saveCharToDB's transaction: a statement outside it could commit while the rest rolls back.
      */
     private void saveColorPrismTints(Connection con) throws SQLException {
@@ -3074,30 +3056,24 @@ public class Character extends AbstractCharacterObject {
             ps.executeUpdate();
         }
 
-        // Delete and reinsert: the two maps are the whole truth, and a cleared tint is an absent key.
-        try (PreparedStatement ps = con.prepareStatement("DELETE FROM skilltints WHERE characterid = ?")) {
+        // Delete and reinsert: the map is the whole truth, and a cleared tint is an absent key.
+        try (PreparedStatement ps = con.prepareStatement("DELETE FROM skillparttints WHERE characterid = ?")) {
             ps.setInt(1, id);
             ps.executeUpdate();
         }
-        Set<Integer> skillIds = new LinkedHashSet<>(skillTints.keySet());
-        skillIds.addAll(skillFxTints.keySet());
-        if (skillIds.isEmpty()) {
+        if (skillPartTints.isEmpty()) {
             return;
         }
-        final int[] none = {0, 0, 0};
-        try (PreparedStatement ps = con.prepareStatement("INSERT INTO skilltints (characterid, skillid, tinthue, tintchroma, tintbright, "
-                + "tintfxhue, tintfxchroma, tintfxbright) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")) {
-            for (int skillId : skillIds) {
-                int[] body = skillTints.getOrDefault(skillId, none);
-                int[] fx = skillFxTints.getOrDefault(skillId, none);
+        try (PreparedStatement ps = con.prepareStatement("INSERT INTO skillparttints (characterid, skillid, part, "
+                + "tinthue, tintchroma, tintbright) VALUES (?, ?, ?, ?, ?, ?)")) {
+            for (Map.Entry<Integer, int[]> e : skillPartTints.entrySet()) {
+                int[] t = e.getValue();
                 ps.setInt(1, id);
-                ps.setInt(2, skillId);
-                ps.setInt(3, body[0]);
-                ps.setInt(4, body[1]);
-                ps.setInt(5, body[2]);
-                ps.setInt(6, fx[0]);
-                ps.setInt(7, fx[1]);
-                ps.setInt(8, fx[2]);
+                ps.setInt(2, TintValues.skillOfPartKey(e.getKey()));
+                ps.setInt(3, TintValues.partOfPartKey(e.getKey()));
+                ps.setInt(4, t[0]);
+                ps.setInt(5, t[1]);
+                ps.setInt(6, t[2]);
                 ps.addBatch();
             }
             ps.executeBatch();
@@ -7880,15 +7856,16 @@ public class Character extends AbstractCharacterObject {
                     }
                 }
 
-                // Coloring Prism skill tints (one row carries both the body and the effect colour)
-                try (PreparedStatement ps = con.prepareStatement("SELECT skillid, tinthue, tintchroma, tintbright, tintfxhue, tintfxchroma, tintfxbright FROM skilltints WHERE characterid = ?")) {
+                // Coloring Prism skill tints, one row per (skill, visual part)
+                try (PreparedStatement ps = con.prepareStatement("SELECT skillid, part, tinthue, tintchroma, tintbright FROM skillparttints WHERE characterid = ?")) {
                     ps.setInt(1, charid);
 
                     try (ResultSet rs = ps.executeQuery()) {
                         while (rs.next()) {
-                            final int skillId = rs.getInt("skillid");
-                            ret.setSkillTint(skillId, rs.getInt("tinthue"), rs.getInt("tintchroma"), rs.getInt("tintbright"));
-                            ret.setSkillFxTint(skillId, rs.getInt("tintfxhue"), rs.getInt("tintfxchroma"), rs.getInt("tintfxbright"));
+                            final int part = rs.getInt("part");
+                            if (TintValues.isValidSkillPart(part)) {
+                                ret.setSkillPartTint(rs.getInt("skillid"), part, rs.getInt("tinthue"), rs.getInt("tintchroma"), rs.getInt("tintbright"));
+                            }
                         }
                     }
                 }

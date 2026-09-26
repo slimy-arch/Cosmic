@@ -36,4 +36,35 @@ public final class TintValues {
     public static boolean isIdentity(int hue, int chroma, int bright) {
         return hue == 0 && chroma == 0 && bright == 0;
     }
+
+    // ---- skill parts --------------------------------------------------------------------------
+    // A skill is dyed PER VISUAL PART: each direct child of Skill/<img>/skill/<id> that holds art
+    // (effect, effect0..3, ball, hit, affected, special, prepare, keydown, keydownend, repeat,
+    // finish, screen, tile, mob) carries its own colour. Part ids 1..17 must match the client's
+    // table in weapontint.h; the server never reads skill art, it only stores and relays.
+    //
+    // Tint key = (part + 1) * 100,000,000 + skillId. Skill ids are up to 8 digits (Cygnus
+    // 1xxxxxxx, Aran 2xxxxxxx), which the old "+30M body / +40M effect" keys could not hold:
+    // Cygnus bodies landed in the effect range and Aran ids in no range at all. Every part key
+    // is >= 200,000,000, clear of item ids, item-effect keys (+10M) and the look kinds (1..3),
+    // and part 17 still fits an int.
+    public static final int SKILL_PART_MIN = 1;
+    public static final int SKILL_PART_MAX = 17;
+    private static final int SKILL_PART_UNIT = 100_000_000;
+
+    public static boolean isValidSkillPart(int part) {
+        return part >= SKILL_PART_MIN && part <= SKILL_PART_MAX;
+    }
+
+    public static int skillPartKey(int skillId, int part) {
+        return (part + 1) * SKILL_PART_UNIT + skillId;
+    }
+
+    public static int skillOfPartKey(int key) {
+        return key % SKILL_PART_UNIT;
+    }
+
+    public static int partOfPartKey(int key) {
+        return key / SKILL_PART_UNIT - 1;
+    }
 }
