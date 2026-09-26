@@ -7544,4 +7544,17 @@ public class PacketCreator {
         p.writeInt(skinId);
         return p;
     }
+
+    /**
+     * Kaentake stat detail window (statdetaillayout.cpp): the DROP RATE / MESO RATE and
+     * NORMAL DMG / BOSS DMG cells, all in percent.
+     */
+    public static Packet statDetailRates(int dropPercent, int mesoPercent, int normalDamagePercent, int bossDamagePercent) {
+        final OutPacket p = OutPacket.create(SendOpcode.STAT_DETAIL_RATES);
+        p.writeInt(dropPercent);
+        p.writeInt(mesoPercent);
+        p.writeInt(normalDamagePercent);
+        p.writeInt(bossDamagePercent);
+        return p;
+    }
 }

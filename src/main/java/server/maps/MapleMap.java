@@ -664,7 +664,12 @@ public class MapleMap {
 
         for (final MonsterDropEntry de : dropEntry) {
             float cardRate = chr.getCardRate(de.itemId);
-            int dropChance = (int) Math.min((float) de.chance * chRate * cardRate, Integer.MAX_VALUE);
+            float dropChanceF = (float) de.chance * chRate * cardRate;
+            int equipDropBonus = chr.getEquipDropRateBonus();
+            if (equipDropBonus != 0) {
+                dropChanceF *= (100 + equipDropBonus) / 100.0f;
+            }
+            int dropChance = (int) Math.min(dropChanceF, Integer.MAX_VALUE);
 
             if (Randomizer.nextInt(999999) < dropChance) {
                 if (droptype == 3) {
@@ -680,6 +685,10 @@ public class MapleMap {
                             mesos = (int) (mesos * chr.getBuffedValue(BuffStat.MESOUP).doubleValue() / 100.0);
                         }
                         mesos = mesos * chr.getMesoRate();
+                        int equipMesoBonus = chr.getEquipMesoRateBonus();
+                        if (equipMesoBonus != 0) {
+                            mesos = (int) Math.min((long) mesos * (100 + equipMesoBonus) / 100, Integer.MAX_VALUE);
+                        }
                         if (mesos <= 0) {
                             mesos = Integer.MAX_VALUE;
                         }
@@ -2449,6 +2458,7 @@ public class MapleMap {
         }
 
         sendObjectPlacement(chr.getClient());
+        chr.refreshStatDetailRates(true);   // Kaentake stat detail window: login, channel change, map change
 
         if (isStartingEventMap() && !eventStarted()) {
             chr.getMap().getPortal("join00").setPortalStatus(false);

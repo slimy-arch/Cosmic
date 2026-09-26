@@ -6678,6 +6678,7 @@ public class Character extends AbstractCharacterObject {
             if (YamlConfig.config.server.USE_ADD_RATES_BY_LEVEL == true) { //For the rate upgrade
                 revertLastPlayerRates();
                 setPlayerRates();
+                refreshStatDetailRates(false);
                 this.yellowMessage("You managed to get level " + level + "! Getting experience and items seems a little easier now, huh?");
             }
         }
@@ -6942,6 +6943,7 @@ public class Character extends AbstractCharacterObject {
             chrLock.unlock();
             effLock.unlock();
         }
+        refreshStatDetailRates(false);
     }
 
     public void resetPlayerRates() {
@@ -8197,6 +8199,71 @@ public class Character extends AbstractCharacterObject {
             effLock.unlock();
             prtLock.unlock();
         }
+        refreshStatDetailRates(false);  // buffs (Meso Up, item-up cards) changed with the stats
+    }
+
+    // --- Kaentake stat detail window: DROP RATE / MESO RATE / NORMAL DMG / BOSS DMG ---------------
+    // Sent as SendOpcode.STAT_DETAIL_RATES whenever one of the four values changes, and on every
+    // map entry.
+    private volatile int[] lastStatDetailRates;
+
+    /** Drop-rate bonus from equipment, in percent. Nothing grants one yet; MapleMap already applies it. */
+    public int getEquipDropRateBonus() {
+        return 0;
+    }
+
+    /** Meso-rate bonus from equipment, in percent. Nothing grants one yet; MapleMap already applies it. */
+    public int getEquipMesoRateBonus() {
+        return 0;
+    }
+
+    /** Damage bonus against normal monsters, in percent. Placeholder: no system grants one yet. */
+    public int getNormalDamageBonus() {
+        return 0;
+    }
+
+    /** Damage bonus against bosses, in percent. Placeholder: no system grants one yet. */
+    public int getBossDamageBonus() {
+        return 0;
+    }
+
+    /** Item drop chance multiplier as MapleMap applies it, in percent (world x coupons x level x cards x equipment). */
+    public int getStatDetailDropRatePercent() {
+        long percent = 100L * dropRate;
+        StatEffect itemUp = getBuffEffect(BuffStat.ITEM_UP_BY_ITEM);
+        if (itemUp != null) {   // only cards that cover every item (MIN_VALUE matches no item-specific card)
+            percent = percent * (100 + itemUp.getCardRate(mapid, Integer.MIN_VALUE)) / 100;
+        }
+        percent = percent * (100 + getEquipDropRateBonus()) / 100;
+        return (int) Math.min(percent, Integer.MAX_VALUE);
+    }
+
+    /** Meso multiplier, in percent: world x coupons x level, Meso Up, meso cards and equipment. */
+    public int getStatDetailMesoRatePercent() {
+        long percent = 100L * mesoRate;
+        Integer mesoUp = getBuffedValue(BuffStat.MESOUP);
+        if (mesoUp != null) {   // MapleMap: mesos * value / 100
+            percent = percent * mesoUp / 100;
+        }
+        StatEffect mesoCard = getBuffEffect(BuffStat.MESO_UP_BY_ITEM);
+        if (mesoCard != null) { // raises the meso-drop chance (getCardRate with item 0)
+            percent = percent * (100 + mesoCard.getCardRate(mapid, 0)) / 100;
+        }
+        percent = percent * (100 + getEquipMesoRateBonus()) / 100;
+        return (int) Math.min(percent, Integer.MAX_VALUE);
+    }
+
+    public void refreshStatDetailRates(boolean force) {
+        if (client == null || !isLoggedin()) {
+            return;
+        }
+        int[] rates = {getStatDetailDropRatePercent(), getStatDetailMesoRatePercent(),
+                getNormalDamageBonus(), getBossDamageBonus()};
+        if (!force && Arrays.equals(rates, lastStatDetailRates)) {
+            return;
+        }
+        lastStatDetailRates = rates;
+        sendPacket(PacketCreator.statDetailRates(rates[0], rates[1], rates[2], rates[3]));
     }
 
     public void receivePartyMemberHP() {
