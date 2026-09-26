@@ -1277,11 +1277,11 @@ public class MapleMap {
         return count;
     }
 
-     public boolean damageMonster(Character chr, Monster monster, int damage) {
+     public boolean damageMonster(Character chr, Monster monster, long damage) {
         return damageMonster(chr, monster, damage, (short) 0);
      }
 
-    public boolean damageMonster(final Character chr, final Monster monster, final int damage, short delay) {
+    public boolean damageMonster(final Character chr, final Monster monster, final long damage, short delay) {
         if (monster.getId() == MobId.ZAKUM_1) {
             for (MapObject object : chr.getMap().getMapObjects()) {
                 Monster mons = chr.getMap().getMonsterByOid(object.getObjectId());
@@ -4030,12 +4030,12 @@ public class MapleMap {
             public void monsterKilled(int aniTime) {}
 
             @Override
-            public void monsterDamaged(Character from, int trueDmg) {
+            public void monsterDamaged(Character from, long trueDmg) {
                 ht.addHp(trueDmg);
             }
 
             @Override
-            public void monsterHealed(int trueHeal) {
+            public void monsterHealed(long trueHeal) {
                 ht.addHp(-trueHeal);
             }
         });
@@ -4050,13 +4050,13 @@ public class MapleMap {
                 public void monsterKilled(int aniTime) {}
 
                 @Override
-                public void monsterDamaged(Character from, int trueDmg) {
+                public void monsterDamaged(Character from, long trueDmg) {
                     // thanks Halcyon for noticing HT not dropping loots due to propagated damage not registering attacker
                     ht.applyFakeDamage(from, trueDmg, true);
                 }
 
                 @Override
-                public void monsterHealed(int trueHeal) {
+                public void monsterHealed(long trueHeal) {
                     ht.addHp(trueHeal);
                 }
             });

@@ -845,6 +845,11 @@ public class Character extends AbstractCharacterObject {
     }
 
     public int calculateMaxBaseDamage(int watk, WeaponType weapon) {
+        return (int) Math.min(Integer.MAX_VALUE, calculateMaxBaseDamageLong(watk, weapon));
+    }
+
+    // damage-long: the same max-hit estimate without the int ceiling (uncapped PAD/stats exceed 2^31).
+    public long calculateMaxBaseDamageLong(int watk, WeaponType weapon) {
         int mainstat, secondarystat;
         if (getJob().isA(Job.THIEF) && weapon == WeaponType.DAGGER_OTHER) {
             weapon = WeaponType.DAGGER_THIEVES;
@@ -860,14 +865,18 @@ public class Character extends AbstractCharacterObject {
             mainstat = localstr;
             secondarystat = localdex;
         }
-        return (int) Math.ceil(((weapon.getMaxDamageMultiplier() * mainstat + secondarystat) / 100.0) * watk);
+        return (long) Math.ceil(((weapon.getMaxDamageMultiplier() * mainstat + (double) secondarystat) / 100.0) * watk);
     }
 
     public int calculateMaxBaseDamage(int watk) {
-        int maxbasedamage;
+        return (int) Math.min(Integer.MAX_VALUE, calculateMaxBaseDamageLong(watk));
+    }
+
+    public long calculateMaxBaseDamageLong(int watk) {
+        long maxbasedamage;
         Item weapon_item = getInventory(InventoryType.EQUIPPED).getItem((short) -11);
         if (weapon_item != null) {
-            maxbasedamage = calculateMaxBaseDamage(watk, ItemInformationProvider.getInstance().getWeaponType(weapon_item.getItemId()));
+            maxbasedamage = calculateMaxBaseDamageLong(watk, ItemInformationProvider.getInstance().getWeaponType(weapon_item.getItemId()));
         } else {
             if (job.isA(Job.PIRATE) || job.isA(Job.THUNDERBREAKER1)) {
                 double weapMulti = 3;
@@ -876,7 +885,7 @@ public class Character extends AbstractCharacterObject {
                 }
 
                 int attack = (int) Math.min(Math.floor((2 * getLevel() + 31) / 3), 31);
-                maxbasedamage = (int) Math.ceil((localstr * weapMulti + localdex) * attack / 100.0);
+                maxbasedamage = (long) Math.ceil((localstr * weapMulti + localdex) * attack / 100.0);
             } else {
                 maxbasedamage = 1;
             }

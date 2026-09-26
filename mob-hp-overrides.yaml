@@ -1,0 +1,9 @@
+# Mob max HP overrides (server only) - read at startup, reload in game with !reloadmobhp.
+#
+# WZ maxHP is a 32-bit int, so a mob with more than 2,147,483,647 HP is declared here instead.
+# Clients only ever see the HP ratio (boss bar / mob gauge), so no .wz/.img edit is needed.
+# One mob per line, "mobId: maxHP", whole numbers up to 9,223,372,036,854,775,807.
+# Mobs already spawned keep their HP; new spawns use the override.
+#
+# 8800002: 50000000000    # Zakum (body 3)
+# 8810018: 100000000000   # Horntail (dummy that holds the shared HP pool)
